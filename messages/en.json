@@ -1,0 +1,65 @@
+{
+	"$schema": "https://inlang.com/schema/inlang-message-format",
+	"hello_world": "Hello, {name} from en!",
+	"hello": "hello",
+	"_settings": {
+		"settings": "settings",
+		"show_logo": "show logo",
+		"empty_day_text": "empty day text",
+		"show_empty_days": "show empty days",
+		"show_past_events": "show past events",
+		"use_24_hour_time": "use 24 hour time",
+		"first_day_of_week": "first day of week",
+		"show_social_links": "show social links",
+		"custom_url": "custom url",
+		"show_empty_days_description": "when disabled, days with nothing scheduled will be hidden from other users",
+		"empty_day_text_description": "this text will display on days with no scheduled events",
+		"show_past_events_description": "display events that have already occurred in the past",
+		"use_24_hour_time_description": "display times in 24-hour format (e.g., 14:00) instead of 12-hour (e.g., 2:00 PM)",
+		"show_social_links_description": "display social media links on your schedule page",
+		"first_day_of_week_description": "choose which day appears first in your weekly schedule",
+		"empty_day_text_placeholder": "e.g. nothing planned :'(",
+		"show_logo_description": "display the application logo on your schedule"
+	},
+	"_navigation": {
+		"about": "about",
+		"home": "home",
+		"settings": "settings",
+		"schedule": "schedule",
+		"appearance": "appearance"
+	},
+	"_schedule": {
+		"today": "today",
+		"tomorrow": "tomorrow",
+		"yesterday": "yesterday",
+		"next_week": "next week",
+		"last_week": "last week",
+		"next_month": "next month",
+		"last_month": "last month",
+		"add_event": "Add Event",
+		"weekly_schedule": "Weekly Schedule"
+	},
+	"_appearance": {
+		"appearance": "appearance",
+		"_colours": {
+			"colours": "colours",
+			"primary": "primary",
+			"secondary": "secondary",
+			"text": "text",
+			"background": "background",
+			"accent": "accent",
+			"colour": "colour"
+		},
+		"layout": "layout",
+		"typography": "typography",
+		"background": "background",
+		"image": "image",
+		"item": "item",
+		"colour": "colour",
+		"colours": "colour"
+	},
+	"login": "log in",
+	"logout": "logout",
+	"signup": "get started",
+	"reset": "reset"
+}

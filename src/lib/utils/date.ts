@@ -1,0 +1,55 @@
+import dayjs from 'dayjs';
+import weekOfYear from 'dayjs/plugin/weekOfYear';
+import weekday from 'dayjs/plugin/weekday';
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import localeData from 'dayjs/plugin/localeData';
+
+dayjs.extend(weekOfYear);
+dayjs.extend(weekday);
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
+dayjs.extend(localeData);
+
+/**
+ * converts a UTC date string to local datetime format (YYYY-MM-DDTHH:mm)
+ */
+export function formatDateTimeLocal(utcDate: Date | dayjs.Dayjs | string | null | undefined): string {
+  if (!utcDate) return "";
+  try {
+    const date = dayjs(utcDate);
+    if (!date.isValid()) return "";
+    
+    const localDateTime = date.local().format('YYYY-MM-DDTHH:mm');
+    return localDateTime;
+  } catch (error) {
+    console.error("error formatting date:", error);
+    return "";
+  }
+}
+
+/**
+ * checks if a date is today
+ */
+export function isToday (date: dayjs.Dayjs) {
+  return date.format('YYYY-MM-DD') === dayjs().format('YYYY-MM-DD');
+};
+
+/**
+ * returns an array containing days of the week starting from the ISO week 
+ * that contains the provided date.
+ */
+export function getDaysOfWeek (currentDate: dayjs.Dayjs) {
+  const startOfWeek = currentDate.startOf('isoWeek');
+  const days = [];
+  
+  for (let i = 0; i < 7; i++) {
+    days.push(startOfWeek.add(i, 'day'));
+  }
+
+  return days;
+}

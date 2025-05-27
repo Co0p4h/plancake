@@ -1,0 +1,77 @@
+{
+	"$schema": "https://inlang.com/schema/inlang-message-format",
+	"hello_world": "こんにちは, {name} jaから！",
+	"hello": "こんにちは",
+	"_settings": {
+		"settings": "設定",
+		"username": {
+			"description": "ユーザー名を入力してください"
+		},
+		"show_logo": "ロゴを表示",
+		"empty_day_text": "空の曜日のテキスト",
+		"show_empty_days": "空の曜日を表示",
+		"show_past_events": "過去のイベントを表示",
+		"use_24_hour_time": "24時間制を使用",
+		"first_day_of_week": "週の最初の日",
+		"show_social_links": "ソーシャルリンクを表示",
+		"custom_url": "カスタムURL",
+		"show_empty_days_description": "無効にすると、何も予定がない曜日は他のユーザーから非表示になります",
+		"empty_day_text_description": "このテキストは予定のない曜日に表示されます",
+		"show_past_events_description": "過去に発生したイベントを表示します",
+		"use_24_hour_time_description": "時間を24時間形式（例：14:00）で表示します。12時間形式（例：2:00 PM）ではなく",
+		"first_day_of_week_description": "週の最初の日を選択します。日曜日または月曜日を選択できます",
+		"show_social_links_description": "スケジュールページにソーシャルメディアリンクを表示します",
+		"empty_day_text_placeholder": "例：何も予定がない :'(",
+		"show_logo_description": "スケジュールにアプリケーションのロゴを表示します"
+	},
+	"settings": {
+		"settings": "設定",
+		"username": {
+			"description": "ユーザー名を入力してください"
+		}
+	},
+	"_navigation": {
+		"about": "アプリについて",
+		"home": "ホーム",
+		"settings": "設定",
+		"schedule": "スケジュール",
+		"appearance": "カスタマイズ"
+	},
+	"_schedule": {
+		"today": "今日",
+		"tomorrow": "明日",
+		"yesterday": "昨日",
+		"next_week": "来週",
+		"last_week": "先週",
+		"next_month": "来月",
+		"last_month": "先月",
+		"add_event": "イベントを追加",
+		"weekly_schedule": "週間スケジュール"
+	},
+	"_appearance": {
+		"appearance": "カスタマイズ",
+		"_colours": {
+			"colours": "色",
+			"primary": "プライマリ",
+			"secondary": "セカンダリ",
+			"text": "テキスト",
+			"background": "背景",
+			"accent": "アクセント",
+			"colour": "色"
+		},
+		"layout": "レイアウト",
+		"typography": "タイポグラフィ",
+		"background": "背景",
+		"image": "画像",
+		"item": "アイテム",
+		"colour": "色",
+		"_typography": {
+			"font": "フォント",
+			"text_size": ""
+		}
+	},
+	"login": "ログイン",
+	"logout": "ログアウト",
+	"signup": "始める",
+	"reset": "リセット"
+}
