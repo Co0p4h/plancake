@@ -9,7 +9,7 @@
 <div class="w-full h-full overflow-hidden"
      style:border-radius={theme.item_theme.border_radius}
      style:border={`1px ${theme.colours.primary} ${theme.item_theme.border_style}`}>
-  <div class='flex flex-col items-center justify-center py-2 text-white'
+  <div class='flex items-center justify-center py-2 text-white gap-1'
        style:background-color={theme.colours.primary}
        style:color={theme.colours.secondary}>
     <span class="text-2xl font-bold"
@@ -23,8 +23,6 @@
        style:color={theme.colours.text}
   >
     <div class="flex justify-center gap-1 mt-1 px-2 py-1 rounded-lg"
-         style:font-family={theme.typography.item_title.font}
-         style:font-size={fontSize(theme.typography.item_title.size)}
          style:color={theme.colours.secondary}
          style:background-color={theme.colours.accent}
          >
@@ -34,7 +32,11 @@
         <span class="font-medium">{dayjs(item.endTime).format('HH:MM')}</span>
       {/if}
     </div>
-    <span class="font-medium px-2 text-center">{item.title}</span>
+    <span class="font-medium px-2 text-center"
+          style:font-size={fontSize(theme.typography.item_title.size)}
+          style:font-family={theme.typography.item_title.font}>
+      {item.title}
+    </span>
     {#if item.description}
       <p class="font-small px-2 text-center"
       style:color={theme.colours.accent} 

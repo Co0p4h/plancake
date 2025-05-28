@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
   import { formatDateTimeLocal } from '$lib/utils/date';
   import { editModal } from './modal.svelte';
 
@@ -31,7 +32,7 @@
   onmouseup={handleMouseUp}
   onmouseleave={() => (isMouseDownOnDialog = false)}
 >
-  <form method="POST" action="?/update" class="space-y-4 p-6">
+  <form method="POST" action="?/update" class="space-y-4 p-6" use:enhance>
     <input type="hidden" name="id" value={editModal.item?.id ?? ''} />
     <div class="grid gap-4">
       <label class="text-sm text-gray-700" for="title">
@@ -99,6 +100,7 @@
     <button
       type="submit"
       class="focus:shadow-outline w-full rounded bg-purple-500 px-4 py-2 text-white hover:bg-purple-700 focus:outline-none cursor-pointer"
+      onclick={() => dialog?.close()}
     >
       update item
     </button>

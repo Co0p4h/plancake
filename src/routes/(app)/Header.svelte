@@ -5,7 +5,7 @@
 	import UserMenu from './UserMenu.svelte';
 	let menuHovered = $state(false);
 
-	console.log("header - page", page.data);
+	// console.log("header - page", page.data);
 </script>
 
 <header class="flex justify-between mt-4 mx-8 items-center">

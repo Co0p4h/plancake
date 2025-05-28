@@ -4,6 +4,7 @@
   import { m } from '$lib/paraglide/messages.js';
 	import dayjs from 'dayjs';
   import utc from 'dayjs/plugin/utc';
+	import { enhance } from '$app/forms';
   dayjs.extend(utc);
 
   let dialog: HTMLDialogElement | undefined = $state();
@@ -36,7 +37,7 @@
   onmouseup={handleMouseUp}
   onmouseleave={() => (isMouseDownOnDialog = false)}
 >
-  <form method="POST" action="?/add" class="space-y-2 p-6">
+  <form method="POST" action="?/add" class="space-y-2 p-6" use:enhance>
     <div class=" grid gap-4">
       <label class="text-sm text-gray-700" for="title">
         <p class="mb-1">title</p>
@@ -103,6 +104,7 @@
       type="submit"
       class="focus:shadow-outline w-full rounded bg-purple-500 px-4 py-2 text-white hover:bg-purple-700 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
       disabled={isSubmitting}
+      onclick={() => dialog?.close()}
     >
       {isSubmitting ? 'adding...' : 'add item'}
     </button>

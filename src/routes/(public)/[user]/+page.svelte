@@ -21,36 +21,33 @@
 		 style:background-color={data.theme.colours.background}
 >
 	<div
-		class="flex w-full max-w-4xl flex-col items-start gap-8 lg:flex-row"
+		class="flex w-full max-w-4xl flex-col items-start gap-8 md:flex-row"
 		style:color={data.theme.colours.text}
 	>
 		<!-- schedule section -->
-		<div class="mx-auto w-full max-w-2xl flex-1"
-				 style:order={data.theme.layout.image_position === 'left' ? '1' : '0'}
-		>
-			<!-- can add flex-1 here for even image to schedule ratio....  -->
-			<div class="mb-4 flex items-center justify-between">
-				<div>
+		<div class="mx-auto w-full min-w-sm lg:min-w-xs lg:max-w-xl flex-1"
+				 style:order={data.theme.layout.image_position === 'left' ? '1' : '0'}>
+			<div class="mb-4">
+				<div class="flex justify-between mb-4 items-center">
 					<h1
 						style:color={data.theme.colours.primary}
 						style:font-size={fontSize(data.theme.typography.header_title.size)}
 					>
 						{page.params.user}'s schedule
 					</h1>
-					<!-- <h1 style:font-size={data.theme?.typography.headingSize}>{data.schedule.title}</h1> -->
+					<div class="p-2 max-w-24 text-center w-full"
+						style:color={data.theme.colours.secondary}
+						style:background-color={data.theme.colours.accent}
+					>
+						{dayjs().weekday(1).format('DD')} →
+						{dayjs().weekday(7).format('DD')}
+					</div>
+				</div>
+				{#if data.schedule.description}
 					<p style:font-size={fontSize(data.theme.typography.header_description.size)}>
-						<!-- TODO: if schedule description is too long then it looks terrible :D -->
 						{data.schedule.description}
 					</p>
-				</div>
-				<div
-					class="p-2"
-					style:color={data.theme.colours.secondary}
-					style:background-color={data.theme.colours.accent}
-				>
-					{dayjs().weekday(1).format('DD')} →
-					{dayjs().weekday(7).format('DD')}
-				</div>
+				{/if}
 			</div>
 
 			{#if data.theme.layout.items === 'list'}
@@ -81,13 +78,11 @@
 		</div>
 		<!-- image section... -->
 		 {#if animate}
-		<div
+		<div class="sticky top-4 flex-1 items-start min-w-[384px] md:min-w-0 hidden md:block"
 			style:border={`1px ${data.theme.colours.text} solid`}
-			class="sticky top-4 hidden flex-1 items-start lg:block"
 			style:order={data.theme.layout.image_position === 'left' ? '0' : '1'}
 			transition:blur={{ duration: 500 }}
 		>
-			<!-- can add flex-1 here for even image to schedule ratio....  -->
 			<img src={data.theme.image?.url} alt={data.theme.image?.alt} class="object-cover" />
 			<span
 				class="absolute bottom-1 right-1 p-1"
@@ -98,7 +93,7 @@
 		</div>
 					{/if}
 	</div>
-	<footer class="">
+	<footer class="z-10">
 		<a class={`rounded-full px-5 py-3 text-sm shadow-lg text-white transition-colors`} href="/"
 			 style:background-color={data.theme.colours.secondary}
 			 style:color={data.theme.colours.text}>

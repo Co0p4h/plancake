@@ -133,8 +133,8 @@ export const actions = {
     try {
       await db.update(table.schedule_items).set({...item}).where(eq(table.schedule_items.id, itemId));
     }  catch (error) {
-      console.error(`schedule deletion failed: `, { itemId, error });
-      fail (500, { error: 'an error has occurred deleting schedule item' });
+      console.error(`schedule update failed: `, { itemId, error });
+      fail (500, { error: 'an error has occurred updating schedule item' });
     }
   }
 }

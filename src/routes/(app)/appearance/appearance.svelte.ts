@@ -1,8 +1,25 @@
 import { browser } from "$app/environment";
-import type { ScheduleTheme, ThemeCategories } from "$lib/server/db/schema";
+import type { ScheduleTheme } from "$lib/server/db/schema";
 
 type ThemeStore = ReturnType<typeof createThemeStore>;
 export let themeStore: ThemeStore;
+
+// what is this...
+function deepUpdateTheme<ScheduleTheme extends Record<string, unknown>>(
+  target: ScheduleTheme, 
+  source: Partial<ScheduleTheme>
+): void {
+  for (const key in source) {
+    const sourceValue = source[key];
+    
+    if (sourceValue && typeof sourceValue === 'object' && !Array.isArray(sourceValue)) {
+      target[key] = target[key] || ({} as ScheduleTheme[typeof key]);
+      deepUpdateTheme(target[key] as Record<string, unknown>, sourceValue as Record<string, unknown>);
+    } else if (sourceValue !== undefined) {
+      target[key] = sourceValue as ScheduleTheme[typeof key];
+    }
+  }
+}
 
 function createThemeStore(initialTheme: ScheduleTheme) {
   const store = $state({
@@ -14,59 +31,36 @@ function createThemeStore(initialTheme: ScheduleTheme) {
      * A computed property that returns true if the user has made changes.
      */
     isModified() {
-      // console.log("ORIGINAL:", JSON.stringify(this.originalTheme));
-      // console.log("CLIENT:  ", JSON.stringify(this.clientTheme));
       return (JSON.stringify(this.clientTheme) !== JSON.stringify(this.originalTheme))
     },
 
     /**
      * Resets any user modifications back to the original saved state.
      */
-    resetTheme(category) {
-      Object.assign(this.clientTheme[category], this.originalTheme[category]);
+    resetTheme() {
+      deepUpdateTheme(this.clientTheme, this.originalTheme);
     },
 
     /**
-     * Saves the current theme to the server.
+     * Call this when the server successfully saves the data.
+     * The current state is now the "original" state.
      */
-    async saveTheme() {
-      if (this.clientTheme === this.originalTheme) {
-        console.log('No changes to save.');
-        return;
-      }
+    commitChanges(updated_theme: ScheduleTheme) {
+      deepUpdateTheme(this.originalTheme, updated_theme);
+    },
 
-      this.isLoading = true;
-
-      try {
-        // --- Your actual API call would go here ---
-        console.log('Saving theme to server:', this.clientTheme);
-        await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay
-        
-        // On success, the currently saved theme becomes the new "original"
-        this.originalTheme = structuredClone(this.clientTheme);
-        console.log('Theme saved successfully!');
-
-      } catch (err) {
-        console.error("Failed to save theme:", err);
-        // Let the calling component know an error occurred
-        throw err;
-      } finally {
-        // This ALWAYS runs, ensuring the loading state is turned off.
-        this.isLoading = false;
-      }
-    }
   });
 
   return store;
 }
 
 export function initThemeStore(initialTheme: ScheduleTheme) {
-  // The 'browser' check prevents re-initialization during development hot-reloading (HMR)
+  // The 'browser' check prevents re-initialisation during development hot-reloading (HMR)
   if (browser && themeStore) {
     return;
   }
 
-  console.log('Initializing theme store with initial theme:', initialTheme);
+  // console.log('Initialising theme store with initial theme:', initialTheme);
   
   themeStore = createThemeStore(initialTheme);
 }

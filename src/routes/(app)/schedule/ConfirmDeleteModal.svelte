@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { deleteModal } from "./modal.svelte";
   import { m } from '$lib/paraglide/messages.js';
+	import { enhance } from "$app/forms";
 
   let dialog: HTMLDialogElement | undefined = $state();
   let isMouseDownOnDialog = $state(false);
@@ -31,7 +32,7 @@
   onmouseup={handleMouseUp}
   onmouseleave={() => (isMouseDownOnDialog = false)}
 >
-  <form method="POST" action="?/delete" class="space-y-3 p-6">
+  <form method="POST" action="?/delete" class="space-y-3 p-6" use:enhance>
     <h3 class="text-lg font-semibold">
       delete event
       {#if deleteModal.item}
@@ -48,6 +49,7 @@
       <button
         type="submit"
         class="focus:shadow-outline w-full rounded bg-red-500 px-4 py-2 font-bold text-white hover:bg-red-600 focus:outline-none cursor-pointer"
+        onclick={() => dialog?.close()}
       >
         delete
       </button>

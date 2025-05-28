@@ -7,11 +7,7 @@
 </script>
 
 <div class="flex flex-col gap-5">
-    {#each Object.entries(colours) as [colour, value]}
-      <ColorPicker colour={colour as keyof ColourTheme} bind:colours/>
-    {/each}
+  {#each Object.entries(colours) as [colour, value]}
+    <ColorPicker colour={colour as keyof ColourTheme} bind:colours/>
+  {/each}
 </div>
-
-<style>
-
-</style>

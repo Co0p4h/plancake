@@ -3,13 +3,11 @@
 	import type { ColourTheme } from '$lib/server/db/schema';
 
   let { colour, colours = $bindable() }: { colour: keyof ColourTheme, colours: ColourTheme} = $props()
-
-  const inputId = `color-picker-${colour}`;
 </script>
 
 <div class="flex justify-between items-center">
-  <label for={inputId} class="text-xl">{m[`_appearance._colours.${colour}`]()}</label>
-  <input type="color" class="block h-14 w-19" bind:value={colours[colour]} />
+  <label for={colour} class="text-xl">{m[`_appearance._colours.${colour}`]()}</label>
+  <input type="color" id={colour} name={colour} class="block h-14 w-19" bind:value={colours[colour]} />
 </div>
 
 <style>

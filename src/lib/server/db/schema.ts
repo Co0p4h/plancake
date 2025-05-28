@@ -84,7 +84,7 @@ export type ItemTheme = {
 export type LayoutTheme = {
 	items: "list" | "grid";
 	image_position: "left" | "right" | "none";
-	gap: string; // e.g. "4px" | "8px" | "16px"
+	gap: number; // e.g. "4px" | "8px" | "16px"
 	// image_overlap: string; // e.g., "20px", "-10%"
 	// content_padding: string; // e.g., "16px"
 }
@@ -216,7 +216,7 @@ export const schedule_themes = pgTable('schedule_themes', {
 	layout: jsonb('layout').$type<LayoutTheme>().default({
 		items: "list",
 		image_position: "right",
-		gap: "16px"
+		gap: 4
 	}).notNull(),
 	item_theme: jsonb('item_theme').$type<ItemTheme>().default({
 		border_style: "solid",

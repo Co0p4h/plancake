@@ -48,10 +48,9 @@
 									style:font-size={fontSize(themeStore.clientTheme.typography.header_title.size)}>
 								{data.user.username}'s schedule
 							</h1>
-							<div
-							class="p-2 max-w-24 text-center w-full"
-							style:color={themeStore.clientTheme.colours.secondary}
-							style:background-color={themeStore.clientTheme.colours.accent}
+							<div class="p-2 max-w-24 text-center w-full"
+								style:color={themeStore.clientTheme.colours.secondary}
+								style:background-color={themeStore.clientTheme.colours.accent}
 							>
 								{dayjs().weekday(1).format('DD')} →
 								{dayjs().weekday(7).format('DD')}
@@ -65,7 +64,7 @@
 
 					{#if themeStore.clientTheme.layout.items === 'list'}
 						<div class="flex flex-col"
-							   style:gap={`${2 * parseInt(themeStore.clientTheme.layout.gap)}px`}
+							   style:gap={`${2 * themeStore.clientTheme.layout.gap}px`}
 						>
 							{#each data.items as item (item.id)}
 								<ScheduleListItem {item} theme={themeStore.clientTheme} />
@@ -73,7 +72,7 @@
 						</div>
 					{:else if themeStore.clientTheme.layout.items === 'grid'}
 						<div class="grid gap-4 grid-cols-2 md:grid-cols-3"
-							   style:gap={`${2 * parseInt(themeStore.clientTheme.layout.gap)}px`}
+							   style:gap={`${2 * themeStore.clientTheme.layout.gap}px`}
 						>
 							{#each data.items as item (item.id)}
 								<ScheduleGridItem {item} theme={themeStore.clientTheme} />
@@ -98,17 +97,9 @@
 		</div>
 	</div>
 
-	<div class="flex-col gap-2 hidden xl:flex">
+	<div class="hidden xl:flex">
 		<AppearanceBar bind:activeAppearance />
-		<button
-			class="mx-1 cursor-pointer rounded-md bg-purple-400 p-2 text-white focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-in-out not-disabled:hover:bg-purple-500"
-			disabled={!themeStore.isModified()}
-			onclick={() => {
-				console.log('theme', themeStore.clientTheme);
-			}}
-		>
-			publish changes
-		</button>
 	</div>
+
 	<AppearanceNav bind:activeAppearance />
 </div>
