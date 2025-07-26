@@ -4,7 +4,6 @@
 	import weekday from 'dayjs/plugin/weekday';
 	import ScheduleListItem from './ScheduleListItem.svelte';
 	import { fontSize } from '$lib/utils/font';
-	import { boolean } from 'drizzle-orm/gel-core';
 	import { blur, fade, slide } from 'svelte/transition';
 	import { onMount } from 'svelte';
 	import ScheduleGridItem from './ScheduleGridItem.svelte';
@@ -52,7 +51,7 @@
 
 			{#if data.theme.layout.items === 'list'}
 				<div class="flex flex-col"
-						 style:gap={`${2 * parseInt(data.theme.layout.gap)}px`}>
+						 style:gap={`${2 * data.theme.layout.gap}px`}>
 					{#each data.items as item, i (item.id)}
 						{#if animate}
 							<div transition:fade={{ delay: i * 150}}>
@@ -63,7 +62,7 @@
 				</div>
 			{:else if data.theme.layout.items === 'grid'}
 				<div class="grid gap-4 grid-cols-2 md:grid-cols-3"
-						 style:gap={`${2 * parseInt(data.theme.layout.gap)}px`}
+						 style:gap={`${2 * data.theme.layout.gap}px`}
 				>
 					{#each data.items as item, i (item.id)}
 						{#if animate}

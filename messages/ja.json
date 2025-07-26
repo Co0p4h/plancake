@@ -73,5 +73,20 @@
 	"login": "ログイン",
 	"logout": "ログアウト",
 	"signup": "始める",
-	"reset": "リセット"
+	"reset": "リセット",
+	"_item_properties": {
+		"title": "タイトル",
+		"description": "説明",
+		"start_time": "開始時間",
+		"end_time": "終了時間",
+		"url": "リンク"
+	},
+	"add_item": "アイテムを追加",
+	"cancel": "キャンセル",
+	"delete": "削除",
+	"update_item": "アイテムを更新",
+	"adding_item": "追加中...",
+	"updating_item": "更新中...",
+	"delete_item": "を削除しますか？",
+	"confirm_delete": "このアイテムを削除してもよろしいですか？この操作は元に戻せません。"
 }

@@ -61,5 +61,20 @@
 	"login": "log in",
 	"logout": "logout",
 	"signup": "get started",
-	"reset": "reset"
+	"reset": "reset",
+	"_item_properties": {
+		"title": "title",
+		"description": "description",
+		"start_time": "start time",
+		"end_time": "end time",
+		"url": "url"
+	},
+	"add_item": "add item",
+	"cancel": "cancel",
+	"delete": "delete",
+	"update_item": "update item",
+	"adding_item": "adding...",
+	"updating_item": "updating...",
+	"delete_item": "delete item",
+	"confirm_delete": "are you sure you want to delete this item? this action cannot be undone."
 }

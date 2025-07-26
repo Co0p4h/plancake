@@ -40,7 +40,7 @@
   <form method="POST" action="?/add" class="space-y-2 p-6" use:enhance>
     <div class=" grid gap-4">
       <label class="text-sm text-gray-700" for="title">
-        <p class="mb-1">title</p>
+        <p class="mb-1">{m['_item_properties.title']()}</p>
         <input
           class="focus:shadow-outline w-full appearance-none rounded border-gray-300 border px-3 py-2 leading-tight text-gray-700 focus:outline-none"
           name="title"
@@ -55,7 +55,7 @@
       <div class="flex justify-between gap-4">
         <div class="flex-1">
           <label class="block text-sm text-gray-700" for="start_time">
-            <p class="mb-1">start time</p>
+            <p class="mb-1">{m['_item_properties.start_time']()}</p>
           </label>
           <input
             class="focus:shadow-outline w-full appearance-none rounded border-gray-300 border p-2 leading-tight text-gray-700 focus:outline-none"
@@ -68,7 +68,7 @@
         </div>
         <div class="flex-1">
           <label class="block text-sm text-gray-700" for="end_time">
-            <p class="mb-1">end time</p>
+            <p class="mb-1">{m['_item_properties.end_time']()}</p>
           </label>
           <input
             class="focus:shadow-outline w-full appearance-none rounded border-gray-300 border p-2 leading-tight text-gray-700 focus:outline-none"
@@ -80,7 +80,7 @@
       </div>
 
       <label class="text-sm text-gray-700" for="description">
-        <p class="mb-1">description</p>
+        <p class="mb-1">{m['_item_properties.description']()}</p>
         <input
           class="focus:shadow-outline w-full appearance-none rounded border-gray-300 border px-3 py-2 leading-tight text-gray-700 focus:outline-none"
           name="description"
@@ -91,7 +91,7 @@
       </label>
 
       <label class="block text-sm text-gray-700" for="external_url">
-        <p class="mb-1">url</p>
+        <p class="mb-1">{m['_item_properties.url']()}</p>
         <input
           class="focus:shadow-outline w-full appearance-none rounded border-gray-300 border px-3 py-2 leading-tight text-gray-700 focus:outline-none"
           name="external_url"
@@ -106,7 +106,7 @@
       disabled={isSubmitting}
       onclick={() => dialog?.close()}
     >
-      {isSubmitting ? 'adding...' : 'add item'}
+      {isSubmitting ? m.adding_item(): m.add_item()}
     </button>
     <button
       onclick={() => {
@@ -115,7 +115,7 @@
       formmethod="dialog"
       class="focus:shadow-outline w-full rounded bg-gray-500 px-4 py-2 text-white hover:bg-gray-700 focus:outline-none cursor-pointer"
     >
-      cancel
+      {m.cancel()}
     </button>
   </form>
 </dialog>

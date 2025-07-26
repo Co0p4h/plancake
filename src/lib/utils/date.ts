@@ -53,3 +53,22 @@ export function getDaysOfWeek (currentDate: dayjs.Dayjs) {
 
   return days;
 }
+
+
+/**
+ * 
+ */
+export function getCurrentWeekDates(firstDayOfWeek: 'monday' | 'sunday' = 'sunday') {
+  const today = dayjs();
+  
+  const startOfWeek = firstDayOfWeek === 'monday' 
+    ? today.startOf('week').add(1, 'day') // monday
+    : today.startOf('week'); // sunday
+    
+  const endOfWeek = startOfWeek.endOf('day').add(6, 'days');
+  
+  return {
+    start: startOfWeek.startOf('day').toDate(),
+    end: endOfWeek.endOf('day').toDate()
+  };
+}

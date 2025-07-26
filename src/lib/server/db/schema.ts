@@ -165,7 +165,7 @@ export const schedule_themes = pgTable('schedule_themes', {
 		},
 		item_title: {
 			font: 'Arial',
-			size: '2xl',
+			size: 'lg',
 			weight: '700',
 			letter_spacing: '0px',
 			capitalisation: 'none',

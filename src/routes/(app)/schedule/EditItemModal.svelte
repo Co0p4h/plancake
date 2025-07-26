@@ -2,9 +2,11 @@
 	import { enhance } from '$app/forms';
   import { formatDateTimeLocal } from '$lib/utils/date';
   import { editModal } from './modal.svelte';
+  import { m } from '$lib/paraglide/messages.js';
 
   let dialog: HTMLDialogElement | undefined = $state();
   let isMouseDownOnDialog = $state(false);
+  let isSubmitting = $state(false);
 
   $effect(() => {
     if (editModal.show && dialog) dialog.showModal();
@@ -36,7 +38,7 @@
     <input type="hidden" name="id" value={editModal.item?.id ?? ''} />
     <div class="grid gap-4">
       <label class="text-sm text-gray-700" for="title">
-        title
+        <p class="mb-1">{m['_item_properties.title']()}</p>
         <input
           class="focus:shadow-outline w-full appearance-none rounded border-gray-300 border px-3 py-2 leading-tight text-gray-700 focus:outline-none"
           name="title"
@@ -51,7 +53,7 @@
       <div class="flex justify-between gap-4">
         <div class="flex-1">
           <label class="block text-sm text-gray-700" for="start_time">
-            start time
+            <p class="mb-1">{m['_item_properties.start_time']()}</p>
           </label>
           <input
             class="focus:shadow-outline w-full appearance-none rounded border-gray-300 border p-2 leading-tight text-gray-700 focus:outline-none"
@@ -63,7 +65,9 @@
           />
         </div>
         <div class="flex-1">
-          <label class="block text-sm text-gray-700" for="end_time"> end time </label>
+          <label class="block text-sm text-gray-700" for="end_time">
+            <p class="mb-1">{m['_item_properties.end_time']()}</p>
+          </label>
           <input
             class="focus:shadow-outline w-full appearance-none rounded border-gray-300 border p-2 leading-tight text-gray-700 focus:outline-none"
             name="end_time"
@@ -75,7 +79,7 @@
       </div>
 
       <label class="text-sm text-gray-700" for="description">
-        description
+        <p class="mb-1">{m['_item_properties.description']()}</p>
         <input
           class="focus:shadow-outline w-full appearance-none rounded border-gray-300 border px-3 py-2 leading-tight text-gray-700 focus:outline-none"
           name="description"
@@ -87,7 +91,7 @@
       </label>
 
       <label class="block text-sm text-gray-700" for="external_url">
-        url
+        <p class="mb-1">{m['_item_properties.url']()}</p>
         <input
           class="focus:shadow-outline w-full appearance-none rounded border-gray-300 border px-3 py-2 leading-tight text-gray-700 focus:outline-none"
           name="external_url"
@@ -100,9 +104,10 @@
     <button
       type="submit"
       class="focus:shadow-outline w-full rounded bg-purple-500 px-4 py-2 text-white hover:bg-purple-700 focus:outline-none cursor-pointer"
+      disabled={isSubmitting}
       onclick={() => dialog?.close()}
     >
-      update item
+      {isSubmitting ? m.updating_item(): m.update_item()}
     </button>
     <button
       onclick={() => {
@@ -112,7 +117,7 @@
       formmethod="dialog"
       class="focus:shadow-outline w-full rounded bg-gray-500 px-4 py-2 text-white hover:bg-gray-700 focus:outline-none cursor-pointer"
     >
-      cancel
+    {m.cancel()}
     </button>
   </form>
 </dialog>

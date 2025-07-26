@@ -28,22 +28,22 @@ function createThemeStore(initialTheme: ScheduleTheme) {
     isLoading: false,
 
     /**
-     * A computed property that returns true if the user has made changes.
+     * a computed property that returns true if the user has made changes.
      */
     isModified() {
       return (JSON.stringify(this.clientTheme) !== JSON.stringify(this.originalTheme))
     },
 
     /**
-     * Resets any user modifications back to the original saved state.
+     * resets any user modifications back to the original saved state.
      */
     resetTheme() {
       deepUpdateTheme(this.clientTheme, this.originalTheme);
     },
 
     /**
-     * Call this when the server successfully saves the data.
-     * The current state is now the "original" state.
+     * call this when the server successfully saves the data.
+     * the current state is now the "original" state.
      */
     commitChanges(updated_theme: ScheduleTheme) {
       deepUpdateTheme(this.originalTheme, updated_theme);
@@ -60,7 +60,18 @@ export function initThemeStore(initialTheme: ScheduleTheme) {
     return;
   }
 
-  // console.log('Initialising theme store with initial theme:', initialTheme);
-  
   themeStore = createThemeStore(initialTheme);
 }
+
+// if you ever want to make it a class, watch this video again!! https://www.youtube.com/watch?v=kMBDsyozllk
+
+// const DEFAULT_KEY = '$_theme_state';
+
+// export const getThemeState = (key = DEFAULT_KEY) => {
+//   return getContext<ThemeStore>(key);
+// }
+
+// export const setThemeState = (key = DEFAULT_KEY) => {
+//   const themeState = new ThemeStateClass();
+//   return setContext<ThemeStore>(key, themeState);
+// }

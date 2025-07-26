@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { deleteModal } from "./modal.svelte";
   import { m } from '$lib/paraglide/messages.js';
+  import { getLocale } from "$lib/paraglide/runtime.js"
 	import { enhance } from "$app/forms";
 
   let dialog: HTMLDialogElement | undefined = $state();
@@ -34,13 +35,12 @@
 >
   <form method="POST" action="?/delete" class="space-y-3 p-6" use:enhance>
     <h3 class="text-lg font-semibold">
-      delete event
       {#if deleteModal.item}
-        {deleteModal.item.title}?
+        {getLocale() === 'ja' ? `${deleteModal.item.title}${m.delete_item()}` : `${m.delete_item()} "${deleteModal.item.title}"?`}
       {/if}
     </h3>
     <p class="pb-2 text-gray-600">
-      are you sure you want to delete this item? this action cannot be undone.
+      {m.confirm_delete()}
     </p>
 
     <input type="hidden" name="itemId" value={deleteModal.item?.id} />
@@ -51,14 +51,14 @@
         class="focus:shadow-outline w-full rounded bg-red-500 px-4 py-2 font-bold text-white hover:bg-red-600 focus:outline-none cursor-pointer"
         onclick={() => dialog?.close()}
       >
-        delete
+        {m.delete()}
       </button>
       <button
         onclick={() => dialog?.close()}
         formmethod="dialog"
         class="focus:shadow-outline w-full rounded bg-gray-500 px-4 py-2 font-bold text-white hover:bg-gray-600 focus:outline-none cursor-pointer"
       >
-        cancel
+        {m.cancel()}
       </button>
     </div>
   </form>

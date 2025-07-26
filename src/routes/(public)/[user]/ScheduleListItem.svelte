@@ -7,7 +7,7 @@
 </script>
 
 <div class="flex w-full h-full overflow-hidden"
-     style:border-radius={theme.item_theme.border_radius}
+     style:border-radius={`${theme.item_theme.border_radius}px`}
      style:border={`1px ${theme.colours.primary} ${theme.item_theme.border_style}`}>
   <div class='flex flex-col items-center justify-center min-w-16 min-h-16 text-white'
        style:background-color={theme.colours.primary}
@@ -22,9 +22,11 @@
        style:background-color={theme.colours.secondary}
        style:color={theme.colours.text}
   >
+    <!-- TODO: make a custom compoenent that auto puts these styles in? -->
     <div class="flex items-center gap-1"
          style:font-family={theme.typography.item_title.font}
          style:font-size={fontSize(theme.typography.item_title.size)}
+         style:font-weight={theme.typography.item_title.weight}
          style:color={theme.colours.text}>
       <span class="font-medium">{dayjs(item.startTime).format('HH:MM')}</span>
       {#if item.endTime}
