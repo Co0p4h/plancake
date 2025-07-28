@@ -54,6 +54,45 @@ export function getDaysOfWeek (currentDate: dayjs.Dayjs) {
   return days;
 }
 
+/**
+ * returns an array containing days of the week starting from the ISO week 
+ * that contains the provided date. spliced around the current date to center it in the week view.
+ */
+export function getSplicedDaysOfWeek (currentDate: dayjs.Dayjs, column_offset: number) {
+  const startOfWeek = currentDate.startOf('isoWeek');
+  const isoDayNumber = currentDate.isoWeekday();
+  // console.log("startOfWeek", startOfWeek.format("YYYY-MM-DD"));
+  // console.log("startOfWeek + 1", startOfWeek.add(7, 'day').format("YYYY-MM-DD"));
+  
+  console.log("isoDayNumber", isoDayNumber);
+
+  const daysBefore = Math.floor((column_offset - 1) / 2);
+  const idealStart = isoDayNumber - daysBefore; 
+  
+  let windowStartIsoDay: number;
+  if (idealStart < 1) {
+    windowStartIsoDay = 1;
+  } else if (idealStart + column_offset - 1 > 7) {
+    windowStartIsoDay = 7 - column_offset + 1;
+  } else {
+    windowStartIsoDay = idealStart;
+  }
+
+  console.log("windowstartisoday (clamped)", windowStartIsoDay);
+
+  const days = [];
+  
+  for (let i = 0; i < column_offset; i++) {
+    const dayOffset = windowStartIsoDay - 1 + i;
+    const day = startOfWeek.add(dayOffset, 'day');
+    days.push(day);
+  }
+
+  console.log("spliced days: ", days);
+
+  return days;
+}
+
 
 /**
  * 

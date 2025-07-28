@@ -28,10 +28,10 @@
          style:font-size={fontSize(theme.typography.item_title.size)}
          style:font-weight={theme.typography.item_title.weight}
          style:color={theme.colours.text}>
-      <span class="font-medium">{dayjs(item.startTime).format('HH:MM')}</span>
+      <span class="font-medium">{dayjs(item.startTime).format('HH:mm')}</span>
       {#if item.endTime}
         <span class="font-medium">-</span>
-        <span class="font-medium">{dayjs(item.endTime).format('HH:MM')}</span>
+        <span class="font-medium">{dayjs(item.endTime).format('HH:mm')}</span>
       {/if}
       <span class="font-medium pl-2">{item.title}</span>
     </div>

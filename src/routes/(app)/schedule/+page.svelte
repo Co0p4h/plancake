@@ -1,4 +1,5 @@
-<!-- maybe fix the way I am getting and passing around initial date? -->
+<!-- or we can just load in the whole week and do the rest in css like you swipe or drag or have new arrows that show up to click to go to the next dates for that week... -->
+ <!-- heck, i just coded the whole thing but i like the idea of that solution way better ;; -->
 <script lang="ts">
 	import { ChevronLeft, ChevronRight } from "@lucide/svelte";
   import dayjs from "dayjs";
@@ -6,64 +7,156 @@
 	import DayColumn from "./DayColumn.svelte";
 	import { m } from '$lib/paraglide/messages.js';
 	import AddItemModal from "./AddItemModal.svelte";
-	import { getDaysOfWeek, isToday } from "$lib/utils/date";
+	import { getDaysOfWeek, getSplicedDaysOfWeek, isToday } from "$lib/utils/date";
 	import ConfirmDeleteModal from "./ConfirmDeleteModal.svelte";
 	import EditItemModal from "./EditItemModal.svelte";
+	import { onMount } from "svelte";
   dayjs.extend(isoWeek);
 
   let { data } = $props();
-  let currentDate = $state(dayjs());
 
-  const goToPreviousWeek = () => {
-    currentDate = currentDate.subtract(1, 'week');
-  };
-  
-  const goToNextWeek = () => {
-    currentDate = currentDate.add(1, 'week');
-  };
+  let referenceDate = $state(dayjs());
+  let currentWeek = $state(dayjs().isoWeek());
+  let columnNum: 1 | 3 | 5 | 7 = $state(5);
+  let screenWidth = $state(1024); // deafult width...
+  let windowStart: number = $state(0);
 
-  // TODO: need a better way to do this...?
-  const getItemsForDay = (dayIndex: dayjs.Dayjs) => {
-    return data.items.filter(item => dayjs(item.startTime).date() === dayIndex.date() && 
-      dayjs(item.startTime).month() === dayIndex.month() && 
-      dayjs(item.startTime).year() === dayIndex.year());
-  };
+  let isInitialized = $state(false);
 
-  const getWeekDisplayText = () => {
-    const daysOfWeek = getDaysOfWeek(currentDate);
-    const startDay = daysOfWeek[0];
-    const endDay = daysOfWeek[daysOfWeek.length - 1];
+  onMount(() => {
+    screenWidth = window.innerWidth;
+    isInitialized = true;
     
-    if (startDay.month() !== endDay.month()) {
-      return `${startDay.format("MMM DD")} - ${endDay.format("MMM DD")}`;
+    const handleResize = () => {
+      screenWidth = window.innerWidth;
+    };
+    
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  });
+
+  $effect(() => {
+    if (screenWidth < 640) { 
+      columnNum = 1; 
+    } else if (screenWidth < 1024) { 
+      columnNum = 3; 
+    } else if (screenWidth < 1280) { 
+      columnNum = 5; 
+    } else { 
+      columnNum = 7; 
+    }
+  });
+
+  $effect(() => {
+    windowStart = calculateWindowStart(referenceDate);
+  })
+
+  // the start 0 - 6 (monday - sunday)
+  const calculateWindowStart = (day: dayjs.Dayjs) => {
+    const isoDayNumber = day.isoWeekday();
+    
+    if (columnNum === 7) return 0;
+    if (columnNum === 1) return isoDayNumber - 1;
+    if (columnNum === 5) {
+      return Math.max(2, Math.min(4, isoDayNumber - 1)) - 2;
+    }
+    if (columnNum === 3) {
+      return Math.max(1, Math.min(5, isoDayNumber - 1)) - 1;
+    }
+    const start = Math.ceil((columnNum - 1) / 2);
+    return start - 2;
+  };
+
+  const getCurrentWindow = (): dayjs.Dayjs[] => {
+    const window = [];
+    const weekStart = dayjs().isoWeek(currentWeek).startOf('isoWeek'); // monday of current week
+    
+    for (let i = 0; i < columnNum; i++) {
+      console.log("windowStart", windowStart);
+      const dayIndex = windowStart + i;
+      const dayDate = weekStart.add(dayIndex, 'day');
+      window.push(dayDate);
+    }
+    return window;
+  };
+
+  const goToPreviousDate = () => {
+    const newStart = windowStart - 1;
+    if (newStart < 0) {
+      currentWeek = currentWeek === 1 ? 52 : currentWeek - 1;
+      windowStart = calculateWindowStart(referenceDate.subtract(1, 'day')); // this is such a hacky way to do this...
+      console.log("windowStart ;D", windowStart);
     } else {
-      return `${startDay.format("MMM DD")} - ${endDay.format("DD")}`;
+      windowStart = newStart;
     }
   };
+
+  const goToNextDate = () => {
+    const newStart = windowStart + 1;
+    if (newStart + columnNum - 1 > 6) {
+      currentWeek = currentWeek === 52 ? 1 : currentWeek + 1;
+      windowStart = 0; // start from beginning of next week
+    } else {
+      windowStart = newStart;
+    }
+  };
+
+  const getItemsForDay = (dayIndex: dayjs.Dayjs) => {
+    return data.items.filter(item => {
+      const itemDate = dayjs(item.startTime);
+      return itemDate.isSame(dayIndex, 'day');
+    });
+  };
+  
+  let weekDisplayText = $derived(() => {
+    const weekStart = dayjs().isoWeek(currentWeek).startOf('isoWeek'); 
+    const weekEnd = weekStart.add(6, 'day'); 
+    
+    if (weekStart.month() !== weekEnd.month()) {
+      return `${weekStart.format("MMM DD")} - ${weekEnd.format("MMM DD")}`;
+    } else {
+      return `${weekStart.format("MMM DD")} - ${weekEnd.format("DD")}`;
+    }
+  });
+
+  const goToToday = () => {
+    referenceDate = dayjs();
+    currentWeek = referenceDate.isoWeek();
+  }
 </script>
 
 <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg">
   <div class="flex justify-between items-center mb-4">
-    <h2 class="text-lg font-medium">{getWeekDisplayText()}</h2>
+    <h2 class="text-lg font-medium">{weekDisplayText()}</h2>
     <h2 class="text-lg font-medium">{m["_schedule.weekly_schedule"]()}</h2>
     <div class="flex  items-center">
-      <button class="cursor-pointer hover:bg-gray-100 rounded-md p-1" onclick={goToPreviousWeek}>
+      <button class="cursor-pointer hover:bg-gray-100 rounded-md p-1" onclick={goToPreviousDate}>
         <ChevronLeft class="h-5 w-5" />
       </button>
-      <button onclick={() => currentDate = dayjs()} class="hover:bg-gray-100 rounded-md px-1 py-1 cursor-pointer">
+      <button onclick={goToToday} class="hover:bg-gray-100 rounded-md px-1 py-1 cursor-pointer">
         <span class="px-2">{m["_schedule.today"]()}</span>
       </button>
-      <button class="cursor-pointer hover:bg-gray-100 rounded-md p-1" onclick={goToNextWeek}>
+      <button class="cursor-pointer hover:bg-gray-100 rounded-md p-1" onclick={goToNextDate}>
         <ChevronRight class="h-5 w-5" />
       </button>
     </div>
   </div>
       
+{#if isInitialized}
   <div class="flex gap-4">
-    {#each getDaysOfWeek(currentDate) as day, index}
+    {#each getCurrentWindow() as day, index}
       <DayColumn isToday={isToday(day)} day={day} items={getItemsForDay(day)} />
     {/each}
   </div>
+{:else}
+  <!-- Optional: show a loading state or just empty -->
+  <div class="flex gap-4">
+    <!-- You could show skeleton columns here if you want -->
+  </div>
+{/if}
 </div>
 
 <AddItemModal />
