@@ -106,6 +106,11 @@ export const actions: Actions = {
 				scheduleId: scheduleId
 			});
 
+			await db.insert(table.schedule_settings).values({
+				id: generateId(),
+				scheduleId: scheduleId
+			});
+
 			await db.insert(table.schedule_items).values([
 				{
 					id: generateId(),
