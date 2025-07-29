@@ -7,7 +7,7 @@
 	import DayColumn from "./DayColumn.svelte";
 	import { m } from '$lib/paraglide/messages.js';
 	import AddItemModal from "./AddItemModal.svelte";
-	import { getDaysOfWeek, getSplicedDaysOfWeek, isToday } from "$lib/utils/date";
+	import { isToday } from "$lib/utils/date";
 	import ConfirmDeleteModal from "./ConfirmDeleteModal.svelte";
 	import EditItemModal from "./EditItemModal.svelte";
 	import { onMount } from "svelte";
@@ -87,7 +87,7 @@
     const newStart = windowStart - 1;
     if (newStart < 0) {
       currentWeek = currentWeek === 1 ? 52 : currentWeek - 1;
-      windowStart = calculateWindowStart(referenceDate.subtract(1, 'day')); // this is such a hacky way to do this...
+      windowStart = calculateWindowStart(referenceDate.subtract(referenceDate.isoWeekday(), 'day')); // this is such a hacky way to do this...
       console.log("windowStart ;D", windowStart);
     } else {
       windowStart = newStart;
