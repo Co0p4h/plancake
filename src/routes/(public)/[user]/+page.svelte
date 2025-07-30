@@ -8,9 +8,11 @@
 	import { onMount } from 'svelte';
 	import ScheduleGridItem from './ScheduleGridItem.svelte';
 	dayjs.extend(weekday);
+
 	let { data } = $props();
 
 	let animate = $state(false);
+
 	onMount(() => {
 		animate = true;
 	});

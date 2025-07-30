@@ -1,13 +1,16 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
   import { page } from '$app/state';
+  import { onMount } from 'svelte';
 
   import { Eye, EyeOff } from '@lucide/svelte';
+	import { m } from '$lib/paraglide/messages';
   // import 'mingcute_icon/font/Mingcute.css';
 
   let showPassword = $state('password');
   // let showPasswordText = $state('eye_line');
   let showPasswordText = $state(false);
+  let username = $state('');
 
   function toggleShowPassword(e: Event) {
     e.preventDefault();
@@ -15,6 +18,13 @@
     // showPasswordText = showPasswordText === 'eye_line' ? 'eye_close_line' : 'eye_line';
     showPasswordText = !showPasswordText;
   }
+
+  onMount(() => {
+    const urlUsername = page.url.searchParams.get('username');
+    if (urlUsername) {
+      username = urlUsername;
+    }
+  });
 </script>
 
 <div class="flex h-[calc(100vh-24rem)] flex-col items-center justify-center gap-y-4">
@@ -65,7 +75,7 @@
           name="username"
           type="text"
           placeholder="username"
-          value={page.form?.username ?? ''}
+          value={username ?? page.form?.username ?? ''}
           required
         />
       </div>
