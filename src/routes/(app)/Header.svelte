@@ -60,10 +60,10 @@
 			</ul>
 		</nav>	
 		<div class="flex gap-4 items-center justify-center text-md">
-			<a class="rounded-md py-1 transition-colors hover:bg-gray-100" href="/">
+			<a class="rounded-md py-1 transition-colors hover:bg-gray-100" href="/login">
 				<p>{m.login()}</p>
 			</a>
-			<a class="rounded-md bg-black px-3 py-1 text-white transition-colors hover:bg-gray-800" href="/">
+			<a class="rounded-md bg-black px-3 py-1 text-white transition-colors hover:bg-gray-800" href="/signup">
 				<p>{m.signup()}</p>
 			</a>
 		</div>

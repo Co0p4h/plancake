@@ -36,10 +36,10 @@
 											linear-gradient(0deg,#61cdffa3,#61cdffa3);
 	}
 
-	img {
+	/* img {
 		width: 100%;
 		height: auto;
 		max-width: 400px;
 		border-radius: 10px;
-	}
+	} */
 </style>

@@ -20,7 +20,16 @@
     </a>
   </div>
   <div class="text-red-500 hover:bg-gray-100 flex items-center gap-x-2 rounded-md px-2 py-1 text-left duration-200">
-    <button class="flex items-center gap-2 cursor-pointer w-full" onclick={() => {console.log("logout")}}>
+    <button class="flex items-center gap-2 cursor-pointer w-full" onclick={async () => {
+                    const response = await fetch("/logout", { method: "POST" });
+                    console.log("logout response", response);
+                    
+                    if (response.ok) {
+                        window.location.href = "/";
+                    } else {
+                        console.error("Logout failed");
+                    }
+                  }}>
       <LogOut size={18} />
       logout
     </button>

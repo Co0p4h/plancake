@@ -1,29 +1,55 @@
 import { fail, redirect } from '@sveltejs/kit';
-import type { Actions } from './$types';
+import { validatePassword, validateUsername } from '$lib/utils/validate';
+import { verify } from '@node-rs/argon2';
+import { eq } from 'drizzle-orm';
+import * as auth from '$lib/server/auth';
+import { db } from '$lib/server/db';
+import * as table from '$lib/server/db/schema';
+import type { Actions, PageServerLoad } from './$types';
 
-export const load = (async ({ locals }) => { 
-  // const session = await locals.user;
-  // if (session) {
-  //   throw redirect(303, '/');
-  // }
+export const load: PageServerLoad = (async ({ locals }) => { 
+	if (locals.user) {
+		return redirect(302, '/');
+	}
+	return {};
 });
 
-export const actions = {
-	default: async ({ cookies, request, url }) => {
-		const data = await request.formData();
-    const email = data.get('email')?.toString();
-    const password = data.get('password')?.toString();
+export const actions: Actions = {
+	default: async (event) => {
+		const formData = await event.request.formData();
+		const username = formData.get('username');
+		const password = formData.get('password');
 
-    if (!email || !password) {
-      return fail(400, {
-        missing: true,
-        error: 'username and email and password are required',
-        email
-      });
-    };
-    
-    try {
-    } catch (error) {
-    }
+		if (!validateUsername(username)) {
+			return fail(400, {
+				message: 'Invalid username (min 3, max 31 characters, alphanumeric only)'
+			});
+		}
+		if (!validatePassword(password)) {
+			return fail(400, { message: 'Invalid password (min 6, max 255 characters)' });
+		}
+
+		const results = await db.select().from(table.users).where(eq(table.users.username, username));
+
+		const existingUser = results.at(0);
+		if (!existingUser) {
+			return fail(400, { message: 'Incorrect username or password' });
+		}
+
+		const validPassword = await verify(existingUser.passwordHash, password, {
+			memoryCost: 19456,
+			timeCost: 2,
+			outputLen: 32,
+			parallelism: 1
+		});
+		if (!validPassword) {
+			return fail(400, { message: 'Incorrect username or password' });
+		}
+
+		const sessionToken = auth.generateSessionToken();
+		const session = await auth.createSession(sessionToken, existingUser.id);
+		auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
+
+		return redirect(302, '/schedule');
 	}
 } satisfies Actions;

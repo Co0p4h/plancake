@@ -2,6 +2,7 @@ import * as table from '$lib/server/db/schema';
 import { db } from '$lib/server/db';
 import { eq, between, and } from 'drizzle-orm';
 import { getCurrentWeekDates } from '$lib/utils/date';
+import { error } from '@sveltejs/kit';
 
 export interface ScheduleData {
   user: typeof table.users.$inferSelect;
@@ -11,13 +12,13 @@ export interface ScheduleData {
   schedule_settings: typeof table.schedule_settings.$inferSelect;
 }
 
-export async function getScheduleByUsername(username: string): Promise<ScheduleData | null> {
+export async function getScheduleByUsername(username: string): Promise<ScheduleData> {
   const [user] = await db
     .select()
     .from(table.users)
     .where(eq(table.users.username, username));
 
-  if (!user) return null;
+  if (!user) return error(404, { message: `user @${username} not found` });
 
   const [schedule] = await db
     .select()
@@ -52,4 +53,26 @@ export async function getScheduleByUsername(username: string): Promise<ScheduleD
     .orderBy(table.schedule_items.startTime);
 
   return { user, schedule, theme, items, schedule_settings };
+}
+
+export async function getScheduleItemsByUserId(
+  userId: string,
+  // startDate: Date,
+  // endDate: Date
+): Promise<typeof table.schedule_items.$inferSelect[]> {
+  const [schedule] = await db
+  .select({ schedule_id: table.schedules.id })
+  .from(table.schedules)
+  .where(eq(table.schedules.userId, userId))
+  .limit(1);
+  
+  return db
+    .select()
+    .from(table.schedule_items)
+    .where(
+      and(
+        eq(table.schedule_items.scheduleId, schedule.schedule_id),
+        // between(table.schedule_items.startTime, startDate, endDate)
+      )
+    )
 }

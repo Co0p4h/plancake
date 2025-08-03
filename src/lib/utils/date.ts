@@ -97,11 +97,11 @@ export function getSplicedDaysOfWeek (currentDate: dayjs.Dayjs, column_offset: n
 /**
  * 
  */
-export function getCurrentWeekDates(firstDayOfWeek: 'monday' | 'sunday' = 'sunday') {
+export function getCurrentWeekDates(firstDayOfWeek: 'monday' | 'sunday') {
   const today = dayjs();
   
   const startOfWeek = firstDayOfWeek === 'monday' 
-    ? today.startOf('week').add(1, 'day') // monday
+    ? today.startOf('isoWeek') // monday
     : today.startOf('week'); // sunday
     
   const endOfWeek = startOfWeek.endOf('day').add(6, 'days');

@@ -1,31 +1,31 @@
 import * as table from '$lib/server/db/schema';
 import { db } from '$lib/server/db';
 import { eq } from 'drizzle-orm';
-import { error, fail, redirect } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 // import { themeStore } from './appearance.svelte';
 import type { ScheduleTheme } from '$lib/server/db/schema';
 import { getScheduleByUsername } from '$lib/server/db/schedule-service';
 
-export const load: PageServerLoad = (async ({ locals }) => {
+export const load: PageServerLoad = (async ({ locals, url }) => {
   if (!locals.user) {
-    return redirect(302, '/demo/lucia/login');
+    return redirect(302, `/login?redirectTo=${url.pathname}`);
     // return error(401, { message: 'unauthorised' });
   }
 
-  const schedule_data = await getScheduleByUsername(locals.user.username); // is this okay? there is no security risk here, right?
+  // const schedule_data = await getScheduleByUsername(locals.user.username); // is this okay? there is no security risk here, right?
   
-  if (!schedule_data) {
-    return error(404, { message: `user @${locals.user.username} not found` });
-  }
+  // if (!schedule_data) {
+    // return error(404, { message: `user @${locals.user.username} not found` });
+  // }
 
-  return { ...schedule_data };
+  return { schedule_data: getScheduleByUsername(locals.user.username) };
 });
 
 export const actions = {
   updateTheme: async ({ request, locals, url }) => {
     if (!locals.user) {
-      return redirect(302, `/demo/lucia/login?redirectTo=${url.pathname}`);
+      return redirect(302, `/login?redirectTo=${url.pathname}`);
     }
 
     const formData = await request.formData();

@@ -24,10 +24,10 @@
       <div class="">
         <input
           class="w-full rounded border px-3 py-2 focus:border-purple-500 focus:outline-none"
-          name="email"
-          type="email"
-          placeholder="email"
-          value={page.form?.email ?? ''}
+          name="username"
+          type="text"
+          placeholder="username"
+          value={page.form?.username ?? ''}
           required
         />
       </div>
@@ -44,7 +44,7 @@
         />
         <button
           aria-label="show_password_button"
-          class="absolute right-3 text-sm"
+          class="absolute right-3 text-sm cursor-pointer"
           onclick={toggleShowPassword}
           type="button"
         >
@@ -57,7 +57,7 @@
       </div>
       <button
         type="submit"
-        class="w-full rounded bg-purple-500 px-4 py-2 font-bold text-white hover:bg-purple-700 focus:outline-none"
+        class="w-full rounded bg-purple-500 px-4 py-2 font-bold text-white hover:bg-purple-700 focus:outline-none cursor-pointer"
       >
         login
       </button>

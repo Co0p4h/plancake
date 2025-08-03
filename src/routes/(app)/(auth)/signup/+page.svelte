@@ -57,7 +57,7 @@
         <!-- minlength="8" -->
         <button
           aria-label="show_password_button"
-          class="absolute right-3 text-sm"
+          class="absolute right-3 text-sm cursor-pointer"
           onclick={toggleShowPassword}
           type="button"
         >
@@ -82,7 +82,7 @@
 
       <button
         type="submit"
-        class="w-full rounded bg-purple-500 px-4 py-2 font-bold text-white hover:bg-purple-700 focus:outline-none"
+        class="w-full rounded bg-purple-500 px-4 py-2 font-bold text-white hover:bg-purple-700 focus:outline-none cursor-pointer"
       >
         sign up
       </button>

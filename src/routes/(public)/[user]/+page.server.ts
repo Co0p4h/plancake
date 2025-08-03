@@ -1,14 +1,17 @@
-import { error } from '@sveltejs/kit';
+// import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { getScheduleByUsername } from '$lib/server/db/schedule-service';
 
-export const load: PageServerLoad = (async ({ params }) => {
-  const schedule_data = await getScheduleByUsername(params.user);
+export const load: PageServerLoad = async ({ params }) => {
+  // const schedule_data = await getScheduleByUsername(params.user);
   
-  if (!schedule_data) {
-    return error(404, { message: `user @${params.user} not found` });
-  }
+  // if (!schedule_data) {
+  //   return error(404, { message: `user @${params.user} not found` });
+  // }
 
-  return { ...schedule_data };
-});
+  // return { ...schedule_data };
+
+  return { schedule_data: await getScheduleByUsername(params.user) } // i think that the public route shouldn't stream data in? 
+
+};
 

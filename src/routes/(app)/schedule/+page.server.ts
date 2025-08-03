@@ -4,27 +4,28 @@ import { eq } from 'drizzle-orm';
 import { fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { generateId } from '$lib/server/db/utils';
+import { getScheduleItemsByUserId } from '$lib/server/db/schedule-service';
+// import { getCurrentWeekDates } from '$lib/utils/date';
 
-export const load: PageServerLoad = (async ({ locals }) => {
+export const load: PageServerLoad = (async ({ locals, url }) => {
   if (!locals.user) {
-    return redirect(302, '/demo/lucia/login');
+    return redirect(302, `/login?redirectTo=${url.pathname}`);
     // return error(401, { message: 'unauthorised' });
   }
 
   const user = locals.user;
 
-  // TODO: is it better get the only the schedule_id here or the entire schedule object?
-  // TODO: ohhh, what if we just save the shedule_id in locals.user?
-  const [schedule] = (await db.select({ schedule_id: table.schedules.id }).from(table.schedules).where(eq(table.schedules.userId, user.id)).limit(1));
-  const schedule_items = await db.select().from(table.schedule_items).where(eq(table.schedule_items.scheduleId, schedule.schedule_id));
+  // const { start, end } = getCurrentWeekDates("monday");
+  
+  // console.log('wah', await getScheduleItemsByUserId(user.id, start, end));
 
-  return { user, items: schedule_items };
+  return { user, streamed: { items: getScheduleItemsByUserId(user.id) }};
 });
 
 export const actions = {
   add: async ({ request, locals, url }) => {
     if (!locals.user) {
-      return redirect(302, `/demo/lucia/login?redirectTo=${url.pathname}`);
+      return redirect(302, `/login?redirectTo=${url.pathname}`);
     }
 
     const formData = await request.formData();
@@ -74,7 +75,7 @@ export const actions = {
 
   delete: async ({ request, locals, url }) => {
     if (!locals.user) {
-      return redirect(302, `/demo/lucia/login?redirectTo=${url.pathname}`);
+      return redirect(302, `/login?redirectTo=${url.pathname}`);
     }
 
     const formData = await request.formData();

@@ -18,14 +18,14 @@
   let referenceDate = $state(dayjs());
   let currentWeek = $state(dayjs().isoWeek());
   let columnNum: 1 | 3 | 5 | 7 = $state(5);
-  let screenWidth = $state(1024); // deafult width...
+  let screenWidth = $state(1024); // default width...
   let windowStart: number = $state(0);
 
-  let isInitialized = $state(false);
+  let isInitialised = $state(false);
 
   onMount(() => {
     screenWidth = window.innerWidth;
-    isInitialized = true;
+    isInitialised = true;
     
     const handleResize = () => {
       screenWidth = window.innerWidth;
@@ -104,8 +104,8 @@
     }
   };
 
-  const getItemsForDay = (dayIndex: dayjs.Dayjs) => {
-    return data.items.filter(item => {
+  const getItemsForDay = (dayIndex: dayjs.Dayjs, items: any[]) => {
+    return items.filter(item => {
       const itemDate = dayjs(item.startTime);
       return itemDate.isSame(dayIndex, 'day');
     });
@@ -145,16 +145,19 @@
     </div>
   </div>
       
-{#if isInitialized}
+{#if isInitialised}
   <div class="flex gap-4">
-    {#each getCurrentWindow() as day, index}
-      <DayColumn isToday={isToday(day)} day={day} items={getItemsForDay(day)} />
+    {#each getCurrentWindow() as day}
+      <DayColumn 
+        isToday={isToday(day)} 
+        day={day} 
+        items={data.streamed.items.then(items => getItemsForDay(day, items))} 
+      />
     {/each}
   </div>
 {:else}
-  <!-- Optional: show a loading state or just empty -->
   <div class="flex gap-4">
-    <!-- You could show skeleton columns here if you want -->
+    <div class="text-gray-500">initializing...</div>
   </div>
 {/if}
 </div>
