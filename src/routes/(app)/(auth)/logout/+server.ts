@@ -1,4 +1,4 @@
-import * as auth from '$lib/server/auth';
+import * as auth from '$lib/server/session';
 import { redirect } from "@sveltejs/kit";
 
 export async function POST(event) {

@@ -17,12 +17,15 @@ export function generateSessionToken() {
 
 export async function createSession(token: string, userId: string) {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+
 	const session: table.Session = {
 		id: sessionId,
 		userId,
 		expiresAt: new Date(Date.now() + DAY_IN_MS * 30)
 	};
+
 	await db.insert(table.sessions).values(session);
+
 	return session;
 }
 
@@ -42,6 +45,7 @@ export async function validateSessionToken(token: string) {
 	if (!result) {
 		return { session: null, user: null };
 	}
+
 	const { session, user } = result;
 
 	const sessionExpired = Date.now() >= session.expiresAt.getTime();
@@ -68,8 +72,13 @@ export async function invalidateSession(sessionId: string) {
 	await db.delete(table.sessions).where(eq(table.sessions.id, sessionId));
 }
 
+export async function invalidateUserSessions(userId: string) {
+	await db.delete(table.sessions).where(eq(table.sessions.userId, userId));
+}
+
 export function setSessionTokenCookie(event: RequestEvent, token: string, expiresAt: Date) {
 	event.cookies.set(sessionCookieName, token, {
+		httpOnly: true,
 		expires: expiresAt,
 		path: '/'
 	});
@@ -77,6 +86,7 @@ export function setSessionTokenCookie(event: RequestEvent, token: string, expire
 
 export function deleteSessionTokenCookie(event: RequestEvent) {
 	event.cookies.delete(sessionCookieName, {
+		httpOnly: true,
 		path: '/'
 	});
 }

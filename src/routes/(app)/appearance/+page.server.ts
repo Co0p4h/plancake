@@ -44,7 +44,7 @@ export const actions = {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       const theme: ScheduleTheme = JSON.parse(themeJson);
       console.log('theme', theme);
-      const [schedule] = (await db.select({ schedule_id: table.schedules.id }).from(table.schedules).where(eq(table.schedules.userId, locals.user.id)).limit(1));
+      const [schedule] = await db.select({ schedule_id: table.schedules.id }).from(table.schedules).where(eq(table.schedules.userId, locals.user.id)).limit(1);
       const [updated_theme] = await db.update(table.schedule_themes).set({
         colours: theme.colours,
         image: theme.image,

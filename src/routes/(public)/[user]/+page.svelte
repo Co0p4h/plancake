@@ -81,20 +81,23 @@
 
 			</div>
 			<!-- image section... -->
-			{#if animate}
-				<div class="sticky top-4 flex-1 items-start min-w-[384px] md:min-w-0 hidden md:block"
-					style:border={`1px ${data.theme.colours.text} solid`}
-					style:order={data.theme.layout.image_position === 'left' ? '0' : '1'}
-					transition:blur={{ duration: 500 }}
-				>
-					<img src={data.theme.image?.url} alt={data.theme.image?.alt} class="object-cover" />
-					<span
-						class="absolute bottom-1 right-1 p-1"
-						style:background-color={data.theme.colours.secondary}
+			{#if data.theme.image}
+				{#if animate}
+					<div class="sticky top-4 flex-1 items-start min-w-[384px] md:min-w-0 hidden md:block"
+						style:border={`1px ${data.theme.colours.text} solid`}
+						style:order={data.theme.layout.image_position === 'left' ? '0' : '1'}
+						transition:blur={{ duration: 500 }}
 					>
-						@{data.theme.image?.artistAtribution}
-					</span>
-				</div>
+
+						<img src={data.theme.image.url} alt={data.theme.image.alt} class="object-cover" loading="lazy" />
+						<span
+							class="absolute bottom-1 right-1 p-1"
+							style:background-color={data.theme.colours.secondary}
+						>
+							@{data.theme.image?.artistAtribution}
+						</span>
+					</div>
+				{/if}
 			{/if}
 		</div>
 		<footer class="z-10">

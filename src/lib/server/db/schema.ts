@@ -1,6 +1,6 @@
 import type { fontSizes } from '$lib/utils/font';
 import { relations, sql } from 'drizzle-orm';
-import { pgTable, text, timestamp, jsonb, check, index, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, jsonb, check, index, varchar, unique } from 'drizzle-orm/pg-core';
 
 const baseEntity = {
   id: text('id').primaryKey(),
@@ -92,19 +92,37 @@ export type LayoutTheme = {
 export const users = pgTable('users', {
 	...baseEntity,
 	username: varchar('username', { length: 63 }).notNull().unique(),
+	displayName: varchar('display_name', { length: 63 }),
 	email: varchar('email', { length: 127 }).notNull().unique(),
-	passwordHash: text('password_hash').notNull()
+	passwordHash: text('password_hash')
 }, (table) => [
   check("valid_email", sql`${table.email} ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'`),
   check("username_length", sql`length(${table.username}) >= 3`),
   check("username_format", sql`${table.username} ~* '^[a-zA-Z0-9_-]+$'`)
 ]);
 
+export const userAuthMethods = pgTable('user_auth_methods', {
+	...baseEntity,
+  userId: text('user_id')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' })
+		.unique(),
+  authType: varchar('auth_type', { length: 50 }).notNull(), // 'password', 'google', 'github', etc.
+  providerId: varchar('provider_id', { length: 255 }), // OAuth provider's user ID
+  passwordHash: varchar('password_hash', { length: 255 }), // only for password auth
+  metadata: jsonb('metadata'), // store additional provider data
+}, (table) => [
+  index('idx_user_auth_methods_user_id').on(table.userId),
+  index('idx_user_auth_methods_provider').on(table.authType, table.providerId),
+  unique('unique_auth_provider').on(table.authType, table.providerId),
+  unique('unique_user_auth_type').on(table.userId, table.authType)
+]);
+
 export const user_settings = pgTable('user_settings', {
 	...baseEntity,
 	userId: text('user_id')
 		.notNull()
-		.references(() => users.id)
+		.references(() => users.id, { onDelete: 'cascade' })
 		.unique(),
 	settings: jsonb('settings').$type<UserSettings>(),
 });
@@ -113,7 +131,7 @@ export const sessions = pgTable('sessions', {
 	id: text('id').primaryKey(),
 	userId: text('user_id')
 		.notNull()
-		.references(() => users.id),
+		.references(() => users.id, { onDelete: 'cascade' }),
 	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull()
 });
 
@@ -121,7 +139,7 @@ export const schedules = pgTable('schedules', {
 	...baseEntity,
 	userId: text('user_id')
 		.notNull()
-		.references(() => users.id)
+		.references(() => users.id, { onDelete: 'cascade' })
 		.unique(),
 	title: text('title').notNull(),
 	description: text('description'),
@@ -131,7 +149,7 @@ export const schedule_themes = pgTable('schedule_themes', {
 	...baseEntity,
 	scheduleId: text('schedule_id')
 		.notNull()
-		.references(() => schedules.id)
+		.references(() => schedules.id, { onDelete: 'cascade' })
 		.unique(),
 	colours: jsonb('colour').$type<ColourTheme>().default({
     primary: '#000000',
@@ -229,7 +247,7 @@ export const schedule_settings = pgTable('schedule_settings', {
 	...baseEntity,
 	scheduleId: text('schedule_id')
 		.notNull()
-		.references(() => schedules.id)
+		.references(() => schedules.id, { onDelete: 'cascade' })
 		.unique(),
 	settings: jsonb('settings').$type<ScheduleSettings>().default({
 		show_empty_days: true,
@@ -246,9 +264,7 @@ export const schedule_items = pgTable('schedule_items', {
 	...baseEntity,
 	scheduleId: text('schedule_id')
 		.notNull()
-		.references(() => schedules.id, {
-			onDelete: 'cascade'
-		}),
+		.references(() => schedules.id, { onDelete: 'cascade' }),
 	title: text('title').notNull(),
 	description: text('description'),
 	startTime: timestamp('start_time', { withTimezone: true, mode: 'date' }).notNull(),
@@ -296,6 +312,21 @@ export const ScheduleItemRelations = relations(schedule_items, ({ one }) => {
 	}
 })
 
+export const usersRelations = relations(users, ({ many }) => {
+	return {
+		authMethods: many(userAuthMethods)
+	}
+});
+
+export const userAuthMethodsRelations = relations(userAuthMethods, ({ one }) => {
+	return {
+		user: one(users, {
+			fields: [userAuthMethods.userId],
+			references: [users.id]	
+		})
+	}
+});
+
 // export const ScheduleThemeRelations = relations(schedule_themes, ({ one }) => {
 // 	return {
 // 		schedule: one(schedules, { 
@@ -331,9 +362,11 @@ export const ScheduleItemRelations = relations(schedule_items, ({ one }) => {
 // 	}
 // })
 
-
 export type Session = typeof sessions.$inferSelect;
 export type User = typeof users.$inferSelect;
+export type NewUser = typeof users.$inferInsert;
+export type UserAuthMethod = typeof userAuthMethods.$inferSelect;
+export type NewUserAuthMethod = typeof userAuthMethods.$inferInsert;
 export type Schedule = typeof schedules.$inferSelect;
 export type ScheduleTheme = typeof schedule_themes.$inferSelect;
 export type ScheduleSetting = typeof schedule_settings.$inferSelect;

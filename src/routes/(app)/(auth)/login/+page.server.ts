@@ -2,7 +2,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import { validatePassword, validateUsername } from '$lib/utils/validate';
 import { verify } from '@node-rs/argon2';
 import { eq } from 'drizzle-orm';
-import * as auth from '$lib/server/auth';
+import * as auth from '$lib/server/session';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import type { Actions, PageServerLoad } from './$types';
@@ -25,6 +25,7 @@ export const actions: Actions = {
 				message: 'Invalid username (min 3, max 31 characters, alphanumeric only)'
 			});
 		}
+
 		if (!validatePassword(password)) {
 			return fail(400, { message: 'Invalid password (min 6, max 255 characters)' });
 		}

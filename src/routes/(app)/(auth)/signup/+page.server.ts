@@ -1,6 +1,6 @@
 import { hash } from '@node-rs/argon2';
 import { fail, redirect } from '@sveltejs/kit';
-import * as auth from '$lib/server/auth';
+import * as auth from '$lib/server/session';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import type { Actions, PageServerLoad } from './$types';
@@ -8,12 +8,9 @@ import { generateId } from '$lib/server/db/utils';
 import { validatePassword, validateUsername } from '$lib/utils/validate';
 
 export const load: PageServerLoad = (async ({ locals }) => { 
-  const user = locals.user;
-  console.log(user);
-  
-  // if (user) {
-  //   throw redirect(303, '/');
-  // }
+  if (locals.user) {
+		return redirect(302, '/');
+	}
 });
 
 export const actions: Actions = {
@@ -22,9 +19,6 @@ export const actions: Actions = {
     const email = formData.get('email')?.toString().trim();
 		const username = formData.get('username')?.toString().trim();
 		const password = formData.get('password')?.toString().trim();
-
-    console.log('formData', formData);
-    
 
 		if (!validateUsername(username)) {
 			return fail(400, { message: 'invalid username' });

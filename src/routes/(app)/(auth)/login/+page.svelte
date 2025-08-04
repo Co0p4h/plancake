@@ -61,6 +61,11 @@
       >
         login
       </button>
+      <a href="/login/google" 
+         class="w-full rounded bg-purple-500 px-4 py-2 font-bold text-white hover:bg-purple-700 focus:outline-none cursor-pointer"
+      >
+        Sign in with Google
+      </a>
       {#if page.form?.error}
         <span class="error text-red-500">{page.form.error}</span>
       {/if}
