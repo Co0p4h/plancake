@@ -21,6 +21,9 @@
 	{#if page.data.user}
 		<nav class="text-md">
 			<ul class="flex justify-center items-center gap-2">
+					<li class="py-1 px-4" aria-current={page.url.pathname === '/schedule-test' ? 'page' : undefined}>
+						<a href="/schedule-test">{m['_navigation.schedule']()}-test</a>
+					</li>
 					<li class="py-1 px-4" aria-current={page.url.pathname === '/schedule' ? 'page' : undefined}>
 						<a href="/schedule">{m['_navigation.schedule']()}</a>
 					</li>

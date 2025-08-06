@@ -87,10 +87,10 @@
 						</div>
 					</div>
 
-					<!-- Image section skeleton (optional, shown sometimes) -->
-					<div class="sticky top-4 hidden flex-1 items-start lg:block">
-						<div class="h-64 bg-gray-200 rounded border border-gray-300 relative">
-							<!-- Image attribution -->
+					<!-- Image section skeleton -->
+<div class="sticky top-4 hidden flex-1 items-start lg:block">
+						<div class="relative w-96 h-[600px] bg-gray-200 rounded border border-gray-300">
+							<!-- Image attribution skeleton -->
 							<div class="absolute right-1 bottom-1 p-1 bg-gray-300 rounded">
 								<div class="h-3 bg-gray-400 rounded w-16"></div>
 							</div>

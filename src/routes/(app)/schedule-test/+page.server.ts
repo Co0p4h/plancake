@@ -18,15 +18,8 @@ export const load: PageServerLoad = (async ({ locals, url }) => {
   // const { start, end } = getCurrentWeekDates("monday");
   
   // console.log('wah', await getScheduleItemsByUserId(user.id, start, end));
-  const items = async () => { 
-    await new Promise(resolve => {
-      setTimeout(resolve, 2000); 
-    });
-    return getScheduleItemsByUserId(user.id);
-  }
 
-
-  return { user, streamed: { items: items() }};
+  return { user, streamed: { items: getScheduleItemsByUserId(user.id) }};
 });
 
 export const actions = {

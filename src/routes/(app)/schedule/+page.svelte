@@ -1,5 +1,3 @@
-<!-- or we can just load in the whole week and do the rest in css like you swipe or drag or have new arrows that show up to click to go to the next dates for that week... -->
- <!-- heck, i just coded the whole thing but i like the idea of that solution way better ;; -->
 <script lang="ts">
 	import { ChevronLeft, ChevronRight } from "@lucide/svelte";
   import dayjs from "dayjs";
@@ -11,6 +9,8 @@
 	import ConfirmDeleteModal from "./ConfirmDeleteModal.svelte";
 	import EditItemModal from "./EditItemModal.svelte";
 	import { onMount } from "svelte";
+	import type { ScheduleItem } from "$lib/server/db/schema";
+  
   dayjs.extend(isoWeek);
 
   let { data } = $props();
@@ -126,6 +126,22 @@
     referenceDate = dayjs();
     currentWeek = referenceDate.isoWeek();
   }
+
+  function groupEventsByDate(items: ScheduleItem[]): Map<string, ScheduleItem[]> {
+    const eventsMap = new Map();
+    if (!items) return eventsMap; 
+
+    for (const item of items) {
+      const key = dayjs(item.startTime).format("YYYY-MM-DD");
+
+      if (!eventsMap.has(key)) {
+        eventsMap.set(key, []);
+      }
+      eventsMap.get(key).push(item);
+    }
+
+    return eventsMap;
+  } 
 </script>
 
 <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg">
@@ -145,21 +161,36 @@
     </div>
   </div>
       
-{#if isInitialised}
-  <div class="flex gap-4">
-    {#each getCurrentWindow() as day}
-      <DayColumn 
-        isToday={isToday(day)} 
-        day={day} 
-        items={data.streamed.items.then(items => getItemsForDay(day, items))} 
-      />
-    {/each}
-  </div>
-{:else}
-  <div class="flex gap-4">
-    <div class="text-gray-500">initializing...</div>
-  </div>
-{/if}
+  {#if isInitialised}
+    {#await data.streamed.items}
+      <div class="flex gap-4">
+        {#each getCurrentWindow() as day}
+          <DayColumn 
+            isToday={isToday(day)} 
+            day={day} 
+            items={[{id: "loading", scheduleId: "loading...", startTime: dayjs().toDate(), endTime: dayjs().toDate(), title: "loading...", description: "loading...", createdAt: dayjs().toDate(), updatedAt: dayjs().toDate(), externalUrl: ""}]}
+          />
+        {/each}
+      </div>
+    {:then items}
+      {@const eventsByDate = groupEventsByDate(items)}
+      <div class="flex gap-4">
+        {#each getCurrentWindow() as day}
+          {@const dayKey = day.format("YYYY-MM-DD")}
+          {@const dayItems = eventsByDate.get(dayKey) || []}
+          <DayColumn 
+            isToday={isToday(day)} 
+            day={day} 
+            items={dayItems} 
+          />
+        {/each}
+      </div>
+    {/await}
+  {:else}
+    <div class="flex gap-4">
+      <div class="text-gray-500">initializing...</div>
+    </div>
+  {/if}
 </div>
 
 <AddItemModal />

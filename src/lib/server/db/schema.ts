@@ -1,6 +1,6 @@
 import type { fontSizes } from '$lib/utils/font';
 import { relations, sql } from 'drizzle-orm';
-import { pgTable, text, timestamp, jsonb, check, index, varchar, unique } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, jsonb, check, index, varchar, unique, boolean } from 'drizzle-orm/pg-core';
 
 const baseEntity = {
   id: text('id').primaryKey(),
@@ -94,6 +94,7 @@ export const users = pgTable('users', {
 	username: varchar('username', { length: 63 }).notNull().unique(),
 	displayName: varchar('display_name', { length: 63 }),
 	email: varchar('email', { length: 127 }).notNull().unique(),
+	emailVerified: boolean('email_verified').default(false).notNull(),
 	passwordHash: text('password_hash')
 }, (table) => [
   check("valid_email", sql`${table.email} ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'`),
@@ -128,7 +129,7 @@ export const user_settings = pgTable('user_settings', {
 });
 
 export const sessions = pgTable('sessions', {
-	id: text('id').primaryKey(),
+	...baseEntity,
 	userId: text('user_id')
 		.notNull()
 		.references(() => users.id, { onDelete: 'cascade' }),
