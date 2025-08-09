@@ -2,7 +2,7 @@
 	import type { LayoutTheme } from "$lib/server/db/schema";
   import { m } from '$lib/paraglide/messages.js';
 
-  let { layout }:{ layout: LayoutTheme } = $props()
+  let { layout = $bindable() }:{ layout: LayoutTheme } = $props()
 </script>
 
 {#each Object.entries(layout) as [key, value]}

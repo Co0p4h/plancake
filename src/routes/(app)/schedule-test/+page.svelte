@@ -1,372 +1,540 @@
 <script lang="ts">
-	import type { ScheduleItem } from "$lib/server/db/schema";
-	import { getDaysOfWeek } from "$lib/utils/date";
-	import ConfirmDeleteModal from "./ConfirmDeleteModal.svelte";
-	import AddItemModal from "./AddItemModal.svelte";
-	import EditItemModal from "./EditItemModal.svelte";
-	import { addModal } from "./modal.svelte";
-	import dayjs from "dayjs";
-  import isoWeek from "dayjs/plugin/isoWeek";
-	import ItemCard from "./ItemCard.svelte";
-	import { Plus } from "@lucide/svelte";
-  import { m } from '$lib/paraglide/messages.js';
-
-  dayjs.extend(isoWeek);
+	import dayjs from 'dayjs';
+  import { onMount } from 'svelte';
+	import ItemCard from './ItemCard.svelte';
 
   let { data } = $props();
 
-  let currentDate = $state(dayjs());
-  let gridEl: HTMLDivElement | null = $state(null); 
-  let todayEl: HTMLDivElement | null = $state(null); 
+  // ---- Date helpers -------------------------------------------------------
 
-  function groupEventsByDate(items: ScheduleItem[]): Map<string, ScheduleItem[]> {
-    const eventsMap = new Map();
-    if (!items) return eventsMap; // Return empty map if items are null/undefined
+  const WEEK_STARTS_ON = 1; // 1 = Monday, 0 = Sunday
 
-    for (const item of items) {
-      // Using dayjs as in your example
-      const key = dayjs(item.startTime).format("YYYY-MM-DD");
+  function startOfDay(d: Date): Date {
+    const x = new Date(d);
+    x.setHours(0, 0, 0, 0);
+    return x;
+  }
 
-      if (!eventsMap.has(key)) {
-        eventsMap.set(key, []);
-      }
-      // The '?' is optional chaining, good for safety
-      eventsMap.get(key)?.push(item);
+  function addDays(d: Date, n: number): Date {
+    const x = new Date(d);
+    x.setDate(x.getDate() + n);
+    return x;
+  }
+
+  function startOfWeek(d: Date, weekStartsOn = WEEK_STARTS_ON): Date {
+    const x = startOfDay(d);
+    const day = x.getDay();
+    const diff = (day - weekStartsOn + 7) % 7;
+    x.setDate(x.getDate() - diff);
+    return x;
+  }
+
+  function isSameDay(a: Date, b: Date): boolean {
+    return (
+      a.getFullYear() === b.getFullYear() &&
+      a.getMonth() === b.getMonth() &&
+      a.getDate() === b.getDate()
+    );
+  }
+
+  function fmtDayShort(d: Date): string {
+    return d.toLocaleDateString(undefined, { weekday: 'short' });
+  }
+
+  function fmtDayLong(d: Date): string {
+    return d.toLocaleDateString(undefined, {
+      weekday: 'long',
+      month: 'short',
+      day: 'numeric'
+    });
+  }
+
+  function fmtRange(a: Date, b: Date): string {
+    const sameMonth = a.getMonth() === b.getMonth();
+    const sameYear = a.getFullYear() === b.getFullYear();
+    const optsA: Intl.DateTimeFormatOptions = {
+      month: 'short',
+      day: 'numeric'
+    };
+    const optsB: Intl.DateTimeFormatOptions = {
+      month: sameMonth ? undefined : 'short',
+      day: 'numeric',
+      year: sameYear ? undefined : 'numeric'
+    };
+    return `${a.toLocaleDateString(undefined, optsA)} – ${b.toLocaleDateString(
+      undefined,
+      optsB
+    )}`;
+  }
+
+  // ---- State (Svelte 5 runes) --------------------------------------------
+
+  let containerEl: HTMLDivElement | null = null;
+  let today = startOfDay(new Date());
+
+  // The week we are viewing (start date).
+  let weekStart = $state(startOfWeek(today));
+
+  // The "focused/selected" date within the visible week (default = today).
+  // When switching weeks, we keep the same weekday index where possible.
+  let selectedDate = $state(new Date(today));
+
+  // All 7 days of the current week (always rendered).
+  let weekDays = $derived(() =>
+    Array.from({ length: 7 }, (_, i) => addDays(weekStart, i))
+  );
+
+  // Index of selected within current week or -1 if not in this week.
+  let selectedIndex = $derived(() => {
+    for (let i = 0; i < 7; i++) {
+      if (isSameDay(weekDays[i], selectedDate)) return i;
     }
-    // You can debug here easily!
-    // console.log("Grouped Events Map:", eventsMap);
-    return eventsMap;
-  } 
-
-  let weekDays = $derived(() => {
-    return getDaysOfWeek(currentDate);
+    return -1;
   });
 
-  const isSameDay = (d1: dayjs.Dayjs, d2: dayjs.Dayjs) => {
-    return d1.format('YYYY-MM-DD') === d2.format('YYYY-MM-DD');
+  // Responsive visible columns (7 → 5 → 3 → 1) computed from container width.
+  let visibleCols = $state(7);
+
+  // Width of one column (in px), derived from container width and visibleCols.
+  let colWidth = $state(0);
+
+  // The left-most snapped column index currently in view.
+  let scrollIndex = $state(0);
+
+  // ---- Responsive logic ---------------------------------------------------
+
+  function computeVisible(width: number): number {
+    // Tweak breakpoints as needed
+    if (width >= 1024) return 7;
+    if (width >= 768) return 5;
+    if (width >= 560) return 3;
+    return 1;
   }
 
-  const formatHeaderDate = (date: dayjs.Dayjs) => {
-    return date.format('MMMM YYYY'); 
-  };
+  function updateMeasurements(): void {
+    if (!containerEl) return;
+    const width = containerEl.clientWidth;
+    const nextVisible = computeVisible(width);
+    if (nextVisible !== visibleCols) visibleCols = nextVisible;
+    colWidth = width / visibleCols;
+    // Keep CSS var in sync for flex-basis
+    containerEl.style.setProperty('--visible', String(visibleCols));
+  }
 
-  const goToPreviousWeek = () => {
-    currentDate = currentDate.subtract(7, "days");
-  };
+  // ---- Scrolling / snapping ------------------------------------------------
 
-  const goToNextWeek = () => {
-    currentDate = currentDate.add(7, "days");
-  };
+  function clamp(n: number, min: number, max: number): number {
+    return Math.max(min, Math.min(max, n));
+  }
 
-  const handleDayScroll = (direction: "left" | "right") => {
-    if (!gridEl) return;
-    const scrollAmount = gridEl.clientWidth;
-    gridEl.scrollBy({
-      left: direction === "left" ? -scrollAmount : scrollAmount,
-      behavior: "smooth",
+  function scrollToIndex(i: number, smooth = false): void {
+    if (!containerEl) return;
+    const idx = clamp(i, 0, 7 - visibleCols);
+    containerEl.scrollTo({
+      left: idx * colWidth,
+      behavior: smooth ? 'smooth' : 'auto'
     });
-  };
+  }
 
-  // $effect(() => {
-  //   const scrollToToday = () => {
-  //     if (todayEl && gridEl) {
-  //       if (gridEl.scrollWidth > gridEl.clientWidth) {
-  //         const gridRect = gridEl.getBoundingClientRect();
-  //         const todayRect = todayEl.getBoundingClientRect();
+  // Center selected date when possible.
+  function centerOnSelected(smooth = false): void {
+    if (selectedIndex < 0) return;
+    const half = Math.floor(visibleCols / 2);
+    const target = clamp(selectedIndex - half, 0, 7 - visibleCols);
+    scrollToIndex(target, smooth);
+  }
 
-  //         const scrollLeft =
-  //           todayRect.left -
-  //           gridRect.left -
-  //           gridRect.width / 2 +
-  //           todayRect.width / 2;
+  function handleScroll(): void {
+    if (!containerEl || colWidth === 0) return;
+    const idx = Math.round(containerEl.scrollLeft / colWidth);
+    scrollIndex = clamp(idx, 0, 7 - visibleCols);
+  }
 
-  //         gridEl.scrollTo({
-  //           left: scrollLeft,
-  //           behavior: "smooth",
-  //         });
-  //       }
-  //     }
-  //   };
+  // ---- Week navigation -----------------------------------------------------
 
-  //   scrollToToday();
+  function shiftWeek(deltaWeeks: number): void {
+    // Keep selected weekday index if it was in the current week,
+    // otherwise keep the same weekday as "selectedDate".
+    const keepIdx =
+      selectedIndex >= 0 ? selectedIndex : selectedDate.getDay();
 
-  //   window.addEventListener("resize", scrollToToday);
+    weekStart = addDays(weekStart, deltaWeeks * 7);
 
-  //   return () => {
-  //     window.removeEventListener("resize", scrollToToday);
-  //   };
-  // });
+    // Calculate new selected date based on weekday
+    // Map weekday (0=Sun) to index in week given WEEK_STARTS_ON setting.
+    const desiredIdx =
+      (keepIdx - WEEK_STARTS_ON + 7) % 7; // 0..6 within the week grid
+
+    selectedDate = addDays(weekStart, desiredIdx);
+    // After moving week, center selected
+    queueMicrotask(() => centerOnSelected(true));
+  }
+
+  // Shift visible by one column (for small viewports).
+  function shiftColumns(delta: number): void {
+    scrollToIndex(scrollIndex + delta, true);
+  }
+
+  // Select a day (by clicking a cell)
+  function selectDay(d: Date, i: number): void {
+    selectedDate = d;
+    // Center selection when viewport is not showing all 7
+    if (visibleCols < 7) centerOnSelected(true);
+  }
+
+  // ---- Lifecycle -----------------------------------------------------------
+
+  onMount(() => {
+    // Observe container to update visibleCols + colWidth
+    const resize = () => {
+      updateMeasurements();
+      // Align initial center on mount and when breakpoints change
+      centerOnSelected(false);
+      handleScroll();
+    };
+
+    // Initial: ensure selectedDate belongs to current week if today is in it
+    if (
+      today >= weekDays[0] &&
+      today <= weekDays[6] &&
+      selectedIndex === -1
+    ) {
+      selectedDate = today;
+    }
+
+    const ro = new ResizeObserver(resize);
+    if (containerEl) ro.observe(containerEl);
+
+    // First measurement after mount
+    queueMicrotask(resize);
+
+    return () => ro.disconnect();
+  });
+
+  // Adjust scroll when visibleCols changes (e.g., orientation or resize).
+  $effect(() => {
+    // This effect runs whenever visibleCols changes, keep centered.
+    // Use auto (not smooth) to avoid long animation on rotate.
+    centerOnSelected(false);
+  });
+
+  // ---- Derived labels ------------------------------------------------------
+
+  let weekLabel = $derived(() =>
+    fmtRange(weekDays()[6], weekDays()[6])
+  );
+
+  // ---- Utility guards for arrows ------------------------------------------
+
+  let canScrollLeft = $derived(() => scrollIndex > 0);
+  let canScrollRight = $derived(() => scrollIndex < 7 - visibleCols);
 </script>
 
-<div class="weekly-calendar">
-  <header class="calendar-header">
-    <button onclick={goToPreviousWeek} class="nav-arrow week-nav">
-      &lt;&lt;
-    </button>
-    <!-- The header text is derived from currentDate -->
-    <h2>{formatHeaderDate(currentDate)}</h2>
-    <button onclick={goToNextWeek} class="nav-arrow week-nav">
-      &gt;&gt;
-    </button>
+<!-- Page layout -->
+<section class="calendar">
+  <header class="toolbar">
+    <div class="week-nav">
+      <button
+        class="icon-btn"
+        aria-label="Previous week"
+        onclick={() => shiftWeek(-1)}
+      >
+        ‹
+      </button>
+      <div class="week-label" aria-live="polite">{weekLabel()}</div>
+      <button
+        class="icon-btn"
+        aria-label="Next week"
+        onclick={() => shiftWeek(1)}
+      >
+        ›
+      </button>
+    </div>
+
+    <div class="today-actions">
+      <button
+        class="btn"
+        onclick={() => {
+          const now = startOfDay(new Date());
+          today = now;
+          weekStart = startOfWeek(now);
+          selectedDate = now;
+          queueMicrotask(() => centerOnSelected(true));
+        }}
+      >
+        Today
+      </button>
+    </div>
   </header>
 
-  <div class="calendar-body">
-    <button
-      onclick={() => handleDayScroll("left")}
-      class="nav-arrow day-nav day-nav-left"
+  <div class="grid-wrapper">
+    {#if visibleCols < 7}
+      <button
+        class="scroll-btn left"
+        aria-label="Scroll left"
+        disabled={!canScrollLeft}
+        onclick={() => shiftColumns(-1)}
+      >
+        ‹
+      </button>
+    {/if}
+
+    <div
+      class="scroller"
+      bind:this={containerEl}
+      onscroll={handleScroll}
     >
-      &lt;
-    </button>
-
-
-  <!-- Add your events or content here -->
-    {#await data.streamed.items}
-          <!-- (1) PENDING STATE: Render the grid skeleton with loaders -->
-      <div class="calendar-grid" bind:this={gridEl}>
-        {#each weekDays() as day}
-          {@const isToday = isSameDay(day, dayjs())}
-          <div
-            class="day-column"
-            class:today={isToday}
-          >
-            <div class="day-header">
-              <div class="day-name">
-                {day.format("ddd")}
-              </div>
-              <div class="day-number">{day.format("D")}</div>
+      {#each weekDays() as d, i}
+        <div
+          class="day-col {isSameDay(d, selectedDate) ? 'selected' : ''}"
+          role="button"
+          tabindex="0"
+          aria-label={fmtDayLong(d)}
+          aria-pressed={isSameDay(d, selectedDate)}
+          onclick={() => selectDay(d, i)}
+          onkeydown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              selectDay(d, i);
+            }
+          }}
+        >
+          <div class="day-header">
+            <div class="weekday">
+              {fmtDayShort(d)}
             </div>
-            <div class="day-content">
-              <div class="spinner"></div>
+            <div class="date">
+              {d.getDate()}
             </div>
           </div>
-        {/each}
-      </div>
-    {:then items} 
-      {@const eventsByDate = groupEventsByDate(items)}
-      <div class="calendar-grid" bind:this={gridEl}>
-        {#each weekDays() as day}
-          {@const isToday = isSameDay(day, dayjs())}
-          {@const dayKey = day.format("YYYY-MM-DD")}
-          {@const dayItems = eventsByDate.get(dayKey) || []}
-          <div
-            class="day-column"
-            class:today={isToday}
-            bind:this={todayEl}
-          >
-            <div class="day-header">
-              <div class="day-name">
-                {day.format("ddd")}
-              </div>
-              <div class="day-number">{day.format("D")}</div>
-            </div>
-            <div class="day-content">
-              {#each dayItems as item (item.id)}
-                <ItemCard {item} />
-              {/each}
-            </div>
-            <button class="relative bottom-4 left-0 right-0 text-center text-gray-400 text-sm hover:text-gray-600 cursor-pointer"
-              onclick={() => {
-                addModal.show = true;
-                addModal.initialDate = day;
-              }}>
-              <span class="flex items-center justify-center">
-                <Plus class="h-3 w-3 mr-1" />{m["_schedule.add_event"]()}
-              </span>
-            </button>
-          </div>
-        {/each}
-      </div>
-      {:catch error}
-        <p>Error loading items: {error.message}</p>
-      {/await}
 
-    <button
-      onclick={() => handleDayScroll("right")}
-      class="nav-arrow day-nav day-nav-right"
-    >
-      &gt;
-    </button>
+          <div class="day-content">
+            <!-- Your events go here -->
+            <div class="placeholder">
+              {#await data.streamed.items}
+                No events
+              {:then items} 
+                <!-- {#each items as item} -->
+                 <ItemCard item={items[0]} />
+                <!-- {/each} -->
+              {/await}
+
+            </div>
+          </div>
+        </div>
+      {/each}
+    </div>
+
+    {#if visibleCols < 7}
+      <button
+        class="scroll-btn right"
+        aria-label="Scroll right"
+        disabled={!canScrollRight}
+        onclick={() => shiftColumns(1)}
+      >
+        ›
+      </button>
+    {/if}
   </div>
-</div>
-
-<AddItemModal />
-<ConfirmDeleteModal />
-<EditItemModal />
+</section>
 
 <style>
-  /* Main container for the calendar */
-  .weekly-calendar {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-      Helvetica, Arial, sans-serif;
-    width: 95%;
-    max-width: 1200px;
-    margin: 2rem auto;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  :global(:root) {
+    --bg: #0b0e14;
+    --panel: #121826;
+    --panel-2: #1a2233;
+    --text: #e6edf7;
+    --muted: #a8b3cf;
+    --primary: #5b9bff;
+    --accent: #7bd88f;
+    --border: #233049;
+    --ring: #345;
+    --visible: 7;
   }
 
-  /* Header with month/year and navigation */
-  .calendar-header {
+  .calendar {
+    display: grid;
+    gap: 12px;
+    padding: 16px;
+    color: var(--text);
+    background: var(--bg);
+    min-height: 100dvh;
+    box-sizing: border-box;
+  }
+
+  .toolbar {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    background-color: #f7f7f7;
-    border-bottom: 1px solid #ddd;
+    gap: 12px;
   }
 
-  .calendar-header h2 {
-    margin: 0;
-    font-size: 1.25rem;
+  .week-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 6px 8px;
+  }
+
+  .week-label {
     font-weight: 600;
-    color: #333;
+    letter-spacing: 0.2px;
   }
 
-  /* General styles for navigation arrows */
-  .nav-arrow {
-    background: none;
-    border: 1px solid #ccc;
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
+  .icon-btn {
+    appearance: none;
+    border: none;
+    background: var(--panel-2);
+    color: var(--text);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    line-height: 32px;
+    font-size: 18px;
     cursor: pointer;
-    font-size: 1.2rem;
-    color: #555;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s, color 0.2s;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--border);
   }
 
-  .nav-arrow:hover {
-    background-color: #e9e9e9;
-    color: #000;
+  .icon-btn:hover {
+    outline: 2px solid var(--ring);
+    outline-offset: 0;
   }
 
-  /* Main body containing the grid and day-scroll arrows */
-  .calendar-body {
+  .btn {
+    appearance: none;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .btn:hover {
+    outline: 2px solid var(--ring);
+    outline-offset: 0;
+  }
+
+  .grid-wrapper {
     position: relative;
   }
 
-  /* The grid that holds the day columns */
-  .calendar-grid {
-    display: grid;
-    /* Default to 7 columns on large screens */
-    grid-template-columns: repeat(7, 1fr);
-    background-color: #fff;
-  }
-
-  /* Individual day column styling */
-  .day-column {
-    border-left: 1px solid #eee;
-    min-height: 60vh;
+  .scroller {
     display: flex;
-    flex-direction: column;
+    gap: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
   }
 
-  .day-column:first-child {
-    border-left: none;
+  .scroller::-webkit-scrollbar {
+    height: 10px;
+  }
+  .scroller::-webkit-scrollbar-thumb {
+    background: #2a3856;
+    border-radius: 999px;
+  }
+  .scroller::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .day-col {
+    flex: 0 0 calc(100% / var(--visible));
+    min-width: 0;
+    border-right: 1px solid var(--border);
+    scroll-snap-align: start;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    height: 72dvh;
+    background: linear-gradient(180deg, var(--panel) 0%, #0f1522 100%);
+  }
+
+  .day-col:last-child {
+    border-right: none;
+  }
+
+  .day-col.selected {
+    outline: 2px solid var(--primary);
+    outline-offset: -2px;
+    background: linear-gradient(180deg, #0f192d 0%, #0f1a2f 100%);
   }
 
   .day-header {
-    padding: 0.75rem;
-    text-align: center;
-    border-bottom: 1px solid #eee;
-  }
-
-  .day-name {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    color: #777;
-  }
-
-  .day-number {
-    font-size: 1.5rem;
-    font-weight: 500;
-    color: #333;
-    margin-top: 0.25rem;
-  }
-
-  /* Highlight for the current day */
-  .day-column.today .day-header {
-    background-color: #eef5ff;
-  }
-
-  .day-column.today .day-number {
-    background-color: #007bff;
-    color: white;
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    justify-content: center;
-    margin-left: auto;
-    margin-right: auto;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: inherit;
+    z-index: 1;
+  }
+
+  .weekday {
+    font-size: 0.95rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .date {
+    font-weight: 700;
+    color: var(--text);
   }
 
   .day-content {
-    flex-grow: 1;
-    padding: 0.5rem;
+    padding: 12px;
   }
 
-  /* Hide day-scrolling arrows by default */
-  .day-nav {
-    display: none;
+  .placeholder {
+    color: var(--muted);
+    font-size: 0.9rem;
+    border: 1px dashed var(--border);
+    padding: 12px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  .scroll-btn {
     position: absolute;
     top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
+    translate: 0 -50%;
+    z-index: 2;
+    width: 38px;
+    height: 38px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--panel-2);
+    color: var(--text);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    opacity: 0.92;
   }
 
-  .day-nav-left {
-    left: 10px;
-  }
-  .day-nav-right {
-    right: 10px;
+  .scroll-btn:hover {
+    outline: 2px solid var(--ring);
   }
 
-  /* --- Responsive Breakpoints --- */
-
-  /* Medium screens (e.g., tablets) - 5 days */
-  @media (max-width: 1280px) {
-    .calendar-grid {
-      grid-template-columns: repeat(7, 20%); /* 100% / 5 = 20% */
-      overflow-x: scroll;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-      scrollbar-width: none; /* Hide scrollbar on Firefox */
-    }
-    .calendar-grid::-webkit-scrollbar {
-      display: none; /* Hide scrollbar on Chrome/Safari */
-    }
-    .day-column {
-      scroll-snap-align: center;
-    }
-    .day-nav {
-      display: flex;
-    }
+  .scroll-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
   }
 
-  /* Small screens (e.g., large phones) - 3 days */
-  @media (max-width: 1024px) {
-    .calendar-grid {
-      grid-template-columns: repeat(7, 33.33%); /* 100% / 3 = 33.33% */
-    }
-    .calendar-header h2 {
-      font-size: 1.1rem;
-    }
+  .scroll-btn.left {
+    left: 8px;
   }
-
-  /* Extra-small screens (e.g., standard phones) - 1 day */
-  @media (max-width: 640px) {
-    .calendar-grid {
-      grid-template-columns: repeat(7, 100%); /* 100% / 1 = 100% */
-    }
-    .calendar-header {
-      padding: 0.75rem 1rem;
-    }
+  .scroll-btn.right {
+    right: 8px;
   }
 </style>

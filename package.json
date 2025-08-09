@@ -52,7 +52,8 @@
 		"arctic": "^3.7.0",
 		"dayjs": "^1.11.13",
 		"drizzle-orm": "^0.43.1",
-		"postgres": "^3.4.7"
+		"postgres": "^3.4.7",
+		"svelte-french-toast": "^1.2.0"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [

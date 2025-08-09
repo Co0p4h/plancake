@@ -13,16 +13,32 @@
   import { slide } from 'svelte/transition';
 	import { enhance } from '$app/forms';
 	import type { SubmitFunction } from '@sveltejs/kit';
+	import toast, { Toaster } from 'svelte-french-toast';
 
   let { activeAppearance = $bindable() }: { activeAppearance: ThemeCategories } = $props();
+  
+  let isSubmitting = $state(false);
 
   const enhance_form: SubmitFunction = ({ formData, action }) => {
+
+    isSubmitting = true;
+    // const loadingToast = toast.loading('Saving changes...', {
+    //   duration: Infinity, // Keep it until we dismiss it
+    // });
+
     return async ({ result }) => {
-      console.log('result', result);
-      if (result.status == 200 && 'data' in result && result.data) {
-        theme.commitChanges(result.data.updated_theme);
-      } else if (result.status != 200 && 'data' in result && result.data) { // TODO: this is gross :)
-        console.log('kys:', result.data.error);
+      // toast.dismiss(loadingToast);
+      isSubmitting = false;
+
+      if (result.type == "success" && result.data) {
+        const updated_theme = await result.data.updated_theme;
+        if (updated_theme) {
+          theme.commitChanges(updated_theme);
+          toast.success('theme updated successfully!');
+        }
+      } else if (result.type == "failure" && result.data) { // TODO: this is gross :)
+        const error_message = result.data.error || 'an unexpected error occurred';
+        toast.error(error_message);
       }
     }
   }
@@ -39,7 +55,7 @@
         <h1 class="text-xl text-gray-500">{m[`_appearance.${activeAppearance}`]()}</h1>
         <button class="px-2 py-1 rounded-lg border border-gray-300 text-gray-800 bg-white cursor-pointer hover:bg-gray-100 disabled:opacity-50  disabled:cursor-not-allowed transition"
           type="button"
-          disabled={!theme.isModified()}
+          disabled={!theme.isModified() || isSubmitting}
           onclick={() => {theme.resetTheme()}}
         >
           {m.reset()}
@@ -47,40 +63,45 @@
       </div>
       {#if activeAppearance === "colours"}
       <div transition:slide>
-        <ColourMenu colours={theme.clientTheme.colours} />
+        <ColourMenu bind:colours={theme.clientTheme.colours} />
       </div>
       {:else if activeAppearance === "layout"}
       <div transition:slide>
-        <LayoutMenu layout={theme.clientTheme.layout} />
+        <LayoutMenu bind:layout={theme.clientTheme.layout} />
       </div>
       {:else if activeAppearance === "typography"}
       <div transition:slide>
-        <TypographyMenu typography={theme.clientTheme.typography} />
+        <TypographyMenu bind:typography={theme.clientTheme.typography} />
       </div>
       {:else if activeAppearance === "item"}
       <div transition:slide>
-        <ItemMenu item_theme={theme.clientTheme.item_theme} />
+        <ItemMenu bind:item_theme={theme.clientTheme.item_theme} />
       </div>
       {:else if activeAppearance === "background"}
       <div transition:slide>
-        <BackgroundMenu background={theme.clientTheme.background} /> 
+        <BackgroundMenu bind:background={theme.clientTheme.background} /> 
       </div>
       {:else if activeAppearance === "image"}
       <div transition:slide>
-        <ImageMenu image={theme.clientTheme.image}/>
+        <ImageMenu bind:image={theme.clientTheme.image}/>
       </div>
       {/if}
     </div>
     <div class="flex text-center">
       <button
         type="submit"
-        class="cursor-pointer rounded-md bg-purple-400 p-2 text-white focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-in-out not-disabled:hover:bg-purple-500 mx-2 w-full"
-        disabled={!theme.isModified()}
-        onclick={() => {
-          // console.log('theme', theme.clientTheme);
-        }}
+        class="cursor-pointer rounded-md bg-purple-400 p-2 text-white focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-in-out not-disabled:hover:bg-purple-500 mx-2 w-full flex items-center justify-center"
+        disabled={!theme.isModified() || isSubmitting}
       >
-        publish changes
+        {#if isSubmitting}
+          <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          publishing...
+        {:else}
+          publish changes
+        {/if}
       </button>
     </div>
   </form>
@@ -98,3 +119,5 @@
     </div>
   </div>
 {/if}
+
+<Toaster position="bottom-center" />

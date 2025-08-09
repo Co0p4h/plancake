@@ -1,5 +1,5 @@
 <script lang="ts">
-  let { background } = $props();
+  let { background = $bindable() } = $props();
 </script>
 
 <p>{background}</p>

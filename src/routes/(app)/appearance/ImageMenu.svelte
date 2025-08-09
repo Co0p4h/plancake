@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
 
-  let { image } = $props();
+  let { image = $bindable() } = $props();
 
   let error: string = $state("");
   let debounceTimeout: ReturnType<typeof setTimeout>;

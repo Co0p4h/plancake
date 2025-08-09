@@ -10,23 +10,27 @@
 	import { fontSize } from '$lib/utils/font';
 	import { initThemeStore, themeStore } from './appearance.svelte';
 	import ScheduleGridItem from '../../(public)/[user]/ScheduleGridItem.svelte';
+	import { onMount } from 'svelte';
 
 	let { data } = $props();
 
-	// initThemeStore(data.schedule_data.theme)
+	// onMount(() => {
+		initThemeStore(data.schedule_data.theme); // maybe this should be in some main layout file? 
+	// });
 
-	$effect.pre(() => {
-		const initialiseTheme = async () => {
-			try {
-				const schedule_data = await data.schedule_data;
-				initThemeStore(schedule_data.theme);
-			} catch (error) {
-				console.error('failed to load schedule data:', error);
-			}
-		};
+	// TODO: implement streaming in data
+	// $effect.pre(() => {
+	// 	const initialiseTheme = async () => {
+	// 		try {
+	// 			const schedule_data = await data.schedule_data;
+	// 			initThemeStore(schedule_data.theme);
+	// 		} catch (error) {
+	// 			console.error('failed to load schedule data:', error);
+	// 		}
+	// 	};
 		
-		initialiseTheme();
-	});
+	// 	initialiseTheme();
+	// });
 
 	beforeNavigate(({ cancel }) => {
 		if (
@@ -183,7 +187,7 @@
 					</div>
 					{#if themeStore.clientTheme.image?.url}
 						<div class="sticky top-4 hidden flex-1 items-start lg:block"
-								style:border={`1px ${scheduleData.theme.colours.text} solid`}
+								style:border={`1px ${themeStore.clientTheme.colours.text} solid`}
 								style:order={themeStore.clientTheme.layout.image_position === 'left' ? '0' : '1'}>
 							<img src={themeStore.clientTheme.image?.url} alt={themeStore.clientTheme.image?.alt} class="object-cover" />
 							<span class="absolute right-1 bottom-1 p-1"

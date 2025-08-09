@@ -3,7 +3,7 @@
   import { m } from '$lib/paraglide/messages.js';
 	import ColorPicker from "./ColorPicker.svelte";
 
-  let { colours }:{ colours: ColourTheme } = $props()
+  let { colours = $bindable() }:{ colours: ColourTheme } = $props()
 </script>
 
 <div class="flex flex-col gap-5">
