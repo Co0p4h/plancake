@@ -95,7 +95,6 @@ export const users = pgTable('users', {
 	displayName: varchar('display_name', { length: 63 }),
 	email: varchar('email', { length: 127 }).notNull().unique(),
 	emailVerified: boolean('email_verified').default(false).notNull(),
-	passwordHash: text('password_hash')
 }, (table) => [
   check("valid_email", sql`${table.email} ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'`),
   check("username_length", sql`length(${table.username}) >= 3`),

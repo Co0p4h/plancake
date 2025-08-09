@@ -21,7 +21,9 @@ export async function createSession(token: string, userId: string) {
 	const session: table.Session = {
 		id: sessionId,
 		userId,
-		expiresAt: new Date(Date.now() + DAY_IN_MS * 30)
+		expiresAt: new Date(Date.now() + DAY_IN_MS * 30),
+		createdAt: new Date(),
+		updatedAt: new Date()
 	};
 
 	await db.insert(table.sessions).values(session);
@@ -59,7 +61,7 @@ export async function validateSessionToken(token: string) {
 		session.expiresAt = new Date(Date.now() + DAY_IN_MS * 30);
 		await db
 			.update(table.sessions)
-			.set({ expiresAt: session.expiresAt })
+			.set({ expiresAt: session.expiresAt, updatedAt: new Date() })
 			.where(eq(table.sessions.id, session.id));
 	}
 

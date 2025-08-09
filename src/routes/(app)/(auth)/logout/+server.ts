@@ -1,5 +1,5 @@
 import * as auth from '$lib/server/session';
-import { redirect } from "@sveltejs/kit";
+// import { redirect } from "@sveltejs/kit";
 
 export async function POST(event) {
   if (!event.locals.session) {
@@ -8,7 +8,7 @@ export async function POST(event) {
   }
   await auth.invalidateSession(event.locals.session.id);
   auth.deleteSessionTokenCookie(event);
-
+  
+  // return redirect(302, '/login');
   return new Response(`logged ${event.locals.session.userId} out`);
-  return redirect(302, '/login');
 };
