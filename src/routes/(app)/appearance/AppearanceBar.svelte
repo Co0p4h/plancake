@@ -36,7 +36,7 @@
           theme.commitChanges(updated_theme);
           toast.success('theme updated successfully!');
         }
-      } else if (result.type == "failure" && result.data) { // TODO: this is gross :)
+      } else if (result.type == "failure" && result.data) { 
         const error_message = result.data.error || 'an unexpected error occurred';
         toast.error(error_message);
       }

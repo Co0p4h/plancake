@@ -5,15 +5,17 @@
   let { layout = $bindable() }:{ layout: LayoutTheme } = $props()
 </script>
 
-{#each Object.entries(layout) as [key, value]}
+<!-- {#each Object.entries(layout) as [key, value]}
   <p>{key}: {value}</p>
-{/each}
+{/each} -->
 
+<h2 class="text-lg">item gap</h2>
 <input type="number" id="gap" name="gap" bind:value={layout.gap} min="0" max="8" 
        class="w-20 p-2 border border-gray-300 rounded-lg mb-4"/>
 <input type="range" bind:value={layout.gap} min="0" max="8" />
 
 <button class="flex mx-auto w-max gap-x-2 px-10 py-5 bg-gray-300 border-3 cursor-pointer" 
+        style:border-color={layout.image_position == 'right' && layout.items == 'list' ? '#8c00ff' : ''}
         type="button"
         onclick={() => {
           layout.image_position = 'right';
@@ -31,6 +33,7 @@
 <br>
 
 <button class="flex mx-auto w-max gap-x-2 px-10 py-5 bg-gray-300 border-3 cursor-pointer" 
+        style:border-color={layout.image_position == 'left' && layout.items == 'list' ? '#8c00ff' : ''}
         type="button"
         onclick={() => {
           layout.image_position = 'left'
@@ -48,6 +51,7 @@
 <br>
 
 <button class="flex mx-auto w-max gap-x-2 px-8.25 py-5 bg-gray-300 border-3 items-center cursor-pointer" 
+        style:border-color={layout.image_position == 'right' && layout.items == 'grid' ? '#8c00ff' : ''}
         type="button"
         onclick={() => {
           layout.image_position = 'right';
@@ -65,6 +69,7 @@
 <br>
 
 <button class="flex mx-auto w-max gap-x-2 px-8.25 py-5 bg-gray-300 border-3 items-center"
+        style:border-color={layout.image_position == 'left' && layout.items == 'grid' ? '#8c00ff' : ''}
         type="button"
         onclick={() => {
           layout.image_position = 'left';

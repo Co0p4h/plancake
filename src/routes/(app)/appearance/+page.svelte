@@ -7,7 +7,7 @@
 	import type { ThemeCategories } from '$lib/server/db/schema';
 	import { beforeNavigate } from '$app/navigation';
 	import ScheduleListItem from '../../(public)/[user]/ScheduleListItem.svelte';
-	import { fontSize } from '$lib/utils/font';
+	import StyledText from '../../StyledText.svelte';
 	import { initThemeStore, themeStore } from './appearance.svelte';
 	import ScheduleGridItem from '../../(public)/[user]/ScheduleGridItem.svelte';
 	import { onMount } from 'svelte';
@@ -151,21 +151,36 @@
 							style:order={themeStore.clientTheme.layout.image_position === 'left' ? '1' : '0'}>
 						<div class="mb-4">
 							<div class="flex justify-between mb-4 items-center">
-								<h1 style:color={themeStore.clientTheme.colours.primary}
-										style:font-size={fontSize(themeStore.clientTheme.typography.header_title.size)}>
+								<StyledText 
+									theme={themeStore.clientTheme}
+									typography={themeStore.clientTheme.typography.header_title}
+									colour={themeStore.clientTheme.colours.primary}
+									tag="h1"
+								>
 									{scheduleData.user.username}'s schedule
-								</h1>
-								<div class="p-2 max-w-24 text-center w-full"
+								</StyledText>
+								<div class="p-2 max-w-32 text-center w-full"
 									style:color={themeStore.clientTheme.colours.secondary}
 									style:background-color={themeStore.clientTheme.colours.accent}
 								>
-									{dayjs().isoWeekday(1).format('DD')} →
-									{dayjs().isoWeekday(7).format('DD')}
+									<StyledText 
+										theme={themeStore.clientTheme}
+										typography={themeStore.clientTheme.typography.body}
+										colour={themeStore.clientTheme.colours.secondary}
+									>
+										{dayjs().isoWeekday(1).format('DD/MM')} →
+										{dayjs().isoWeekday(7).format('DD/MM')}
+									</StyledText>
 								</div>
 							</div>
-							<p style:font-size={fontSize(themeStore.clientTheme.typography.header_description.size)}>
+							<StyledText 
+								theme={themeStore.clientTheme}
+								typography={themeStore.clientTheme.typography.header_description}
+								colour={themeStore.clientTheme.colours.text}
+								tag="p"
+							>
 								{scheduleData.schedule.description}
-							</p>
+							</StyledText>
 						</div>
 						{#if themeStore.clientTheme.layout.items === 'list'}
 							<div class="flex flex-col"
@@ -191,8 +206,16 @@
 								style:order={themeStore.clientTheme.layout.image_position === 'left' ? '0' : '1'}>
 							<img src={themeStore.clientTheme.image?.url} alt={themeStore.clientTheme.image?.alt} class="object-cover" />
 							<span class="absolute right-1 bottom-1 p-1"
-										style:background-color={themeStore.clientTheme.colours.secondary}>
-								@{themeStore.clientTheme.image?.artistAtribution}
+								style:background-color={themeStore.clientTheme.colours.secondary}>
+								<StyledText 
+									theme={themeStore.clientTheme}
+									typography={themeStore.clientTheme.typography.body}
+									colour={themeStore.clientTheme.colours.text}
+								>
+									<a href={themeStore.clientTheme.image.artist_url}>
+										@{themeStore.clientTheme.image?.artist_name}
+									</a>
+								</StyledText>
 							</span>
 						</div>
 					{/if}
