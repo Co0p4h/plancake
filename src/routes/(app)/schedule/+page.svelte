@@ -75,7 +75,7 @@
     const weekStart = dayjs().isoWeek(currentWeek).startOf('isoWeek'); // monday of current week
     
     for (let i = 0; i < columnNum; i++) {
-      console.log("windowStart", windowStart);
+      // console.log("windowStart", windowStart);
       const dayIndex = windowStart + i;
       const dayDate = weekStart.add(dayIndex, 'day');
       window.push(dayDate);
@@ -88,7 +88,7 @@
     if (newStart < 0) {
       currentWeek = currentWeek === 1 ? 52 : currentWeek - 1;
       windowStart = calculateWindowStart(referenceDate.subtract(referenceDate.isoWeekday(), 'day')); // this is such a hacky way to do this...
-      console.log("windowStart ;D", windowStart);
+      // console.log("windowStart ;D", windowStart);
     } else {
       windowStart = newStart;
     }

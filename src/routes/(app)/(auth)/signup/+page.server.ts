@@ -2,7 +2,7 @@ import { hash } from '@node-rs/argon2';
 import { fail, redirect } from '@sveltejs/kit';
 import * as auth from '$lib/server/session';
 import type { Actions, PageServerLoad } from './$types';
-import { validatePassword, validateUsername } from '$lib/utils/validate';
+import { validateEmail, validatePassword, validateUsername } from '$lib/utils/validate';
 import { createUserWithAuth } from '$lib/server/db/user-service';
 
 export const load: PageServerLoad = (async ({ locals }) => { 
@@ -19,16 +19,27 @@ export const actions: Actions = {
 		const password = formData.get('password')?.toString().trim();
 
 		if (!validateUsername(username)) {
-			return fail(400, { message: 'invalid username' });
+			return fail(400, { 
+				username,
+				message: 'invalid username',
+				invalid: true
+			});
 		}
 
 		if (!validatePassword(password)) {
-			return fail(400, { message: 'invalid password' });
+			return fail(400, { 
+				message: 'invalid password',
+				invalid: true
+			});
 		}
 
-    if (!email) {
-      return fail(400, { message: 'email is required' });
-    }
+		if (!email || !validateEmail(email)) {
+			return fail(400, { 
+				email,
+				message: 'invalid email',
+				invalid: true
+			});
+		}
 
 		const passwordHash = await hash(password, {
 			// recommended minimum parameters
@@ -43,6 +54,7 @@ export const actions: Actions = {
 				username,
 				displayName: username,
 				email,
+				// emailVerified: false,
 			};
 
 			const authMethod = {
@@ -61,7 +73,8 @@ export const actions: Actions = {
 			auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
 
 		} catch {
-			return fail(500, { message: 'an error has occurred' });
+			// console.error("error: ", e.detail);
+			return fail(500, { message: 'an error has occurred', error: true });
 		}
 		return redirect(302, '/');
 	}

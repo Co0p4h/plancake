@@ -74,6 +74,7 @@ export async function GET(event: RequestEvent): Promise<Response> {
 		username,
 		displayName,
 		email,
+		// emailVerified: true,
 	};
 
 	const authMethod = {

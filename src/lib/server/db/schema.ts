@@ -12,7 +12,7 @@ export type UserSettings = {
 	language: "en" | "ja"; 
 	timezone: string;
 	social_links: {
-		name: string;
+		platform: string;
 		url: string;
 	}[];
 	discord_webhook?: string;
@@ -43,9 +43,10 @@ export type ColourTheme = {
 }
 
 export type ScheduleImage = {
-	url: string;
-	alt: string;
-	artistAtribution: string;
+	url?: string;
+	alt?: string;
+	artist_name?: string;
+	artist_url?: string;
 }
 export type ColourThemeKey = keyof ColourTheme
 
@@ -161,7 +162,8 @@ export const schedule_themes = pgTable('schedule_themes', {
 	image: jsonb('image').$type<ScheduleImage>().default({
 		url: 'https://i.pinimg.com/736x/8c/34/dd/8c34ddbe9d9c3f5b0af2b14bfe989a2c.jpg',
 		alt: 'schedule image',
-		artistAtribution: 'artist name'
+		artist_name: 'artist name',
+		artist_url: "google.com"
 	}),
 	typography: jsonb('typography').$type<TypographyTheme>().default({
 		base_font: 'Inter', 
@@ -171,6 +173,7 @@ export const schedule_themes = pgTable('schedule_themes', {
 			weight: '700',
 			letter_spacing: '0px',
 			capitalisation: 'none',
+			decoration: 'none',
 			style: 'normal',
 		},
 		header_description: {

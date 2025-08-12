@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { ScheduleItem, ScheduleTheme } from "$lib/server/db/schema";
-	import { fontSize } from "$lib/utils/font";
 	import dayjs from "dayjs";
+	import StyledText from "../../StyledText.svelte";
 
   let { item, theme }:{ item: ScheduleItem, theme: ScheduleTheme} = $props();
 </script>
@@ -12,10 +12,14 @@
   <div class='flex items-center justify-center py-2 text-white gap-1'
        style:background-color={theme.colours.primary}
        style:color={theme.colours.secondary}>
-    <span class="text-2xl font-bold"
-          style:font-family={theme.typography.item_date.font}
-          style:font-size={fontSize(theme.typography.item_date.size)}
-    >{dayjs(item.startTime).format("DD")}</span>
+    <StyledText 
+      theme={theme}
+      typography={theme.typography.item_date}
+      colour={theme.colours.secondary}
+      tag="span"
+    >
+      {dayjs(item.startTime).format("DD")}
+    </StyledText>
     <span class="text-xs uppercase">{dayjs(item.startTime).format("ddd.")}</span>
   </div>
   <div class='flex flex-col gap-y-1 items-center h-full pb-2'
@@ -26,24 +30,44 @@
          style:color={theme.colours.secondary}
          style:background-color={theme.colours.accent}
          >
-      <span class="font-medium">{dayjs(item.startTime).format('HH:MM')}</span>
+      <StyledText 
+        theme={theme}
+        typography={theme.typography.item_title}
+        colour={theme.colours.secondary}
+        tag="span"
+      >
+        {dayjs(item.startTime).format('HH:mm')}
+      </StyledText>
       {#if item.endTime}
-        <span class="font-medium">-</span>
-        <span class="font-medium">{dayjs(item.endTime).format('HH:MM')}</span>
+        <StyledText 
+          theme={theme}
+          typography={theme.typography.item_title}
+          colour={theme.colours.secondary}
+          tag="span"
+        >
+          - {dayjs(item.endTime).format('HH:mm')}
+        </StyledText>
       {/if}
     </div>
-    <span class="font-medium px-2 text-center"
-          style:font-size={fontSize(theme.typography.item_title.size)}
-          style:font-family={theme.typography.item_title.font}>
+    <StyledText 
+      theme={theme}
+      typography={theme.typography.item_title}
+      colour={theme.colours.text}
+      tag="span"
+      class="px-2 text-center"
+    >
       {item.title}
-    </span>
+    </StyledText>
     {#if item.description}
-      <p class="font-small px-2 text-center"
-      style:color={theme.colours.accent} 
-      style:font-family={theme.typography.item_description.font}
-      style:font-size={fontSize(theme.typography.item_description.size)}>
+      <StyledText 
+        theme={theme}
+        typography={theme.typography.item_description}
+        colour={theme.colours.accent}
+        tag="p"
+        class="px-2 text-center"
+      >
         {item.description}
-      </p>
+      </StyledText>
     {/if}
   </div>
 </div>

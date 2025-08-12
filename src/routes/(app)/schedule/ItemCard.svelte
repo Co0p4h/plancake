@@ -7,15 +7,15 @@
   const bgColor = "";
 </script>
 
-<div class={`group p-3 relative rounded-md mb-2 ${bgColor ? `bg-${bgColor}-50 border-${bgColor}-200` : 'border border-gray-200 bg-white'}`}>
+<div class={`group p-[10px] relative rounded-md mb-2 ${bgColor ? `bg-${bgColor}-50 border-${bgColor}-200` : 'border border-gray-200 bg-white'}`}>
   <div>
-    <h3 class="font-medium text-sm text-gray-800">{item.title}</h3>
+    <h3 class="font-medium text-md text-gray-800">{item.title}</h3>
     {#if item.description}
-      <p class="text-xs text-gray-500 mt-1">{item.description}</p>
+      <p class="text-sm text-gray-500 mt-1">{item.description}</p>
     {/if}
   </div>
 
-  <div class="flex items-center text-xs text-gray-500 mt-1">
+  <div class="flex items-center text-xs text-black mt-3">
     <Clock class="h-3 w-3 mr-1" />
     <span>{dayjs(item.startTime).format("HH:mm")}</span>
     {#if item.endTime}
@@ -53,5 +53,4 @@
       <Trash2 size={16} class="text-red-500" />
     </button>
   </div>
-
 </div>

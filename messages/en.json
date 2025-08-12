@@ -76,5 +76,13 @@
 	"adding_item": "adding...",
 	"updating_item": "updating...",
 	"delete_item": "delete item",
-	"confirm_delete": "are you sure you want to delete this item? this action cannot be undone."
+	"confirm_delete": "are you sure you want to delete this item? this action cannot be undone.",
+	"_account": {
+		"account": "account",
+		"language": "language",
+		"timezone": "timezone",
+		"discord_webhook": "discord webhook",
+		"social_links": "social links",
+		"delete_account": "delete account"
+	}
 }

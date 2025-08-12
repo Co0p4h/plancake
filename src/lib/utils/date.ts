@@ -64,7 +64,7 @@ export function getSplicedDaysOfWeek (currentDate: dayjs.Dayjs, column_offset: n
   // console.log("startOfWeek", startOfWeek.format("YYYY-MM-DD"));
   // console.log("startOfWeek + 1", startOfWeek.add(7, 'day').format("YYYY-MM-DD"));
   
-  console.log("isoDayNumber", isoDayNumber);
+  // console.log("isoDayNumber", isoDayNumber);
 
   const daysBefore = Math.floor((column_offset - 1) / 2);
   const idealStart = isoDayNumber - daysBefore; 
@@ -78,7 +78,7 @@ export function getSplicedDaysOfWeek (currentDate: dayjs.Dayjs, column_offset: n
     windowStartIsoDay = idealStart;
   }
 
-  console.log("windowstartisoday (clamped)", windowStartIsoDay);
+  // console.log("windowstartisoday (clamped)", windowStartIsoDay);
 
   const days = [];
   
@@ -88,7 +88,7 @@ export function getSplicedDaysOfWeek (currentDate: dayjs.Dayjs, column_offset: n
     days.push(day);
   }
 
-  console.log("spliced days: ", days);
+  // console.log("spliced days: ", days);
 
   return days;
 }

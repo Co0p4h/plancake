@@ -39,12 +39,12 @@
 						>
 							{page.params.user}'s schedule
 						</h1>
-						<div class="p-2 max-w-24 text-center w-full"
+						<div class="p-2 max-w-32 text-center w-full"
 							style:color={data.theme.colours.secondary}
 							style:background-color={data.theme.colours.accent}
 						>
-							{dayjs().isoWeekday(1).format('DD')} →
-							{dayjs().isoWeekday(7).format('DD')}
+							{dayjs().isoWeekday(1).format('DD/MM')} →
+							{dayjs().isoWeekday(7).format('DD/MM')}
 						</div>
 					</div>
 					{#if data.schedule.description}
@@ -94,7 +94,7 @@
 							class="absolute bottom-1 right-1 p-1"
 							style:background-color={data.theme.colours.secondary}
 						>
-							@{data.theme.image?.artistAtribution}
+							@{data.theme.image?.artist_name}
 						</span>
 					</div>
 				{/if}

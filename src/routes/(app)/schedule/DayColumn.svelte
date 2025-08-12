@@ -16,7 +16,7 @@
 
 <div class="flex-1 min-w-[140px] rounded-lg">
   <div class={`p-2 rounded-t-md border ${isToday ? 'bg-black border-black text-white': 'border-gray-300'}`}>
-    <h3 class="text-sm font-medium">
+    <h3 class="text-md font-medium">
       {dayjs(day).format("ddd. D")}
     </h3>
   </div>

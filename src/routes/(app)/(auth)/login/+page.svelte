@@ -71,6 +71,13 @@
       >
         login
       </button>
+
+      <div class="flex items-center justify-center gap-4">
+        <div class="h-px w-full bg-gray-300"></div>
+        <p class="text-center text-gray-500">or</p>
+        <div class="h-px w-full bg-gray-300"></div>
+      </div>
+
       <a href="/login/google" 
       class="w-full rounded bg-purple-500 px-4 py-2 font-bold text-white hover:bg-purple-700 focus:outline-none cursor-pointer justify-center items-center flex"
       >
@@ -83,11 +90,7 @@
         <Twitch class="mr-3" />
         Sign in with Twitch
       </a> -->
-      <!-- {#if form?.incorrect || form?.invalid} -->
-        <!-- TODO: make a toast here... -->
-        <!-- <span class="error text-red-500">{form.message}</span> -->
       <Toaster position="bottom-center" />
-      <!-- {/if} -->
     </form>
   </div>
   <div class="flex flex-col items-center justify-center gap-2 text-center text-sm">

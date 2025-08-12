@@ -88,5 +88,13 @@
 	"adding_item": "追加中...",
 	"updating_item": "更新中...",
 	"delete_item": "を削除しますか？",
-	"confirm_delete": "このアイテムを削除してもよろしいですか？この操作は元に戻せません。"
+	"confirm_delete": "このアイテムを削除してもよろしいですか？この操作は元に戻せません。",
+	"_account": {
+		"account": "アカウント",
+		"language": "言語",
+		"timezone": "タイムゾーン",
+		"discord_webhook": "discord webhook",
+		"social_links": "ソーシャルリンク",
+		"delete_account": "アカウントを削除"
+	}
 }

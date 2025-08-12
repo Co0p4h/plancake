@@ -67,7 +67,7 @@ export async function createUserWithAuth(
         timezone: 'Asia/Tokyo',
         social_links: [
           {
-            name: 'twitter',
+            platform: 'twitter',
             url: 'https://twitter.com/coopa_2'
           },
         ],
@@ -105,7 +105,7 @@ export async function createUserWithAuth(
         title: 'my schedule item',
         description: 'my schedule item description',
         startTime: now,
-        endTime: new Date(now.getTime() + 60 * 60 * 1000), // 1 hour later
+        endTime: new Date(now.getTime() + 60 * 60 * 1000),
         externalUrl: 'https://example.com',
         createdAt: now,
         updatedAt: now
@@ -135,4 +135,14 @@ export async function createUserWithAuth(
 
     return user;
   });
+}
+
+export async function getUserSettingsByUserId(userId: string) {
+  const [user_settings] = await db
+    .select({ settings: table.user_settings.settings })
+    .from(table.user_settings)
+    .where(eq(table.user_settings.userId, userId))
+    .limit(1);
+  
+  return user_settings.settings;
 }
