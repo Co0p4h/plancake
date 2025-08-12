@@ -29,7 +29,7 @@ export const actions = {
     const discord_webhook = formData.get('discord_webhook');
 
     try {
-      console.log('updating user settings');
+      console.log('updating user settings', { language, timezone, discord_webhook });
       return { 
         success: true, 
         message: 'user settings updated successfully',

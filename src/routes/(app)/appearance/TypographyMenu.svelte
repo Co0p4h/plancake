@@ -3,22 +3,17 @@
 
   let { typography = $bindable() }: {typography: TypographyTheme} = $props();
 
-  $inspect(typography);
-  
-  // Get available text elements (excluding base_font)
   const textElements = Object.keys(typography).filter(key => key !== "base_font") as Array<keyof Omit<TypographyTheme, 'base_font'>>;
   
-  // Selected text element to edit
   let selectedElement: keyof Omit<TypographyTheme, 'base_font'> = $state(textElements[0] || "header_title");
   
-  // Function to get display name for text element
   function getDisplayName(key: string): string {
     return key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
   }
 </script>
 
 <div class="space-y-6">
-  <!-- Base Font Section (Always Visible) -->
+  <!-- base font section -->
   <div class="border border-gray-300 rounded-lg p-4">
     <h3 class="text-lg font-semibold mb-4">Base Font</h3>
     <div>
@@ -33,7 +28,7 @@
     </div>
   </div>
 
-  <!-- Selected Text Element Controls -->
+  <!-- selected text element controls -->
   {#if selectedElement && typography[selectedElement]}
     {@const value = typography[selectedElement]}
     <div class="border border-gray-300 rounded-lg p-4">
@@ -50,10 +45,9 @@
         </label>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- Font -->
+        <!-- font -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Font
-            <!-- {@debug value} -->
             <select bind:value={value.font} class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
               <option value="Inter">Inter</option>
               <option value="Arial">Arial</option>
@@ -63,7 +57,7 @@
           </label>
         </div>
         
-        <!-- Size -->
+        <!-- size -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Size
             <select bind:value={value.size} class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
@@ -80,7 +74,7 @@
           </label>
         </div>
         
-        <!-- Weight -->
+        <!-- weight -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Weight
             <select bind:value={value.weight} class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
@@ -97,7 +91,7 @@
           </label>
         </div>
         
-        <!-- Style -->
+        <!-- style -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Style
             <select bind:value={value.style} class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
@@ -107,7 +101,7 @@
           </label>
         </div>
         
-        <!-- Capitalisation -->
+        <!-- capitalisation -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Capitalisation
             <select bind:value={value.capitalisation} class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
@@ -118,7 +112,7 @@
           </label>
         </div>
         
-        <!-- Decoration -->
+        <!-- decoration -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Decoration
             <select bind:value={value.decoration} class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
@@ -129,7 +123,7 @@
           </label>
         </div>
         
-        <!-- Letter Spacing -->
+        <!-- letter spacing -->
         <div class="md:col-span-2">
           <label class="block text-sm font-medium text-gray-700 mb-2">Letter Spacing
             <input 

@@ -22,12 +22,7 @@
   const enhance_form: SubmitFunction = ({ formData, action }) => {
 
     isSubmitting = true;
-    // const loadingToast = toast.loading('Saving changes...', {
-    //   duration: Infinity, // Keep it until we dismiss it
-    // });
-
     return async ({ result }) => {
-      // toast.dismiss(loadingToast);
       isSubmitting = false;
 
       if (result.type == "success" && result.data) {

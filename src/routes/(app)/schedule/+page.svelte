@@ -104,12 +104,12 @@
     }
   };
 
-  const getItemsForDay = (dayIndex: dayjs.Dayjs, items: any[]) => {
-    return items.filter(item => {
-      const itemDate = dayjs(item.startTime);
-      return itemDate.isSame(dayIndex, 'day');
-    });
-  };
+  // const getItemsForDay = (dayIndex: dayjs.Dayjs, items: any[]) => {
+  //   return items.filter(item => {
+  //     const itemDate = dayjs(item.startTime);
+  //     return itemDate.isSame(dayIndex, 'day');
+  //   });
+  // };
   
   let weekDisplayText = $derived(() => {
     const weekStart = dayjs().isoWeek(currentWeek).startOf('isoWeek'); 
