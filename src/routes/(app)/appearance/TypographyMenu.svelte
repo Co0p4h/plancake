@@ -10,6 +10,8 @@
   function getDisplayName(key: string): string {
     return key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
   }
+
+  $inspect(typography);
 </script>
 
 <div class="space-y-6">

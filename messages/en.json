@@ -14,7 +14,7 @@
 		"custom_url": "custom url",
 		"show_empty_days_description": "when disabled, days with nothing scheduled will be hidden from other users",
 		"empty_day_text_description": "this text will display on days with no scheduled events",
-		"show_past_events_description": "display events that have already occurred in the past",
+		"show_past_events_description": "allow users to go back and see events that happened in the past",
 		"use_24_hour_time_description": "display times in 24-hour format (e.g., 14:00) instead of 12-hour (e.g., 2:00 PM)",
 		"show_social_links_description": "display social media links on your schedule page",
 		"first_day_of_week_description": "choose which day appears first in your weekly schedule",

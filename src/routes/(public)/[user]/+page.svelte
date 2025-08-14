@@ -7,6 +7,7 @@
 	import { blur, fade, slide } from 'svelte/transition';
 	import { onMount } from 'svelte';
 	import ScheduleGridItem from './ScheduleGridItem.svelte';
+	import StyledText from '../../StyledText.svelte';
 	dayjs.extend(weekday);
 
 	let { data } = $props();
@@ -33,24 +34,36 @@
 					style:order={data.theme.layout.image_position === 'left' ? '1' : '0'}>
 				<div class="mb-4">
 					<div class="flex justify-between mb-4 items-center">
-						<h1
-							style:color={data.theme.colours.primary}
-							style:font-size={fontSize(data.theme.typography.header_title.size)}
+						<StyledText 
+							theme={data.theme}
+							typography={data.theme.typography.header_title}
+							colour={data.theme.colours.primary}
+							tag="h1"
 						>
 							{page.params.user}'s schedule
-						</h1>
+						</StyledText>
 						<div class="p-2 max-w-32 text-center w-full"
-							style:color={data.theme.colours.secondary}
 							style:background-color={data.theme.colours.accent}
 						>
-							{dayjs().isoWeekday(1).format('DD/MM')} →
-							{dayjs().isoWeekday(7).format('DD/MM')}
+							<StyledText 
+								theme={data.theme}
+								typography={data.theme.typography.body}
+								colour={data.theme.colours.secondary}
+							>
+								{dayjs().isoWeekday(1).format('DD/MM')} →
+								{dayjs().isoWeekday(7).format('DD/MM')}
+							</StyledText>
 						</div>
 					</div>
 					{#if data.schedule.description}
-						<p style:font-size={fontSize(data.theme.typography.header_description.size)}>
+						<StyledText 
+							theme={data.theme}
+							typography={data.theme.typography.header_description}
+							colour={data.theme.colours.text}
+							tag="p"
+						>
 							{data.schedule.description}
-						</p>
+						</StyledText>
 					{/if}
 				</div>
 
@@ -60,7 +73,7 @@
 						{#each data.items as item, i (item.id)}
 							{#if animate}
 								<div transition:fade={{ delay: i * 150}}>
-									<ScheduleListItem {item} theme={data.theme} />
+									<ScheduleListItem {item} theme={data.theme} settings={data.schedule_settings.settings} />
 								</div>
 							{/if}
 						{/each}
@@ -78,23 +91,27 @@
 						{/each}
 					</div>
 				{/if}
-
 			</div>
+
 			<!-- image section... -->
-			{#if data.theme.image}
+			{#if data.theme.image?.url}
 				{#if animate}
 					<div class="sticky top-4 flex-1 items-start min-w-[384px] md:min-w-0 hidden md:block"
 						style:border={`1px ${data.theme.colours.text} solid`}
 						style:order={data.theme.layout.image_position === 'left' ? '0' : '1'}
 						transition:blur={{ duration: 500 }}
 					>
-
 						<img src={data.theme.image.url} alt={data.theme.image.alt} class="object-cover" loading="lazy" />
-						<span
-							class="absolute bottom-1 right-1 p-1"
-							style:background-color={data.theme.colours.secondary}
-						>
-							@{data.theme.image?.artist_name}
+						<span class="absolute bottom-1 right-1 p-1"
+							style:background-color={data.theme.colours.secondary} >
+							<StyledText 
+								theme={data.theme}
+								typography={data.theme.typography.body}
+							>
+								<a href={data.theme.image.artist_url}>
+									@{data.theme.image?.artist_name}
+								</a>
+							</StyledText>
 						</span>
 					</div>
 				{/if}

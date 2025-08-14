@@ -10,7 +10,8 @@
 	import StyledText from '../../StyledText.svelte';
 	import { initThemeStore, themeStore } from './appearance.svelte';
 	import ScheduleGridItem from '../../(public)/[user]/ScheduleGridItem.svelte';
-	import { onMount } from 'svelte';
+	import { getCurrentWeekDates } from '$lib/utils/date';
+	// import { onMount } from 'svelte';
 
 	let { data } = $props();
 
@@ -134,9 +135,39 @@
 			</div>
 		</div>
 		
-
-
 	{:then scheduleData}
+		{@const items = scheduleData.items}
+		{@const items_with_empty_days = (() => {
+			const { start: startDate, end: endDate } = getCurrentWeekDates(scheduleData.schedule_settings.settings.first_day_of_week);
+
+			const days = Array.from({ length: 7 }, (_, i) => {
+				return dayjs(startDate).add(i, 'day').toDate();
+			});
+
+			const items_with_empty_days = days.map(day => {
+				const dayString = dayjs(day).format('YYYY-MM-DD');
+				const dayItems = items.filter(item => dayjs(item.startTime).format('YYYY-MM-DD') === dayString);
+
+				if (!dayItems || dayItems.length === 0) {
+					return {
+						id: `empty-${dayString}`,
+						createdAt: day,
+						updatedAt: day,
+						title: scheduleData.schedule_settings.settings.empty_day_text || 'Nothing scheduled',
+						description: null,
+						startTime: day,
+						endTime: day,
+						scheduleId: scheduleData.schedule.id,
+						externalUrl: null,
+					}
+				}
+
+				return dayItems;
+			}).flat();
+			
+			return items_with_empty_days;
+		})()}
+
 		<div class="max-w-8xl flex-grow self-stretch rounded-lg border border-gray-300 bg-white p-5">
 			<h1 class="mb-4 text-xl text-gray-500">{m['_appearance.appearance']()}</h1>
 			<div
@@ -160,7 +191,6 @@
 									{scheduleData.user.username}'s schedule
 								</StyledText>
 								<div class="p-2 max-w-32 text-center w-full"
-									style:color={themeStore.clientTheme.colours.secondary}
 									style:background-color={themeStore.clientTheme.colours.accent}
 								>
 									<StyledText 
@@ -168,38 +198,49 @@
 										typography={themeStore.clientTheme.typography.body}
 										colour={themeStore.clientTheme.colours.secondary}
 									>
-										{dayjs().isoWeekday(1).format('DD/MM')} →
-										{dayjs().isoWeekday(7).format('DD/MM')}
+										<!-- {dayjs().isoWeekday(1).format('DD/MM')} → -->
+										<!-- {dayjs().isoWeekday(7).format('DD/MM')} -->
+										{(() => {
+											const { start: startDate } = scheduleData.schedule_settings.settings.first_day_of_week === 'monday' 
+												? { start: dayjs().startOf('isoWeek') }
+												: { start: dayjs().startOf('week') };
+											const endDate = startDate.add(6, 'day');
+											return `${startDate.format('DD/MM')} → ${endDate.format('DD/MM')}`;
+										})()}
 									</StyledText>
 								</div>
 							</div>
-							<StyledText 
-								theme={themeStore.clientTheme}
-								typography={themeStore.clientTheme.typography.header_description}
-								colour={themeStore.clientTheme.colours.text}
-								tag="p"
-							>
-								{scheduleData.schedule.description}
-							</StyledText>
+							{#if scheduleData.schedule.description}
+								<StyledText 
+									theme={themeStore.clientTheme}
+									typography={themeStore.clientTheme.typography.header_description}
+									colour={themeStore.clientTheme.colours.text}
+									tag="p"
+								>
+									{scheduleData.schedule.description}
+								</StyledText>
+							{/if}
 						</div>
+
 						{#if themeStore.clientTheme.layout.items === 'list'}
 							<div class="flex flex-col"
-									style:gap={`${2 * (themeStore.clientTheme.layout.gap || 0)}px`}
+									style:gap={`${2 * themeStore.clientTheme.layout.gap}px`}
 							>
-								{#each scheduleData.items as item (item.id)}
-									<ScheduleListItem {item} theme={themeStore.clientTheme} />
+								{#each scheduleData.schedule_settings.settings.show_empty_days ? items_with_empty_days : items as item (item.id)}
+									<ScheduleListItem {item} theme={themeStore.clientTheme} settings={scheduleData.schedule_settings.settings} />
 								{/each}
 							</div>
 						{:else if themeStore.clientTheme.layout.items === 'grid'}
 							<div class="grid gap-4 grid-cols-2 md:grid-cols-3"
 									style:gap={`${2 * (themeStore.clientTheme.layout.gap || 0)}px`}
 							>
-								{#each scheduleData.items as item (item.id)}
+								{#each scheduleData.schedule_settings.settings.show_empty_days ? items_with_empty_days : items as item (item.id)}
 									<ScheduleGridItem {item} theme={themeStore.clientTheme} />
 								{/each}
 							</div>
 						{/if}
 					</div>
+
 					{#if themeStore.clientTheme.image?.url}
 						<div class="sticky top-4 hidden flex-1 items-start lg:block"
 								style:border={`1px ${themeStore.clientTheme.colours.text} solid`}

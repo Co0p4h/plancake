@@ -182,6 +182,7 @@ export const schedule_themes = pgTable('schedule_themes', {
 			weight: '400',
 			letter_spacing: '0px',
 			capitalisation: 'none',
+			decoration: 'none',
 			style: 'normal',
 		},
 		item_title: {
@@ -190,6 +191,7 @@ export const schedule_themes = pgTable('schedule_themes', {
 			weight: '700',
 			letter_spacing: '0px',
 			capitalisation: 'none',
+			decoration: 'none',
 			style: 'normal',
 		},
 		item_description: {
@@ -198,6 +200,7 @@ export const schedule_themes = pgTable('schedule_themes', {
 			weight: '400',
 			letter_spacing: '0px',
 			capitalisation: 'none',
+			decoration: 'none',
 			style: 'normal',
 		},
 		item_date: {
@@ -206,6 +209,7 @@ export const schedule_themes = pgTable('schedule_themes', {
 			weight: '400',
 			letter_spacing: '0px',
 			capitalisation: 'none',
+			decoration: 'none',
 			style: 'normal',
 		},
 		item_time: {
@@ -214,6 +218,7 @@ export const schedule_themes = pgTable('schedule_themes', {
 			weight: '400',
 			letter_spacing: '0px',
 			capitalisation: 'none',
+			decoration: 'none',
 			style: 'normal',
 		},
 		body: {
@@ -222,6 +227,7 @@ export const schedule_themes = pgTable('schedule_themes', {
 			weight: '400',
 			letter_spacing: '0px',
 			capitalisation: 'none',
+			decoration: 'none',
 			style: 'normal',
 		},
 		empty_day: {
@@ -230,6 +236,7 @@ export const schedule_themes = pgTable('schedule_themes', {
 			weight: '400',
 			letter_spacing: '0px',
 			capitalisation: 'none',
+			decoration: 'none',
 			style: 'normal',
 		}
 	}).notNull(),

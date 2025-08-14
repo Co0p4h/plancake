@@ -5,9 +5,10 @@
 <button
   class={`${toggled ? "bg-purple-500" : "bg-gray-200"} relative inline-flex items-center h-[23px] rounded-full min-w-10 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-1`}
   disabled={disabled}
+  type="button"
   onclick={() => {
     if (!disabled) {
-      toggled = !toggled;
+      onclick();
     }
   }}
 >

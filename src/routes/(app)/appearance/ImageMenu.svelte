@@ -4,6 +4,9 @@
 
   let { image = $bindable() } = $props();
 
+  console.log(image);
+  
+
   let error: string = $state("");
   let debounceTimeout: ReturnType<typeof setTimeout>;
 
