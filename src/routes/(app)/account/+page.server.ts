@@ -9,12 +9,13 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
   const user = locals.user;
 
-  try {
-    const user_settings = await getUserSettingsByUserId(user.id);
-    return { user_settings, user };
-  } catch (error) {
-    console.error('error getting user settings: ', error);
+  const user_settings = async () => { 
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return getUserSettingsByUserId(user.id);
   }
+
+  // const user_settings = getUserSettingsByUserId(user.id);
+  return { streamed: { user_settings: user_settings() }, user };
 };
 
 export const actions = {
@@ -27,20 +28,29 @@ export const actions = {
     const language = formData.get('language');
     const timezone = formData.get('timezone');
     const discord_webhook = formData.get('discord_webhook');
+    const socialLinksJson = formData.get('socialLinks');
 
     try {
-      console.log('updating user settings', { language, timezone, discord_webhook });
+      const social_links = JSON.parse(socialLinksJson as string);
+      console.log('updating user settings', { language, timezone, discord_webhook, social_links});
+
+      if (Math.random() < 0.5) {
+        throw new Error('kys');
+      }
+
       return { 
         success: true, 
         message: 'user settings updated successfully',
         updated_settings: {
           language,
           timezone,
-          discord_webhook
+          discord_webhook,
+          social_links
         }
       };
     } catch (error) {
       console.error('error updating user settings: ', error);
+      return fail(500, { error: 'failed to update user settings' });
     }
   },
 

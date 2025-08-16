@@ -57,7 +57,8 @@
 			"text": "テキスト",
 			"background": "背景",
 			"accent": "アクセント",
-			"colour": "色"
+			"colour": "色",
+			"null": "選択してください"
 		},
 		"layout": "レイアウト",
 		"typography": "タイポグラフィ",
@@ -68,7 +69,8 @@
 		"_typography": {
 			"font": "フォント",
 			"text_size": ""
-		}
+		},
+		"null": "選択してください"
 	},
 	"login": "ログイン",
 	"logout": "ログアウト",

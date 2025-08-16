@@ -3,11 +3,11 @@
 	import dayjs from 'dayjs';
 	import weekday from 'dayjs/plugin/weekday';
 	import ScheduleListItem from './ScheduleListItem.svelte';
-	import { fontSize } from '$lib/utils/font';
 	import { blur, fade, slide } from 'svelte/transition';
 	import { onMount } from 'svelte';
 	import ScheduleGridItem from './ScheduleGridItem.svelte';
 	import StyledText from '../../StyledText.svelte';
+	import { getCurrentWeekDates } from '$lib/utils/date';
 	dayjs.extend(weekday);
 
 	let { data } = $props();
@@ -22,6 +22,38 @@
 {#await data.schedule_data}
 	loading schedule...
 {:then data}
+	{@const items = data.items}
+	{@const items_with_empty_days = (() => {
+		const { start: startDate, end: endDate } = getCurrentWeekDates(data.schedule_settings.settings.first_day_of_week);
+
+		const days = Array.from({ length: 7 }, (_, i) => {
+			return dayjs(startDate).add(i, 'day').toDate();
+		});
+
+		const items_with_empty_days = days.map(day => {
+			const dayString = dayjs(day).format('YYYY-MM-DD');
+			const dayItems = items.filter(item => dayjs(item.startTime).format('YYYY-MM-DD') === dayString);
+
+			if (!dayItems || dayItems.length === 0) {
+				return {
+					id: `empty-${dayString}`,
+					createdAt: day,
+					updatedAt: day,
+					title: data.schedule_settings.settings.empty_day_text || 'Nothing scheduled',
+					description: null,
+					startTime: day,
+					endTime: day,
+					scheduleId: data.schedule.id,
+					externalUrl: null,
+				}
+			}
+
+			return dayItems;
+		}).flat();
+		
+		return items_with_empty_days;
+	})()}
+
 	<div class="flex flex-col items-center p-8 min-h-svh w-full justify-between"
 			style:background-color={data.theme.colours.background}
 	>
@@ -70,7 +102,7 @@
 				{#if data.theme.layout.items === 'list'}
 					<div class="flex flex-col"
 							style:gap={`${2 * data.theme.layout.gap}px`}>
-						{#each data.items as item, i (item.id)}
+						{#each data.schedule_settings.settings.show_empty_days ? items_with_empty_days : items as item, i (item.id)}
 							{#if animate}
 								<div transition:fade={{ delay: i * 150}}>
 									<ScheduleListItem {item} theme={data.theme} settings={data.schedule_settings.settings} />
@@ -82,7 +114,7 @@
 					<div class="grid gap-4 grid-cols-2 md:grid-cols-3"
 							style:gap={`${2 * data.theme.layout.gap}px`}
 					>
-						{#each data.items as item, i (item.id)}
+						{#each data.schedule_settings.settings.show_empty_days ? items_with_empty_days : items as item, i (item.id)}
 							{#if animate}
 								<div transition:fade={{ delay: i * 150}}>
 									<ScheduleGridItem {item} theme={data.theme} />

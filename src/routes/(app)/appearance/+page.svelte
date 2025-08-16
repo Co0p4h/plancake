@@ -43,7 +43,14 @@
 	});
 
 	let activeAppearance: ThemeCategories = $state('colours');
+
 </script>
+
+<svelte:body onkeydown={(e) => {
+	if (e.key == "Escape" ) {
+		activeAppearance = null;
+	}
+}} />
 
 <div class="mx-auto flex flex-1 items-start gap-4">
 	{#await data.schedule_data}
@@ -93,7 +100,7 @@
 					</div>
 
 					<!-- Image section skeleton -->
-<div class="sticky top-4 hidden flex-1 items-start lg:block">
+					<div class="sticky top-4 hidden flex-1 items-start lg:block">
 						<div class="relative w-96 h-[600px] bg-gray-200 rounded border border-gray-300">
 							<!-- Image attribution skeleton -->
 							<div class="absolute right-1 bottom-1 p-1 bg-gray-300 rounded">
@@ -263,10 +270,14 @@
 				</div>
 			</div>
 		</div>
-		<div class="hidden xl:flex">
-			<AppearanceBar bind:activeAppearance />
+		<div class="relative mx-auto flex flex-1 items-start gap-4">
+			<div class="absolute right-18 xl:flex xl:relative xl:right-0">
+				{#if activeAppearance}
+					<AppearanceBar bind:activeAppearance />
+				{/if}
+			</div>
+			<AppearanceNav bind:activeAppearance />
 		</div>
-		<AppearanceNav bind:activeAppearance />
 		
 	{:catch error}
 		<div class="max-w-8xl flex-grow self-stretch rounded-lg border border-red-300 bg-red-50 p-5">

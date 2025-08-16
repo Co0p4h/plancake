@@ -3,9 +3,10 @@
 	import dayjs from "dayjs";
 	import { getLocale } from '$lib/paraglide/runtime';
   import ja from "dayjs/locale/ja";
-	import Header from './(app)/Header.svelte';
 	import isoWeek from 'dayjs/plugin/isoWeek';
 	import weekday from 'dayjs/plugin/weekday';
+	import { Toaster } from 'svelte-french-toast';
+	import { page } from '$app/state';
 
 	dayjs.extend(weekday);
 	dayjs.extend(isoWeek);
@@ -22,6 +23,8 @@
 		{@render children()}
 	</main>
 </div>
+
+<Toaster position="bottom-center" />
 
 <style>
 	.app {

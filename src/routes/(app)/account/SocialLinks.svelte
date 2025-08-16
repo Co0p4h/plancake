@@ -1,9 +1,11 @@
 <script lang="ts">
   // import type { SocialLink } from '$lib/types-example';
 
-  let { data } = $props();
-  let socialLinks: any[] = $state(data.socialLinks);
+  let { socialLinks = $bindable() }: { socialLinks: any[]} = $props();
+  // let socialLinks: any[] = $state(data.socialLinks);
   let hasEmptyPair = $state(false);
+
+  // console.log('social links data', data.socialLinks);
 
   function addLink() {
     if (hasEmptyPair) return;
@@ -39,7 +41,7 @@
 </script>
 
 <input type="hidden" name="socialLinks" value={JSON.stringify(socialLinks)} />
-{#if socialLinks?.length > 0}
+{#if socialLinks}
   <div class="space-y-3">
     {#each socialLinks as { platform, url }, index (index)}
       <div class="flex gap-x-3 items-end">
@@ -85,10 +87,10 @@
     disabled={hasEmptyPair}>
     + Add Link
   </button>
-  <button
+  <!-- <button
     type="submit"
     formaction="?/updateSocialLinks"
     class="rounded-md bg-purple-400 px-4 py-2 text-white transition-all duration-200 hover:bg-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 cursor-pointer">
     Save
-  </button>
+  </button> -->
 </div>

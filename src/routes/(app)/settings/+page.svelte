@@ -3,13 +3,14 @@
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import type { ScheduleSettings } from '$lib/server/db/schema';
 	import Toggle from './Toggle.svelte';
-	import toast, { Toaster } from 'svelte-french-toast';
+	import toast from 'svelte-french-toast';
 	import { enhance } from '$app/forms';
 	import { fade } from 'svelte/transition';
 
   let { data } = $props();
 
   let isSubmitting = $state(false);
+
   let settings: ScheduleSettings = $state({
     show_empty_days: true,
     empty_day_text: "",
@@ -166,5 +167,3 @@
     {/if}
   </div>
 {/await}
-
-<Toaster position="bottom-center" />

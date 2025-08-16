@@ -3,7 +3,7 @@
   import { page } from '$app/state';
   import { Eye, EyeOff, Twitch } from '@lucide/svelte';
 	import type { PageProps } from './$types';
-	import toast, {Toaster} from 'svelte-french-toast'
+	import toast from 'svelte-french-toast'
 
   let { form }: PageProps = $props();
 
@@ -90,7 +90,6 @@
         <Twitch class="mr-3" />
         Sign in with Twitch
       </a> -->
-      <Toaster position="bottom-center" />
     </form>
   </div>
   <div class="flex flex-col items-center justify-center gap-2 text-center text-sm">

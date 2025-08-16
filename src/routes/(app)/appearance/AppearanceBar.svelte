@@ -7,13 +7,12 @@
 	import ItemMenu from './ItemMenu.svelte';
 	import BackgroundMenu from './BackgroundMenu.svelte';
 	import ImageMenu from './ImageMenu.svelte';
-  
-  import { themeStore as theme } from './appearance.svelte';
-
   import { slide } from 'svelte/transition';
 	import { enhance } from '$app/forms';
 	import type { SubmitFunction } from '@sveltejs/kit';
-	import toast, { Toaster } from 'svelte-french-toast';
+	import toast from 'svelte-french-toast';
+  
+  import { themeStore as theme } from './appearance.svelte';
 
   let { activeAppearance = $bindable() }: { activeAppearance: ThemeCategories } = $props();
   
@@ -37,7 +36,6 @@
       }
     }
   }
-
 </script>
 
 {#if theme}
@@ -48,7 +46,7 @@
     <div class="bg-white border border-gray-300 rounded-lg p-4 w-80 flex-col">
       <div class="flex justify-between items-center mb-4">
         <h1 class="text-xl text-gray-500">{m[`_appearance.${activeAppearance}`]()}</h1>
-        <button class="px-2 py-1 rounded-lg border border-gray-300 text-gray-800 bg-white cursor-pointer hover:bg-gray-100 disabled:opacity-50  disabled:cursor-not-allowed transition"
+        <button class="px-2 py-1 rounded-lg border border-gray-300 text-gray-800 bg-white cursor-pointer hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
           type="button"
           disabled={!theme.isModified() || isSubmitting}
           onclick={() => {theme.resetTheme()}}
@@ -85,7 +83,7 @@
     <div class="flex text-center">
       <button
         type="submit"
-        class="cursor-pointer rounded-md bg-purple-400 p-2 text-white focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-in-out not-disabled:hover:bg-purple-500 mx-2 w-full flex items-center justify-center"
+        class="cursor-pointer rounded-md bg-purple-400 p-2 text-white focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-in-out not-disabled:hover:bg-purple-500 w-full flex items-center justify-center"
         disabled={!theme.isModified() || isSubmitting}
       >
         {#if isSubmitting}
@@ -114,5 +112,3 @@
     </div>
   </div>
 {/if}
-
-<Toaster position="bottom-center" />

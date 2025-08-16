@@ -30,7 +30,7 @@ export type ScheduleSettings = {
 	// sharing_preview: jsonb; // I think this should be a different table? 
 }
 
-export type ThemeCategories = "background" | "image" | "colours" | "item" | "typography" | "layout";
+export type ThemeCategories = "background" | "image" | "colours" | "item" | "typography" | "layout" | null;
 
 export type ColourTheme = {
 	primary: string; // #RRGGBB format 

@@ -1,15 +1,33 @@
 <script lang="ts">
 	import SocialLinks from './SocialLinks.svelte';
-
 	import { setLocale } from '$lib/paraglide/runtime';
 	import { m } from '$lib/paraglide/messages.js';
 	import type { SubmitFunction } from '@sveltejs/kit';
-	import toast, { Toaster } from 'svelte-french-toast';
+	import toast from 'svelte-french-toast';
 	import { enhance } from '$app/forms';
+	import type { UserSettings } from '$lib/server/db/schema';
 
   let { data } = $props();
 
   let isSubmitting = $state(false);
+
+  let settings: UserSettings = $state({
+    language: 'en',
+    timezone: 'Asia/Tokyo',
+    social_links: [{platform: '', url: ''}],
+    discord_webhook: ''
+  });
+
+  $effect(() => {
+    if (data.streamed.user_settings) {
+      data.streamed.user_settings.then((result) => {
+        if (result && result) {
+          settings =  result;
+          console.log('settings loaded:', settings);
+        }
+      });
+    }
+  });
 
   const enhance_form: SubmitFunction = ({ formData, action }) => {
     isSubmitting = true;
@@ -19,6 +37,7 @@
       if (result.type == "success" && result.data) {
         const updated_settings = await result.data.updated_settings;
         if (updated_settings) {
+          setLocale(updated_settings.language)
           toast.success('user settings updated successfully!');
         }
       } else if (result.type == "failure" && result.data) { 
@@ -29,30 +48,33 @@
   }
 </script>
 
-{#if data.user_settings}
+{#await data.streamed.user_settings}
+kys
+{:then user_settings}
   <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg relative">
     <h1 class="mb-4 text-xl text-gray-500">{m['_account.account']()}</h1>
     
     <form method="POST" action="?/updateUserSettings" use:enhance={enhance_form} class="space-y-7">
-      <input type="hidden" name="language" value={data.user_settings.language} />
-      <input type="hidden" name="timezone" value={data.user_settings.timezone} />
-      <input type="hidden" name="discord_webhook" value={data.user_settings.discord_webhook} />
-      <input type="hidden" name="social_links" value={JSON.stringify(data.user_settings.social_links)} />
+      <input type="hidden" name="language" value={settings.language} />
+      <input type="hidden" name="timezone" value={settings.timezone} />
+      <input type="hidden" name="discord_webhook" value={settings.discord_webhook} />
+      <input type="hidden" name="social_links" value={JSON.stringify(settings.social_links)} />
 
       <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg flex flex-col gap-7 mb-6">
         <div>
           <h2 class="text-lg">{m['_account.language']()}</h2>
-          <p class="text-gray-500 text-sm">Current: {data.user_settings.language}</p>
-          <select name="language" id="language" class="mt-2 rounded-md border-1 border-gray-300 p-2">
-            <option value="en" onclick={() => setLocale('en')}>English</option>
-            <option value="ja" onclick={() => setLocale('ja')}>日本語</option>
+          <p class="text-gray-500 text-sm">Current: {settings.language}</p>
+          <select name="language" id="language" class="mt-2 rounded-md border-1 border-gray-300 p-2"
+          bind:value={settings.language}>
+            <option value="en">English</option>
+            <option value="ja">日本語</option>
           </select>
         </div>
 
         <div>
           <h2 class="text-lg">{m['_account.timezone']()}</h2>
-          <p class="text-gray-500 text-sm">Current: {data.user_settings.timezone}</p>
-          <select name="timezone" id="timezone" class="mt-2 rounded-md border-1 border-gray-300 p-2">
+          <p class="text-gray-500 text-sm">Current: {settings.timezone}</p>
+          <select name="timezone" id="timezone" class="mt-2 rounded-md border-1 border-gray-300 p-2" bind:value={settings.timezone}>
             <option value="Asia/Tokyo">Asia/Tokyo</option>
             <option value="Australia/Sydney">Australia/Sydney</option>
             <option value="America/New_York">America/New_York</option>
@@ -64,7 +86,7 @@
         <div>
           <h2 class="text-lg">{m['_account.discord_webhook']()}</h2>
           <p class="text-gray-500 text-sm">Configure Discord webhook for notifications</p>
-          <textarea name="discord_webhook" id="discord_webhook" class="mt-2 rounded-md border-1 border-gray-300 p-2 w-full h-24 resize-none" value={data.user_settings.discord_webhook}></textarea>
+          <textarea name="discord_webhook" id="discord_webhook" class="mt-2 rounded-md border-1 border-gray-300 p-2 w-full h-24 resize-none" bind:value={settings.discord_webhook}></textarea>
         </div>
       </div>
 
@@ -73,7 +95,7 @@
           <h2 class="text-lg">{m['_account.social_links']()}</h2>
           <p class="text-gray-500 text-sm">Manage your social media links</p>
           <div class="mt-2">
-            <SocialLinks data={{socialLinks: data.user_settings.social_links}} />
+            <SocialLinks bind:socialLinks={settings.social_links} />
           </div>
         </div>
       </div>
@@ -107,6 +129,4 @@
       </div>
     </form>
   </div>
-{/if}
-
-<Toaster position="bottom-center" />
+{/await}
