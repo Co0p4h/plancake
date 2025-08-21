@@ -6,16 +6,20 @@
 	import toast from 'svelte-french-toast';
 	import { enhance } from '$app/forms';
 	import type { UserSettings } from '$lib/server/db/schema';
+	import { page } from '$app/state';
 
   let { data } = $props();
 
   let isSubmitting = $state(false);
 
+  let username = $state(data.user.username);
+  let display_name = $state('');
+
   let settings: UserSettings = $state({
     language: 'en',
     timezone: 'Asia/Tokyo',
     social_links: [{platform: '', url: ''}],
-    discord_webhook: ''
+    discord_webhook: '',
   });
 
   $effect(() => {
@@ -49,7 +53,11 @@
 </script>
 
 {#await data.streamed.user_settings}
-kys
+  <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg relative">
+    <div class="flex items-center justify-center h-32">
+      <div class="text-gray-500">Loading user settings...</div>
+    </div>
+  </div>
 {:then user_settings}
   <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg relative">
     <h1 class="mb-4 text-xl text-gray-500">{m['_account.account']()}</h1>
@@ -62,10 +70,14 @@ kys
 
       <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg flex flex-col gap-7 mb-6">
         <div>
+          <h2 class="text-lg">{m['_account.display_name']()}</h2>
+          <input placeholder={m['_account.display_name_placeholder']()} name="display_name" id="display_name" class="mt-2 rounded-md border-1 border-gray-300 p-2" bind:value={display_name} disabled={isSubmitting} />
+        </div>
+
+        <div>
           <h2 class="text-lg">{m['_account.language']()}</h2>
           <p class="text-gray-500 text-sm">Current: {settings.language}</p>
-          <select name="language" id="language" class="mt-2 rounded-md border-1 border-gray-300 p-2"
-          bind:value={settings.language}>
+          <select name="language" id="language" class="mt-2 rounded-md border-1 border-gray-300 p-2" bind:value={settings.language}>
             <option value="en">English</option>
             <option value="ja">日本語</option>
           </select>
@@ -84,10 +96,19 @@ kys
         </div>
 
         <div>
+          <h2 class="text-lg">{m['_account.username']()}</h2>
+          <p class="text-gray-500 text-sm">{m['_account.username_description']()}</p>
+          <div class="flex items-center gap-1 mt-2">
+            <p>{page.url.host}/</p>
+            <input placeholder={m['_account.username']()} name="username" id="username" class="rounded-md border-1 border-gray-300 p-2" bind:value={username} disabled={isSubmitting} />
+          </div>
+        </div>
+
+        <!-- <div>
           <h2 class="text-lg">{m['_account.discord_webhook']()}</h2>
           <p class="text-gray-500 text-sm">Configure Discord webhook for notifications</p>
           <textarea name="discord_webhook" id="discord_webhook" class="mt-2 rounded-md border-1 border-gray-300 p-2 w-full h-24 resize-none" bind:value={settings.discord_webhook}></textarea>
-        </div>
+        </div> -->
       </div>
 
       <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg flex flex-col gap-7 mb-6">

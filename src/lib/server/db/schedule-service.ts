@@ -76,3 +76,21 @@ export async function getScheduleItemsByUserId(
       )
     )
 }
+
+export async function getScheduleSettingsByUserId(userId: string): Promise<typeof table.schedule_settings.$inferSelect> {
+  const [schedule] = await db
+    .select({ schedule_id: table.schedules.id })
+    .from(table.schedules)
+    .where(eq(table.schedules.userId, userId))
+    .limit(1);
+
+  const [schedule_settings] = await db
+    .select()
+    .from(table.schedule_settings)
+    .where(eq(table.schedule_settings.scheduleId, schedule.schedule_id));
+
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+  return schedule_settings;
+}

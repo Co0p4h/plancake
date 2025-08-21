@@ -3,10 +3,11 @@
 	"hello_world": "こんにちは, {name} jaから！",
 	"hello": "こんにちは",
 	"_settings": {
-		"settings": "設定",
-		"username": {
-			"description": "ユーザー名を入力してください"
-		},
+		"settings": "スケジュール設定",
+		"show_schedule": "スケジュールを表示",
+		"show_schedule_description": "スケジュールページに説明を表示",
+		"show_schedule_text": "スケジュール説明テキスト",
+		"show_schedule_text_description": "スケジュール説明テキストを表示",
 		"show_logo": "ロゴを表示",
 		"empty_day_text": "空の曜日のテキスト",
 		"show_empty_days": "空の曜日を表示",
@@ -23,12 +24,6 @@
 		"show_social_links_description": "スケジュールページにソーシャルメディアリンクを表示します",
 		"empty_day_text_placeholder": "例：何も予定がない :'(",
 		"show_logo_description": "スケジュールにアプリケーションのロゴを表示します"
-	},
-	"settings": {
-		"settings": "設定",
-		"username": {
-			"description": "ユーザー名を入力してください"
-		}
 	},
 	"_navigation": {
 		"about": "アプリについて",
@@ -93,6 +88,11 @@
 	"confirm_delete": "このアイテムを削除してもよろしいですか？この操作は元に戻せません。",
 	"_account": {
 		"account": "アカウント",
+		"username": "ユーザー名",
+		"username_description": "ユーザー名を変更します。これはURLに影響します",
+		"display_name": "表示名",
+		"display_name_placeholder": "表示名を入力してください",
+		"display_name_description": "表示名を変更します。これはスケジュールの表示名に影響します",
 		"language": "言語",
 		"timezone": "タイムゾーン",
 		"discord_webhook": "discord webhook",

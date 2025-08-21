@@ -146,3 +146,8 @@ export async function getUserSettingsByUserId(userId: string) {
   
   return user_settings.settings;
 }
+
+export async function updateUserSettingsByUserId(userId: string, settings: typeof table.user_settings.$inferSelect.settings) {
+  const [updated_settings] = await db.update(table.user_settings).set({ settings: settings }).where(eq(table.user_settings.userId, userId)).returning();
+  return updated_settings.settings;
+}

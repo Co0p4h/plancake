@@ -93,11 +93,6 @@
     </form>
   </div>
   <div class="flex flex-col items-center justify-center gap-2 text-center text-sm">
-    <p class="">
-      by creating an account you agree to our <a class="text-blue-500" href="terms">
-        terms of service.
-      </a>
-    </p>
     <p>don't have an account? <a class="text-blue-500" href="signup">signup</a></p>
   </div>
 </div>

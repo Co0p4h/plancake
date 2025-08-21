@@ -195,7 +195,7 @@
 									colour={themeStore.clientTheme.colours.primary}
 									tag="h1"
 								>
-									{scheduleData.user.username}'s schedule
+									{scheduleData.user.displayName || scheduleData.user.username}'s schedule
 								</StyledText>
 								<div class="p-2 max-w-32 text-center w-full"
 									style:background-color={themeStore.clientTheme.colours.accent}

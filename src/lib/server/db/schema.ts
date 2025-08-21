@@ -26,6 +26,7 @@ export type ScheduleSettings = {
 	show_social_links: boolean;
 	first_day_of_week: "monday" | "sunday";
 	show_logo: boolean;
+	show_schedule_description: boolean;
 	// custom_url: string;
 	// sharing_preview: jsonb; // I think this should be a different table? 
 }
@@ -267,6 +268,7 @@ export const schedule_settings = pgTable('schedule_settings', {
 		show_social_links: false,
 		first_day_of_week: "monday", 
 		show_logo: true,
+		show_schedule_description: false
 	}).notNull(),
 });
 

@@ -72,7 +72,7 @@
 							colour={data.theme.colours.primary}
 							tag="h1"
 						>
-							{page.params.user}'s schedule
+							{data.user.displayName || page.params.user}'s schedule
 						</StyledText>
 						<div class="p-2 max-w-32 text-center w-full"
 							style:background-color={data.theme.colours.accent}

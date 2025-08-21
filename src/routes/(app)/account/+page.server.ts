@@ -1,6 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { getUserSettingsByUserId } from '$lib/server/db/user-service';
+import { getUserSettingsByUserId, updateUserSettingsByUserId } from '$lib/server/db/user-service';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
   if (!locals.user) {
@@ -25,32 +25,33 @@ export const actions = {
     }
 
     const formData = await request.formData();
-    const language = formData.get('language');
-    const timezone = formData.get('timezone');
-    const discord_webhook = formData.get('discord_webhook');
-    const socialLinksJson = formData.get('socialLinks');
+    const language = formData.get('language') as 'en' | 'ja';
+    const timezone = formData.get('timezone') as string;
+    const discord_webhook = formData.get('discord_webhook') as string;
+    const socialLinksJson = formData.get('socialLinks') as string;
 
     try {
       const social_links = JSON.parse(socialLinksJson as string);
-      console.log('updating user settings', { language, timezone, discord_webhook, social_links});
 
       if (Math.random() < 0.5) {
         throw new Error('kys');
       }
 
+      const updated_settings = await updateUserSettingsByUserId(locals.user.id, { language, timezone, discord_webhook, social_links });
+
+      console.log('updated_settings????: ', updated_settings);
+
       return { 
         success: true, 
         message: 'user settings updated successfully',
-        updated_settings: {
-          language,
-          timezone,
-          discord_webhook,
-          social_links
-        }
+        updated_settings 
       };
     } catch (error) {
-      console.error('error updating user settings: ', error);
-      return fail(500, { error: 'failed to update user settings' });
+      if (error instanceof Error) {
+        console.error('error updating user settings: ', error);
+        return fail(500, { error: `failed to update user settings: ${error.message}` });
+      }
+      return fail(500, { error: 'unexpected error occurred' });
     }
   },
 

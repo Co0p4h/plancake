@@ -3,21 +3,13 @@ import { db } from '$lib/server/db';
 import { eq } from 'drizzle-orm';
 import { fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-// import { themeStore } from './appearance.svelte';
 import type { ScheduleTheme } from '$lib/server/db/schema';
 import { getScheduleByUsername } from '$lib/server/db/schedule-service';
 
 export const load: PageServerLoad = (async ({ locals, url }) => {
   if (!locals.user) {
-    return redirect(302, `/login?redirectTo=${url.pathname}`);
-    // return error(401, { message: 'unauthorised' });
+    return redirect(401, `/login?redirectTo=${url.pathname}`);
   }
-
-  // const schedule_data = await getScheduleByUsername(locals.user.username); // is this okay? there is no security risk here, right?
-  
-  // if (!schedule_data) {
-    // return error(404, { message: `user @${locals.user.username} not found` });
-  // }
 
   return { schedule_data: await getScheduleByUsername(locals.user.username) };
 });
