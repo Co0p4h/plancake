@@ -22,7 +22,7 @@
 		'font-style': typography.style,
 		'text-transform': typography.capitalisation,
 		'text-decoration': typography.decoration,
-		'letter-spacing': typography.letter_spacing
+		'letter-spacing': typography.letter_spacing ? `${typography.letter_spacing}px` : '0px'
 	});
 
 	const styleString = $derived(Object.entries(styles)

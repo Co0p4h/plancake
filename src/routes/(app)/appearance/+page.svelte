@@ -179,7 +179,8 @@
 			<h1 class="mb-4 text-xl text-gray-500">{m['_appearance.appearance']()}</h1>
 			<div
 				class="flex min-h-screen flex-col items-center rounded-lg border border-gray-300 p-4"
-				style:background-color={themeStore.clientTheme.colours.background}
+				style:background-color={themeStore.clientTheme.background === 'solid' ? themeStore.clientTheme.colours.background : undefined}
+				style:background-image={themeStore.clientTheme.background === 'gradient' ? `linear-gradient(180deg,${themeStore.clientTheme.colours.background} 0,hsla(0,0%,98%,0) 50%),radial-gradient(51% 51% at -11% 9%,${themeStore.clientTheme.colours.primary}80 1%,${themeStore.clientTheme.colours.primary}00 100%),radial-gradient(51% 67% at 115% 96%,${themeStore.clientTheme.colours.primary}80 0,${themeStore.clientTheme.colours.primary}00 100%),radial-gradient(50% 66% at 50% 50%,${themeStore.clientTheme.colours.accent}80 0,${themeStore.clientTheme.colours.primary}00 100%),radial-gradient(22% 117% at 2% 87%,${themeStore.clientTheme.colours.secondary}00 20%,${themeStore.clientTheme.colours.accent}80 100%),linear-gradient(0deg,${themeStore.clientTheme.colours.secondary}80,${themeStore.clientTheme.colours.secondary}80)` : undefined}
 			>
 				<div
 					class="flex w-full max-w-4xl flex-row items-start gap-8"
@@ -238,11 +239,11 @@
 								{/each}
 							</div>
 						{:else if themeStore.clientTheme.layout.items === 'grid'}
-							<div class="grid gap-4 grid-cols-2 md:grid-cols-3"
-									style:gap={`${2 * (themeStore.clientTheme.layout.gap || 0)}px`}
+							<div class="grid grid-cols-2 md:grid-cols-3"
+									style:grid-gap={`${2 * (themeStore.clientTheme.layout.gap || 0)}px`}
 							>
 								{#each scheduleData.schedule_settings.settings.show_empty_days ? items_with_empty_days : items as item (item.id)}
-									<ScheduleGridItem {item} theme={themeStore.clientTheme} />
+									<ScheduleGridItem {item} theme={themeStore.clientTheme} settings={scheduleData.schedule_settings.settings} />
 								{/each}
 							</div>
 						{/if}

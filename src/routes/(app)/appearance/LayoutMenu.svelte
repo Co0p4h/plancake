@@ -5,14 +5,25 @@
   let { layout = $bindable() }:{ layout: LayoutTheme } = $props()
 </script>
 
-<!-- {#each Object.entries(layout) as [key, value]}
-  <p>{key}: {value}</p>
-{/each} -->
+<div class="border border-gray-300 rounded-lg p-4 mb-6">
+  <h3 class="text-lg font-semibold mb-4">Item Gap</h3>
+  <div class="space-y-4">
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">
+        Item Gap: {layout.gap}px
+        <input 
+        type="range" 
+        bind:value={layout.gap} 
+        min="0" 
+        max="12" 
+        step="1"
+        class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+        />
+      </label>
+    </div>
 
-<h2 class="text-lg">item gap</h2>
-<input type="number" id="gap" name="gap" bind:value={layout.gap} min="0" max="8" 
-       class="w-20 p-2 border border-gray-300 rounded-lg mb-4"/>
-<input type="range" bind:value={layout.gap} min="0" max="8" />
+  </div>
+</div>
 
 <button class="flex mx-auto w-max gap-x-2 px-10 py-5 bg-gray-300 border-3 cursor-pointer" 
         style:border-color={layout.image_position == 'right' && layout.items == 'list' ? '#8c00ff' : ''}
