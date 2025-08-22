@@ -41,14 +41,14 @@
 
 <div class="flex h-[calc(100vh-24rem)] flex-col items-center justify-center gap-y-4">
   <div class="w-full max-w-md">
-    <h1 class="mb-8 text-center text-2xl font-semibold">sign up</h1>
+    <h1 class="mb-8 text-center text-2xl font-semibold">{m['_auth.signup.title']()}</h1>
     <form method="POST" class="space-y-4" use:enhance>
       <div class="">
         <input
           class="w-full rounded border px-3 py-2 focus:border-purple-500 focus:outline-none"
           name="email"
           type="email"
-          placeholder="email"
+          placeholder={m['_auth.signup.email']()}
           value={page.form?.email ?? ''}
           autocomplete="email"
           required
@@ -59,7 +59,7 @@
         <input
           class="w-full rounded border px-3 py-2 focus:border-purple-500 focus:outline-none"
           name="password"
-          placeholder="password"
+          placeholder={m['_auth.signup.password']()}
           type={showPassword}
           autocomplete="new-password"
           spellcheck="false"
@@ -86,7 +86,7 @@
           class="w-full rounded border px-3 py-2 focus:border-purple-500 focus:outline-none"
           name="username"
           type="text"
-          placeholder="username"
+          placeholder={m['_auth.signup.username']()}
           value={username ?? page.form?.username ?? ''}
           required
         />
@@ -96,7 +96,7 @@
         type="submit"
         class="w-full rounded bg-purple-500 px-4 py-2 font-bold text-white hover:bg-purple-700 focus:outline-none cursor-pointer"
       >
-        sign up
+        {m['_auth.signup.button']()}
       </button>
 
       <div class="flex items-center justify-center gap-4">
@@ -115,10 +115,10 @@
   </div>
   <div class="flex flex-col items-center justify-center gap-2 text-center text-sm">
     <p class="">
-      by creating an account you agree to our <a class="text-blue-500" href="terms">
-        terms of service.
+      {m['_auth.signup.agree_to_terms_of_service']({terms_of_service: m['_auth.signup.terms_of_service']()})} <a class="text-blue-500" href="terms">
+        {m['_auth.signup.terms_of_service']()}
       </a>
     </p>
-    <p>already have an account? <a class="text-blue-500" href="login">log in</a></p>
+    <p>{m['_auth.signup.already_have_account']()} <a class="text-blue-500" href="login">{m['_auth.signup.login']()}</a></p>
   </div>
 </div>

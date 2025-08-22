@@ -2,8 +2,31 @@
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"hello_world": "こんにちは, {name} jaから！",
 	"hello": "こんにちは",
+	"_auth": {
+		"signup": {
+			"title": "アカウントを作成",
+			"email": "メールアドレス",
+			"password": "パスワード",
+			"username": "ユーザー名",
+			"button": "続ける",
+			"already_have_account": "アカウントをお持ちですか？",
+			"login": "ログイン",
+			"agree_to_terms_of_service": "アカウントを作成することで、{terms_of_service}に同意することになります。",
+			"terms_of_service": "利用規約"
+		},
+		"login": {
+			"title": "ログイン",
+			"button": "ログイン",
+			"dont_have_account": "アカウントをお持ちでないですか？",
+			"signup": "アカウントを作成",
+			"google_button": "Googleでログイン"
+		}
+	},
 	"_settings": {
 		"settings": "スケジュール設定",
+		"schedule_title": "スケジュールタイトル",
+		"schedule_title_description": "スケジュールのタイトルを変更します",
+		"schedule_title_placeholder": "{name}の週間スケジュール",
 		"show_schedule": "スケジュールを表示",
 		"show_schedule_description": "スケジュールページに説明を表示",
 		"show_schedule_text": "スケジュール説明テキスト",

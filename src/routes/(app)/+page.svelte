@@ -34,7 +34,7 @@
 											radial-gradient(50% 66% at 50% 50%,#e9d5ffa3 0,#ff57dd00 100%),
 											radial-gradient(22% 117% at 2% 87%,#00f3ba00 20%,#e9d5ffa3 100%),
 											linear-gradient(0deg,#61cdffa3,#61cdffa3);
-	}
+		}
 
 	/* img {
 		width: 100%;

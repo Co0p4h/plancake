@@ -121,7 +121,7 @@
         </div>
       </div>
 
-      <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg flex flex-col gap-7">
+      <div class="container max-w-8xl p-5 bg-white border border-gray-300 rounded-lg ">
         <div>
           <h2 class="text-lg">{m['_account.delete_account']()}</h2>
           <p class="text-gray-500 text-sm">This action cannot be undone</p>
@@ -131,7 +131,7 @@
         </div>
       </div>
 
-      <div class="absolute right-5 bottom-5">
+      <div class="flex items-center justify-end pt-5 sticky bottom-0 pb-5 bg-white">
         <button
           type="submit"
           class="focus:shadow-outline rounded bg-purple-400 px-4 py-2 font-bold text-white hover:bg-purple-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-in-out cursor-pointer flex items-center"
@@ -144,7 +144,7 @@
             </svg>
             saving...
           {:else}
-            save
+            save changes
           {/if}
         </button>
       </div>
