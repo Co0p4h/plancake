@@ -54,8 +54,9 @@
 		return items_with_empty_days;
 	})()}
 
-	<div class="flex flex-col items-center p-8 min-h-svh w-full justify-between"
-			style:background-color={data.theme.colours.background}
+	<div id="user-schedule-gradient" class="flex flex-col items-center p-8 min-h-svh w-full justify-between"
+			 style:background-color={data.theme.background === 'solid' ? data.theme.colours.background : undefined}
+			 style:background-image={data.theme.background === 'gradient' ? `linear-gradient(180deg,${data.theme.colours.background} 0,hsla(0,0%,98%,0) 50%),radial-gradient(51% 51% at -11% 9%,${data.theme.colours.primary}80 1%,${data.theme.colours.primary}00 100%),radial-gradient(51% 67% at 115% 96%,${data.theme.colours.primary}80 0,${data.theme.colours.primary}00 100%),radial-gradient(50% 66% at 50% 50%,${data.theme.colours.accent}80 0,${data.theme.colours.primary}00 100%),radial-gradient(22% 117% at 2% 87%,${data.theme.colours.secondary}00 20%,${data.theme.colours.accent}80 100%),linear-gradient(0deg,${data.theme.colours.secondary}80,${data.theme.colours.secondary}80)` : undefined}
 	>
 		<div
 			class="flex w-full max-w-4xl flex-col items-start gap-8 md:flex-row"
@@ -117,7 +118,7 @@
 						{#each data.schedule_settings.settings.show_empty_days ? items_with_empty_days : items as item, i (item.id)}
 							{#if animate}
 								<div transition:fade={{ delay: i * 150}}>
-									<ScheduleGridItem {item} theme={data.theme} />
+									<ScheduleGridItem {item} theme={data.theme} settings={data.schedule_settings.settings} />
 								</div>
 							{/if}
 						{/each}
