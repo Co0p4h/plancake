@@ -3,7 +3,7 @@ import { db } from '$lib/server/db';
 import { eq } from 'drizzle-orm';
 import { fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
-import { getScheduleSettingsByUserId } from '$lib/server/db/schedule-service';
+import { getScheduleSettingsByUserId, getScheduleByUserId, updateSchedule } from '$lib/server/db/schedule-service';
 
 export const load: PageServerLoad = (async ({ locals, url }) => {
   if (!locals.user) {
@@ -13,10 +13,14 @@ export const load: PageServerLoad = (async ({ locals, url }) => {
   const user = locals.user;
 
   try {
-    return { schedule_settings: getScheduleSettingsByUserId(user.id), user };
+    return { 
+      schedule_settings: getScheduleSettingsByUserId(user.id), 
+      schedule: getScheduleByUserId(user.id),
+      user 
+    };
   } catch (error) {
     console.error('error getting schedule settings: ', error);
-    return { schedule_settings: null, user };
+    return { schedule_settings: null, schedule: null, user };
   }
 });
 
@@ -57,6 +61,32 @@ export const actions: Actions = {
     } catch (error) {
       console.error('error updating schedule settings: ', error);
       return fail(500, { error: 'failed to update settings' });
+    }
+  },
+
+  updateSchedule: async ({ request, locals, url }) => {
+    if (!locals.user) {
+      return redirect(302, `/login?redirectTo=${url.pathname}`);
+    }
+
+    try {
+      const formData = await request.formData();
+      const title = formData.get('title')?.toString().trim();
+      const description = formData.get('description')?.toString().trim();
+
+      if (!title) {
+        return fail(400, { error: 'Schedule title is required.' });
+      }
+
+      await updateSchedule(locals.user.id, title, description);
+
+      return { 
+        success: true, 
+        updated_schedule: { title, description }
+      };
+    } catch (error) {
+      console.error('error updating schedule: ', error);
+      return fail(500, { error: 'failed to update schedule' });
     }
   },
 }

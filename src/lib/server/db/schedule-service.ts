@@ -94,3 +94,24 @@ export async function getScheduleSettingsByUserId(userId: string): Promise<typeo
 
   return schedule_settings;
 }
+
+export async function getScheduleByUserId(userId: string): Promise<typeof table.schedules.$inferSelect> {
+  const [schedule] = await db
+    .select()
+    .from(table.schedules)
+    .where(eq(table.schedules.userId, userId))
+    .limit(1);
+
+  return schedule;
+}
+
+export async function updateSchedule(userId: string, title: string, description?: string): Promise<void> {
+  await db
+    .update(table.schedules)
+    .set({ 
+      title,
+      description: description || null,
+      updatedAt: new Date()
+    })
+    .where(eq(table.schedules.userId, userId));
+}

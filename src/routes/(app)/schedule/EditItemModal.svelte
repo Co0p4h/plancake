@@ -80,14 +80,14 @@
 
       <label class="text-sm text-gray-700" for="description">
         <p class="mb-1">{m['_item_properties.description']()}</p>
-        <input
-          class="focus:shadow-outline w-full appearance-none rounded border-gray-300 border px-3 py-2 leading-tight text-gray-700 focus:outline-none"
+        <textarea
+          class="focus:shadow-outline w-full appearance-none rounded border-gray-300 border px-3 py-2 leading-tight text-gray-700 focus:outline-none resize-none"
           name="description"
           id="description"
-          type="text"
           maxlength="100"
+          rows={4}
           value={editModal.item?.description ?? ''}
-        />
+        ></textarea>
       </label>
 
       <label class="block text-sm text-gray-700" for="external_url">

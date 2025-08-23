@@ -46,7 +46,8 @@
 		"first_day_of_week_description": "週の最初の日を選択します。日曜日または月曜日を選択できます",
 		"show_social_links_description": "スケジュールページにソーシャルメディアリンクを表示します",
 		"empty_day_text_placeholder": "例：何も予定がない :'(",
-		"show_logo_description": "スケジュールにアプリケーションのロゴを表示します"
+		"show_logo_description": "スケジュールにアプリケーションのロゴを表示します",
+		"schedule_description_placeholder": "スケジュールの説明"
 	},
 	"_navigation": {
 		"about": "アプリについて",

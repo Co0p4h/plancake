@@ -11,7 +11,7 @@
   <div>
     <h3 class="font-medium text-md text-gray-800">{item.title}</h3>
     {#if item.description}
-      <p class="text-sm text-gray-500 mt-1">{item.description}</p>
+      <p class="text-sm text-gray-500 mt-1 whitespace-pre-wrap">{item.description}</p>
     {/if}
   </div>
 

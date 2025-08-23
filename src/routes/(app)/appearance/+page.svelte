@@ -218,12 +218,13 @@
 									</StyledText>
 								</div>
 							</div>
-							{#if scheduleData.schedule.description}
+							{#if scheduleData.schedule_settings.settings.show_schedule_description}
 								<StyledText 
 									theme={themeStore.clientTheme}
 									typography={themeStore.clientTheme.typography.header_description}
 									colour={themeStore.clientTheme.colours.text}
 									tag="p"
+									class="whitespace-pre-wrap"
 								>
 									{scheduleData.schedule.description}
 								</StyledText>

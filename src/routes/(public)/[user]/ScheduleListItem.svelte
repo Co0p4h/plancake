@@ -55,7 +55,7 @@
   </div>
 
   <!-- content body -->
-  <div class='flex-1 flex flex-col px-4 gap-y-1 justify-center min-w-[250px]'
+  <div class='flex-1 flex flex-col px-4 gap-y-1 justify-center min-w-[250px] py-1'
        style:background-color={theme.colours.secondary}
        style:color={theme.colours.text}
        style:border-top-right-radius={`${Math.max(0, theme.item_theme.border_radius - 1)}px`}
@@ -103,6 +103,7 @@
         typography={theme.typography.item_description}
         colour={theme.colours.accent}
         tag="p"
+        class="whitespace-pre-wrap"
       >
         {#if !item.id.startsWith('empty-')}
           {item.description}

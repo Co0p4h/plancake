@@ -52,7 +52,7 @@
   </div>
   
   <!-- content body -->
-  <div class="flex flex-col gap-y-2 p-3 flex-1 text-center"
+  <div class="flex flex-col gap-y-2 p-3 flex-1 text-center py-2"
        class:justify-center={item.id.startsWith('empty-')}
        style:background-color={theme.colours.secondary}
        style:color={theme.colours.text}
@@ -107,7 +107,7 @@
         typography={theme.typography.item_description}
         colour={theme.colours.accent}
         tag="p"
-        class="leading-tight"
+        class="leading-tight whitespace-pre-wrap"
       >
         {item.description}
       </StyledText>

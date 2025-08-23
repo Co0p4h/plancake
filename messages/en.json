@@ -46,7 +46,8 @@
 		"show_social_links_description": "display social media links on your schedule page",
 		"first_day_of_week_description": "choose which day appears first in your weekly schedule",
 		"empty_day_text_placeholder": "e.g. nothing planned :'(",
-		"show_logo_description": "display the application logo on your schedule"
+		"show_logo_description": "display the application logo on your schedule",
+		"schedule_description_placeholder": "my schedule description"
 	},
 	"_navigation": {
 		"about": "about",

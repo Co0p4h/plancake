@@ -73,7 +73,7 @@
 							colour={data.theme.colours.primary}
 							tag="h1"
 						>
-							{data.user.displayName || page.params.user}'s schedule
+							{data.schedule.title || `${page.params.user}'s schedule`}
 						</StyledText>
 						<div class="p-2 max-w-32 text-center w-full"
 							style:background-color={data.theme.colours.accent}
@@ -88,12 +88,13 @@
 							</StyledText>
 						</div>
 					</div>
-					{#if data.schedule.description}
+					{#if data.schedule_settings.settings.show_schedule_description}
 						<StyledText 
 							theme={data.theme}
 							typography={data.theme.typography.header_description}
 							colour={data.theme.colours.text}
 							tag="p"
+							class="whitespace-pre-wrap"
 						>
 							{data.schedule.description}
 						</StyledText>
@@ -112,7 +113,7 @@
 						{/each}
 					</div>
 				{:else if data.theme.layout.items === 'grid'}
-					<div class="grid gap-4 grid-cols-2 md:grid-cols-3"
+					<div class="grid grid-cols-2 md:grid-cols-3"
 							style:gap={`${2 * data.theme.layout.gap}px`}
 					>
 						{#each data.schedule_settings.settings.show_empty_days ? items_with_empty_days : items as item, i (item.id)}

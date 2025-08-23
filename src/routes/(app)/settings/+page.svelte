@@ -13,6 +13,10 @@
   console.log('data: ', data);
 
   let isSubmitting = $state(false);
+  let isSubmittingSchedule = $state(false);
+  
+  let scheduleTitle = $state('');
+  let scheduleDescription = $state('');
 
   let settings: ScheduleSettings = $state({
     show_empty_days: true,
@@ -43,11 +47,37 @@
     }
   }
 
+  const enhance_schedule_form: SubmitFunction = ({ formData, action }) => {
+    console.log('Form submitting with schedule:', { title: scheduleTitle, description: scheduleDescription });
+    isSubmittingSchedule = true;
+    return async ({ result }) => {
+      isSubmittingSchedule = false;
+
+      if (result.type == "success" && result.data) {
+        const updated_schedule = await result.data.updated_schedule;
+        if (updated_schedule) {
+          toast.success('Schedule updated successfully!');
+        }
+      } else if (result.type == "failure" && result.data) { 
+        const error_message = result.data.error || 'An unexpected error occurred';
+        toast.error(error_message);
+      }
+    }
+  }
+
   $effect(() => {
     data.schedule_settings?.then((result) => {
       if (result.settings) {
         settings = { ...result.settings };
         console.log('settings loaded:', settings);
+      }
+    });
+    
+    data.schedule?.then((result) => {
+      if (result) {
+        scheduleTitle = result.title || '';
+        scheduleDescription = result.description || '';
+        console.log('schedule loaded:', { title: scheduleTitle, description: scheduleDescription });
       }
     });
   });
@@ -63,19 +93,57 @@
   <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg relative">
     <h1 class="mb-4 text-xl text-gray-500">{m['_settings.settings']()}</h1>
     {#if schedule_settings}
-      <form method="POST" action="?/updateSettings" use:enhance={enhance_form} class="flex-1">
-        <input type="hidden" name="settings" value={JSON.stringify(settings)} />
-        <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg flex flex-col gap-7 mb-6">
-
+      <!-- schedule title and description form -->
+      <form method="POST" action="?/updateSchedule" use:enhance={enhance_schedule_form} class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg flex flex-col gap-7 mb-6">
           <div class="flex flex-col gap-1">
             <div class="text-lg">{m['_settings.schedule_title']()}</div>
             <p class="text-sm text-gray-500">{m['_settings.schedule_title_description']()}</p>
             <input 
-              class="border w-1/2 border-gray-300 rounded-sm px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500" 
+              name="title"
+              bind:value={scheduleTitle}
+              class="border w-3/4 border-gray-300 rounded-sm px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500" 
               placeholder={m['_settings.schedule_title_placeholder']({ name: data.user.username })} 
+              disabled={isSubmittingSchedule}
             />
           </div>
 
+          {#if settings.show_schedule_description}
+            <div in:fade={{ duration: 100 }} class="flex flex-col gap-1">
+              <div class="text-lg">{m['_settings.show_schedule_text']()}</div>
+              <p class="text-sm text-gray-500">{m['_settings.show_schedule_text_description']()}</p>
+              <textarea 
+                name="description"
+                bind:value={scheduleDescription}
+                class="border w-3/4 border-gray-300 rounded-sm px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500 min-h-[80px] resize-y whitespace-pre-wrap" 
+                placeholder={m['_settings.schedule_description_placeholder']()} 
+                disabled={isSubmittingSchedule}
+              ></textarea>
+            </div>
+          {/if}
+
+          <div class="flex items-center justify-end">
+            <button
+              type="submit"
+              class="focus:shadow-outline rounded bg-purple-400 px-4 py-2 font-bold text-white hover:bg-purple-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-in-out cursor-pointer flex items-center"
+              disabled={isSubmittingSchedule} 
+            >
+              {#if isSubmittingSchedule}
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                updating...
+              {:else}
+                update schedule
+              {/if}
+            </button>
+          </div>
+        </form>
+
+      <!-- schedule settings form -->
+      <form method="POST" action="?/updateSettings" use:enhance={enhance_form} class="flex-1">
+        <input type="hidden" name="settings" value={JSON.stringify(settings)} />
+        <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg flex flex-col gap-7 mb-6">
           <div class="flex justify-between items-center">
             <div>
               <h2 class="text-lg">{m['_settings.show_schedule_description']()}</h2>
@@ -87,17 +155,6 @@
               disabled={isSubmitting} 
             />
           </div>
-
-          {#if settings.show_schedule_description}
-            <div in:fade={{ duration: 100 }} class="pl-4 border-l-2 border-gray-300 flex flex-col gap-1">
-              <div class="text-lg">{m['_settings.show_schedule_text']()}</div>
-              <p class="text-sm text-gray-500">{m['_settings.show_schedule_text_description']()}</p>
-              <input 
-                class="border w-1/2 border-gray-300 rounded-sm px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500" 
-                placeholder={m['_settings.empty_day_text_placeholder']()} 
-              />
-            </div>
-          {/if}
 
           <div class="flex justify-between items-center">
             <div>
@@ -203,7 +260,7 @@
               </svg>
               saving...
             {:else}
-              save changes
+              save settings
             {/if}
           </button>
         </div>

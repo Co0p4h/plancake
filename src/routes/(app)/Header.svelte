@@ -54,9 +54,9 @@
 				<li class="py-1 px-3" aria-current={page.url.pathname === '/about' ? 'page' : undefined}>
 					<a href="/about">{m['_navigation.about']()}</a>
 				</li>
-				<li class="py-1 px-3" aria-current={page.url.pathname === '/pricing' ? 'page' : undefined}>
+				<!-- <li class="py-1 px-3" aria-current={page.url.pathname === '/pricing' ? 'page' : undefined}>
 					<a href="/pricing">pricing</a>
-				</li>
+				</li> -->
 			</ul>
 		</nav>	
 		<div class="flex gap-4 items-center justify-center text-md">
