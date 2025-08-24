@@ -127,7 +127,7 @@
         
         <!-- letter spacing -->
         <div class="md:col-span-2">
-          <label class="block text-sm font-medium text-gray-700 mb-2">Letter Spacing
+          <label class="block text-sm font-medium text-gray-700 mb-2">Letter Spacing: {value.letter_spacing}px
             <input 
               type="range" 
               min="0"

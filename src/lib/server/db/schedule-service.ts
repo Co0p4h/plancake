@@ -89,7 +89,6 @@ export async function getScheduleSettingsByUserId(userId: string): Promise<typeo
     .from(table.schedule_settings)
     .where(eq(table.schedule_settings.scheduleId, schedule.schedule_id));
 
-
     await new Promise(resolve => setTimeout(resolve, 1000));
 
   return schedule_settings;

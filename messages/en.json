@@ -12,7 +12,8 @@
 			"already_have_account": "already have an account?",
 			"login": "log in",
 			"agree_to_terms_of_service": "by creating an account you agree to our",
-			"terms_of_service": "terms of service"
+			"terms_of_service": "terms of service",
+			"google_button": "Sign in with Google"
 		},
 		"login": {
 			"title": "login",

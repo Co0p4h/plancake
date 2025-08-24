@@ -160,7 +160,7 @@
 						id: `empty-${dayString}`,
 						createdAt: day,
 						updatedAt: day,
-						title: scheduleData.schedule_settings.settings.empty_day_text || 'Nothing scheduled',
+						title: scheduleData.schedule_settings.settings.empty_day_text || 'nothing scheduled',
 						description: null,
 						startTime: day,
 						endTime: day,
@@ -178,33 +178,35 @@
 		<div class="max-w-8xl flex-grow self-stretch rounded-lg border border-gray-300 bg-white p-5">
 			<h1 class="mb-4 text-xl text-gray-500">{m['_appearance.appearance']()}</h1>
 			<div
-				class="flex min-h-screen flex-col items-center rounded-lg border border-gray-300 p-4"
+				class="flex min-h-screen flex-col items-center rounded-lg border border-gray-300 p-4 sm:p-6 lg:p-8"
 				style:background-color={themeStore.clientTheme.background === 'solid' ? themeStore.clientTheme.colours.background : undefined}
 				style:background-image={themeStore.clientTheme.background === 'gradient' ? `linear-gradient(180deg,${themeStore.clientTheme.colours.background} 0,hsla(0,0%,98%,0) 50%),radial-gradient(51% 51% at -11% 9%,${themeStore.clientTheme.colours.primary}80 1%,${themeStore.clientTheme.colours.primary}00 100%),radial-gradient(51% 67% at 115% 96%,${themeStore.clientTheme.colours.primary}80 0,${themeStore.clientTheme.colours.primary}00 100%),radial-gradient(50% 66% at 50% 50%,${themeStore.clientTheme.colours.accent}80 0,${themeStore.clientTheme.colours.primary}00 100%),radial-gradient(22% 117% at 2% 87%,${themeStore.clientTheme.colours.secondary}00 20%,${themeStore.clientTheme.colours.accent}80 100%),linear-gradient(0deg,${themeStore.clientTheme.colours.secondary}80,${themeStore.clientTheme.colours.secondary}80)` : undefined}
 			>
 				<div
-					class="flex w-full max-w-4xl flex-row items-start gap-8"
+					class="flex w-full max-w-4xl flex-col items-center gap-4 sm:gap-6 md:gap-8 {themeStore.clientTheme.image?.url ? 'lg:flex-row lg:items-start' : ''}"
 					style:color={themeStore.clientTheme.colours.text}
 				>
-					<div class="mx-auto w-full min-w-sm lg:min-w-xs lg:max-w-xl flex-1"
-							style:order={themeStore.clientTheme.layout.image_position === 'left' ? '1' : '0'}>
+										<div class="w-full max-w-2xl {themeStore.clientTheme.image?.url ? 'lg:max-w-none' : ''} flex-1"
+						style:order={themeStore.clientTheme.layout.image_position === 'left' ? '1' : '0'}>
 						<div class="mb-4">
-							<div class="flex justify-between mb-4 items-center">
+							<div class="flex flex-col sm:flex-row sm:justify-between mb-4 gap-2 sm:gap-0 sm:items-center">
 								<StyledText 
 									theme={themeStore.clientTheme}
 									typography={themeStore.clientTheme.typography.header_title}
 									colour={themeStore.clientTheme.colours.primary}
 									tag="h1"
+									class="flex-1"
 								>
-									{scheduleData.user.displayName || scheduleData.user.username}'s schedule
+									{scheduleData.schedule.title || `${scheduleData.user.displayName || scheduleData.user.username}'s schedule`}
 								</StyledText>
-								<div class="p-2 max-w-32 text-center w-full"
+								<div class="p-2 max-w-32 sm:max-w-32 text-center w-full sm:w-auto flex-shrink-0"
 									style:background-color={themeStore.clientTheme.colours.accent}
 								>
 									<StyledText 
 										theme={themeStore.clientTheme}
 										typography={themeStore.clientTheme.typography.body}
 										colour={themeStore.clientTheme.colours.secondary}
+										class="text-xs sm:text-sm"
 									>
 										<!-- {dayjs().isoWeekday(1).format('DD/MM')} → -->
 										<!-- {dayjs().isoWeekday(7).format('DD/MM')} -->
@@ -251,7 +253,7 @@
 					</div>
 
 					{#if themeStore.clientTheme.image?.url}
-						<div class="sticky top-4 hidden flex-1 items-start lg:block"
+						<div class="sticky top-4 w-full lg:min-w-0 lg:max-w-md xl:max-w-lg hidden lg:block flex-1 items-start"
 								style:border={`1px ${themeStore.clientTheme.colours.text} solid`}
 								style:order={themeStore.clientTheme.layout.image_position === 'left' ? '0' : '1'}>
 							<img src={themeStore.clientTheme.image?.url} alt={themeStore.clientTheme.image?.alt} class="object-cover" />

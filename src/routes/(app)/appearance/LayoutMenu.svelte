@@ -8,20 +8,17 @@
 <div class="border border-gray-300 rounded-lg p-4 mb-6">
   <h3 class="text-lg font-semibold mb-4">Item Gap</h3>
   <div class="space-y-4">
-    <div>
-      <label class="block text-sm font-medium text-gray-700 mb-2">
-        Item Gap: {layout.gap}px
-        <input 
-        type="range" 
-        bind:value={layout.gap} 
-        min="0" 
-        max="12" 
-        step="1"
-        class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-        />
-      </label>
-    </div>
-
+    <label class="block text-sm font-medium text-gray-700 mb-2">
+      Item Gap: {layout.gap}px
+      <input 
+      type="range" 
+      bind:value={layout.gap} 
+      min="0" 
+      max="12" 
+      step="1"
+      class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+      />
+    </label>
   </div>
 </div>
 

@@ -1,6 +1,7 @@
 // import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { getScheduleByUsername } from '$lib/server/db/schedule-service';
+import { getUserSettingsByUserId } from '$lib/server/db/user-service';
 
 export const load: PageServerLoad = async ({ params }) => {
   // const schedule_data = await getScheduleByUsername(params.user);
@@ -10,8 +11,10 @@ export const load: PageServerLoad = async ({ params }) => {
   // }
 
   // return { ...schedule_data };
+  const schedule_data = await getScheduleByUsername(params.user); 
+  const user_settings = await getUserSettingsByUserId(schedule_data.user.id);
 
-  return { schedule_data: await getScheduleByUsername(params.user) } // i think that the public route shouldn't stream data in? 
+  return { schedule_data, user_settings } // i think that the public route shouldn't stream data in? 
 
 };
 

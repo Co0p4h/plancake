@@ -53,28 +53,5 @@ export const actions = {
       }
       return fail(500, { error: 'unexpected error occurred' });
     }
-  },
-
-  updateSocialLinks: async ({ request, locals, url }) => {
-    if (!locals.user) {
-      throw redirect(303, `/login?redirectTo=${url.pathname}`);
-    }
-
-    const data = await request.formData();
-    const socialLinksJson = data.get('socialLinks');
-
-    if (!socialLinksJson) {
-      return fail(400, { error: 'Social links data is required' });
-    }
-    
-    try {
-      const socialLinks = JSON.parse(socialLinksJson as string);
-      // const updatedLinks = await usersService.updateSocialLinks(session.token, socialLinks);
-      console.log("social links: ", socialLinks);
-      return { success: true, socialLinks };
-    } catch (error) {
-      console.error(`failed to update social links: ${error}`, {  error });
-      return fail(400, { error });
-    }
-  },
+  }
 }

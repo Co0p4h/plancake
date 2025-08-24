@@ -28,9 +28,9 @@
 
 </script>
 
-<div class="flex h-[calc(100vh-24rem)] flex-col items-center justify-center gap-y-4">
+<div class="flex min-h-[calc(100vh-24rem)] flex-col items-center justify-center gap-y-4 px-4 py-8 sm:py-12">
   <div class="w-full max-w-md">
-    <h1 class="mb-8 text-center text-2xl font-semibold">{m['_auth.login.title']()}</h1>
+    <h1 class="mb-8 mt-4 text-center text-2xl font-semibold sm:mt-0">{m['_auth.login.title']()}</h1>
     <form method="POST" class="space-y-4" use:enhance>
       <div class="">
         <input

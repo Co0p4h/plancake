@@ -56,7 +56,7 @@
       if (result.type == "success" && result.data) {
         const updated_schedule = await result.data.updated_schedule;
         if (updated_schedule) {
-          toast.success('Schedule updated successfully!');
+          toast.success('schedule updated successfully!');
         }
       } else if (result.type == "failure" && result.data) { 
         const error_message = result.data.error || 'An unexpected error occurred';
