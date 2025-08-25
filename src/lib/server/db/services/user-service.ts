@@ -1,7 +1,7 @@
 import * as table from '$lib/server/db/schema';
 import { db } from "$lib/server/db";
 import { eq, and } from 'drizzle-orm';
-import { generateId } from './utils';
+import { generateId } from '../utils';
 
 export async function createUser(userData: table.NewUser) {
   const [user] = await db.insert(table.users).values(userData).returning();
@@ -17,7 +17,7 @@ export async function getUserByUsername(username: string): Promise<typeof table.
   return user || null;
 }
 
-export async function getUserByAuthProvider(authType: string, providerId: string) {
+export async function getUserByAuthProvider(authType: table.AuthProvider, providerId: string) {
   const result = await db
     .select()
     .from(table.users)

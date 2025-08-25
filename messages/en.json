@@ -66,7 +66,8 @@
 		"next_month": "next month",
 		"last_month": "last month",
 		"add_event": "Add Event",
-		"weekly_schedule": "Weekly Schedule"
+		"weekly_schedule": "Weekly Schedule",
+		"no_items_scheduled": "no items scheduled"
 	},
 	"_appearance": {
 		"appearance": "appearance",
@@ -87,7 +88,8 @@
 		"item": "item",
 		"colour": "colour",
 		"colours": "colour",
-		"null": "please select option"
+		"null": "please select option",
+		"color-mappings": "color mappings"
 	},
 	"login": "log in",
 	"logout": "logout",

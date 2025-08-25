@@ -6,7 +6,6 @@
 	import isoWeek from 'dayjs/plugin/isoWeek';
 	import weekday from 'dayjs/plugin/weekday';
 	import { Toaster } from 'svelte-french-toast';
-	import { page } from '$app/state';
 
 	dayjs.extend(weekday);
 	dayjs.extend(isoWeek);

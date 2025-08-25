@@ -1,6 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { getUserSettingsByUserId, updateUserSettingsByUserId } from '$lib/server/db/user-service';
+import { getUserSettingsByUserId, updateUserSettingsByUserId } from '$lib/server/db/services/user-service';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
   if (!locals.user) {

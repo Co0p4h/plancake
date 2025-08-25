@@ -4,7 +4,7 @@ import { eq } from 'drizzle-orm';
 import { fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import type { ScheduleTheme } from '$lib/server/db/schema';
-import { getScheduleByUsername } from '$lib/server/db/schedule-service';
+import { getScheduleByUsername } from '$lib/server/db/services/schedule-service';
 
 export const load: PageServerLoad = (async ({ locals, url }) => {
   if (!locals.user) {

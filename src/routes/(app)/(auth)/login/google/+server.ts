@@ -8,6 +8,10 @@ export async function GET(event: RequestEvent): Promise<Response> {
 	const codeVerifier = generateCodeVerifier();
 	const url = google.createAuthorizationURL(state, codeVerifier, ["openid", "profile", "email"]);
 
+	console.log("state: ", state);
+	console.log("codeVerifier: ", codeVerifier);
+	console.log("google auth url: ", url.toString());
+
 	event.cookies.set("google_oauth_state", state, {
 		path: "/",
 		httpOnly: true,

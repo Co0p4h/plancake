@@ -1,7 +1,7 @@
 // import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { getScheduleByUsername } from '$lib/server/db/schedule-service';
-import { getUserSettingsByUserId } from '$lib/server/db/user-service';
+import { getScheduleByUsername } from '$lib/server/db/services/schedule-service';
+import { getUserSettingsByUserId } from '$lib/server/db/services/user-service';
 
 export const load: PageServerLoad = async ({ params }) => {
   // const schedule_data = await getScheduleByUsername(params.user);

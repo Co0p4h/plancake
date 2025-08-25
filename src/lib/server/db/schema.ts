@@ -1,6 +1,6 @@
 import type { fontSizes } from '$lib/utils/font';
 import { relations, sql } from 'drizzle-orm';
-import { pgTable, text, timestamp, jsonb, check, index, varchar, unique, boolean } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, jsonb, check, index, varchar, unique, boolean, pgEnum } from 'drizzle-orm/pg-core';
 
 const baseEntity = {
   id: text('id').primaryKey(),
@@ -42,6 +42,25 @@ export type ColourTheme = {
 	// highlight: string;
 	// shadow: string;
 }
+
+// export type ElementColourMappings = {
+// 	// text elements
+// 	item_title: ColourThemeKey;           
+// 	item_description: ColourThemeKey;     
+// 	item_time: ColourThemeKey;           
+// 	empty_day_text: ColourThemeKey;      
+	
+// 	// ui elements  
+// 	item_border: ColourThemeKey;         
+// 	time_badge_bg: ColourThemeKey;       
+// 	time_badge_text: ColourThemeKey;     
+// 	date_header_bg: ColourThemeKey;      
+// 	date_header_text: ColourThemeKey;    
+	
+// 	// interactive elements
+// 	external_link_icon: ColourThemeKey;  
+// 	calendar_icon: ColourThemeKey;       
+// }
 
 export type ScheduleImage = {
 	url?: string;
@@ -103,21 +122,27 @@ export const users = pgTable('users', {
   check("username_format", sql`${table.username} ~* '^[a-zA-Z0-9_-]+$'`)
 ]);
 
+export const auth_providers = ["google", "password", "twitch", "discord"] as const;
+export type AuthProvider = (typeof auth_providers)[number];
+export const authProviderEnum = pgEnum('auth_provider', auth_providers);
+
 export const userAuthMethods = pgTable('user_auth_methods', {
 	...baseEntity,
   userId: text('user_id')
 		.notNull()
-		.references(() => users.id, { onDelete: 'cascade' })
-		.unique(),
-  authType: varchar('auth_type', { length: 50 }).notNull(), // 'password', 'google', 'github', etc.
+		.references(() => users.id, { onDelete: 'cascade' }),
+  authType: authProviderEnum('auth_type').notNull(), 
   providerId: varchar('provider_id', { length: 255 }), // OAuth provider's user ID
   passwordHash: varchar('password_hash', { length: 255 }), // only for password auth
   metadata: jsonb('metadata'), // store additional provider data
+	// createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull(),
+	// updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull().$onUpdate(() => new Date())
 }, (table) => [
   index('idx_user_auth_methods_user_id').on(table.userId),
   index('idx_user_auth_methods_provider').on(table.authType, table.providerId),
   unique('unique_auth_provider').on(table.authType, table.providerId),
-  unique('unique_user_auth_type').on(table.userId, table.authType)
+  unique('unique_user_auth_type').on(table.userId, table.authType),
+	// primaryKey({ columns: [table.providerId, table.authType] })
 ]);
 
 export const user_settings = pgTable('user_settings', {
@@ -160,6 +185,19 @@ export const schedule_themes = pgTable('schedule_themes', {
     text: '#333333',
     accent: '#0066cc'
 	}).notNull(),
+	// colour_mappings: jsonb('colour_mappings').$type<ElementColourMappings>().default({
+	// 	item_title: 'text',
+	// 	item_description: 'accent',
+	// 	item_time: 'secondary',
+	// 	empty_day_text: 'text',
+	// 	item_border: 'primary',
+	// 	time_badge_bg: 'accent',
+	// 	time_badge_text: 'secondary',
+	// 	date_header_bg: 'primary',
+	// 	date_header_text: 'secondary',
+	// 	external_link_icon: 'text',
+	// 	calendar_icon: 'text'
+	// }).notNull(),
 	image: jsonb('image').$type<ScheduleImage>().default({
 		url: 'https://i.pinimg.com/736x/8c/34/dd/8c34ddbe9d9c3f5b0af2b14bfe989a2c.jpg',
 		alt: 'schedule image',

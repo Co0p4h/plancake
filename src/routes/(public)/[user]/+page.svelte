@@ -6,8 +6,9 @@
 	import { blur, fade, slide } from 'svelte/transition';
 	import { onMount } from 'svelte';
 	import ScheduleGridItem from './ScheduleGridItem.svelte';
-	import StyledText from '../../StyledText.svelte';
+	import StyledText from '$lib/components/StyledText.svelte';
 	import { getCurrentWeekDates } from '$lib/utils/date';
+	import { m } from '$lib/paraglide/messages.js';
 	dayjs.extend(weekday);
 
 	let { data } = $props();
@@ -60,24 +61,27 @@
 	>
 		<div
 			class="flex w-full max-w-4xl flex-col items-center gap-4 sm:gap-6 md:gap-8 mb-4 {schedule_data.theme.image?.url ? 'md:flex-row md:items-start' : ''}"
-			style:color={schedule_data.theme.colours.text}
 		>
 						<!-- schedule section -->
 			<div class="w-full max-w-2xl {schedule_data.theme.image?.url ? 'md:max-w-none' : ''} flex-1"
 				style:order={schedule_data.theme.layout.image_position === 'left' ? '1' : '0'}>
 				<div class="mb-4">
 					<div class="flex flex-col sm:flex-row sm:justify-between mb-4 gap-2 sm:gap-0 sm:items-center">
-						<StyledText 
-							theme={schedule_data.theme}
-							typography={schedule_data.theme.typography.header_title}
-							colour={schedule_data.theme.colours.primary}
-							tag="h1"
-							class="flex-1"
+						<div class="flex-1"
+							style:text-shadow="2px 2px 0px {schedule_data.theme.colours.secondary}"
 						>
-							{schedule_data.schedule.title || `${page.params.user}'s schedule`}
-						</StyledText>
+							<StyledText 
+								theme={schedule_data.theme}
+								typography={schedule_data.theme.typography.header_title}
+								colour={schedule_data.theme.colours.primary}
+								tag="h1"
+							>
+								{schedule_data.schedule.title || `${page.params.user}'s schedule`}
+							</StyledText>
+						</div>
 						<div class="p-2 max-w-32 sm:max-w-32 text-center w-full sm:w-auto flex-shrink-0"
 							style:background-color={schedule_data.theme.colours.accent}
+							style:border-radius={`${schedule_data.theme.item_theme.border_radius}px`}
 						>
 							<StyledText 
 								theme={schedule_data.theme}
@@ -103,28 +107,40 @@
 					{/if}
 				</div>
 
-				{#if schedule_data.theme.layout.items === 'list'}
-					<div class="flex flex-col"
-							style:gap={`${2 * schedule_data.theme.layout.gap}px`}>
-						{#each schedule_data.schedule_settings.settings.show_empty_days ? items_with_empty_days : items as item, i (item.id)}
-							{#if animate}
-								<div transition:fade={{ delay: i * 150}}>
-									<ScheduleListItem {item} theme={schedule_data.theme} settings={schedule_data.schedule_settings.settings} />
-								</div>
-							{/if}
-						{/each}
-					</div>
-				{:else if schedule_data.theme.layout.items === 'grid'}
-					<div class="grid grid-cols-2 md:grid-cols-3"
-							style:gap={`${2 * schedule_data.theme.layout.gap}px`}
-					>
-						{#each schedule_data.schedule_settings.settings.show_empty_days ? items_with_empty_days : items as item, i (item.id)}
-							{#if animate}
-								<div transition:fade={{ delay: i * 150}}>
-									<ScheduleGridItem {item} theme={schedule_data.theme} settings={schedule_data.schedule_settings.settings} />
-								</div>
-							{/if}
-						{/each}
+				{#if items.length > 0 || items_with_empty_days.length > 0}
+					{#if schedule_data.theme.layout.items === 'list'}
+						<div class="flex flex-col"
+								style:gap={`${2 * schedule_data.theme.layout.gap}px`}>
+							{#each schedule_data.schedule_settings.settings.show_empty_days ? items_with_empty_days : items as item, i (item.id)}
+								{#if animate}
+									<div transition:fade={{ delay: i * 150}}>
+										<ScheduleListItem {item} theme={schedule_data.theme} settings={schedule_data.schedule_settings.settings} />
+									</div>
+								{/if}
+							{/each}
+						</div>
+					{:else if schedule_data.theme.layout.items === 'grid'}
+						<div class="grid grid-cols-2 md:grid-cols-3"
+								style:gap={`${2 * schedule_data.theme.layout.gap}px`}
+						>
+							{#each schedule_data.schedule_settings.settings.show_empty_days ? items_with_empty_days : items as item, i (item.id)}
+								{#if animate}
+									<div transition:fade={{ delay: i * 150}}>
+										<ScheduleGridItem {item} theme={schedule_data.theme} settings={schedule_data.schedule_settings.settings} />
+									</div>
+								{/if}
+							{/each}
+						</div>
+					{/if}
+				{:else}
+					<div class="flex flex-col items-center justify-center min-h-[400px] py-16">
+						<StyledText 
+							theme={schedule_data.theme}
+							typography={schedule_data.theme.typography.empty_day}
+							colour={schedule_data.theme.colours.text}
+						>
+							{m['_schedule.no_items_scheduled']()}
+						</StyledText>
 					</div>
 				{/if}
 			</div>
@@ -132,12 +148,14 @@
 			<!-- image section... -->
 			{#if schedule_data.theme.image?.url}
 				{#if animate}
-					<div class="sticky top-4 flex-1 items-start w-full md:min-w-0 md:max-w-md lg:max-w-lg hidden md:block"
+					<div class="sticky top-4 flex-1 items-start w-full md:min-w-0 md:max-w-md lg:max-w-lg hidden md:block overflow-hidden"
 						style:border={`1px ${schedule_data.theme.colours.text} solid`}
 						style:order={schedule_data.theme.layout.image_position === 'left' ? '0' : '1'}
+						style:border-radius={`${schedule_data.theme.item_theme.border_radius}px`}
 						transition:blur={{ duration: 500 }}
 					>
-						<img src={schedule_data.theme.image.url} alt={schedule_data.theme.image.alt} class="object-cover" loading="lazy" />
+						<img src={schedule_data.theme.image.url} alt={schedule_data.theme.image.alt} class="object-cover" loading="lazy" 
+						/>
 						<span class="absolute bottom-1 right-1 p-1"
 							style:background-color={schedule_data.theme.colours.secondary} >
 							<StyledText 

@@ -4,7 +4,7 @@ import { eq } from 'drizzle-orm';
 import { fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { generateId } from '$lib/server/db/utils';
-import { getScheduleItemsByUserId } from '$lib/server/db/schedule-service';
+import { getScheduleItemsByUserId } from '$lib/server/db/services/schedule-service';
 // import { getCurrentWeekDates } from '$lib/utils/date';
 
 export const load: PageServerLoad = (async ({ locals, url }) => {

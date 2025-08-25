@@ -3,7 +3,9 @@ import { fail, redirect } from '@sveltejs/kit';
 import * as auth from '$lib/server/session';
 import type { Actions, PageServerLoad } from './$types';
 import { validateEmail, validatePassword, validateUsername } from '$lib/utils/validate';
-import { createUserWithAuth } from '$lib/server/db/user-service';
+import { createUserWithAuth } from '$lib/server/db/services/user-service';
+import type { AuthProvider } from '$lib/server/db/schema';
+import { parseDbError } from '$lib/utils/db-errors';
 
 export const load: PageServerLoad = (async ({ locals }) => { 
   if (locals.user) {
@@ -58,7 +60,7 @@ export const actions: Actions = {
 			};
 
 			const authMethod = {
-				authType: "password",
+				authType: "password" as AuthProvider,
 				providerId: null,
 				passwordHash: passwordHash, 
 				metadata: {
@@ -72,9 +74,19 @@ export const actions: Actions = {
 			const session = await auth.createSession(sessionToken, user.id);
 			auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
 
-		} catch {
-			// console.error("error: ", e.detail);
-			return fail(500, { message: 'an error has occurred', error: true });
+		} catch (e) {
+			console.error("signup error: ", e);
+			const errorInfo = parseDbError(e);
+			
+			const statusCode = errorInfo.field ? 400 : 500;
+			
+			return fail(statusCode, { 
+				message: errorInfo.message,
+				field: errorInfo.field,
+				invalid: true,
+				username: errorInfo.field === 'username' ? '' : username,
+				email: errorInfo.field === 'email' ? '' : email
+			});
 		}
 		return redirect(302, '/');
 	}

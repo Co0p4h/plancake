@@ -3,7 +3,7 @@ import { db } from '$lib/server/db';
 import { eq } from 'drizzle-orm';
 import { fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
-import { getScheduleSettingsByUserId, getScheduleByUserId, updateSchedule } from '$lib/server/db/schedule-service';
+import { getScheduleSettingsByUserId, getScheduleByUserId, updateSchedule } from '$lib/server/db/services/schedule-service';
 
 export const load: PageServerLoad = (async ({ locals, url }) => {
   if (!locals.user) {

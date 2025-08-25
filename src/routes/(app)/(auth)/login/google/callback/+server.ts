@@ -1,10 +1,11 @@
 import { generateSessionToken, createSession, setSessionTokenCookie } from "$lib/server/session";
 import { google } from "$lib/server/oauth";
-import { getUserByAuthProvider, createUserWithAuth } from "$lib/server/db/user-service";
+import { getUserByAuthProvider, createUserWithAuth } from "$lib/server/db/services/user-service";
 import { decodeIdToken } from "arctic";
 
 import type { RequestEvent } from "@sveltejs/kit";
 import type { OAuth2Tokens } from "arctic";
+import type { AuthProvider } from "$lib/server/db/schema";
 
 export async function GET(event: RequestEvent): Promise<Response> {
 	const code = event.url.searchParams.get("code");
@@ -56,9 +57,8 @@ export async function GET(event: RequestEvent): Promise<Response> {
 
 	const existingUser = await getUserByAuthProvider("google", googleUserId);
 
-	console.log("existingUser: ", existingUser);
-
-	if (existingUser !== null) {
+	if (existingUser) {
+		console.log("existingUser: ", existingUser);
 		const sessionToken = generateSessionToken();
 		const session = await createSession(sessionToken, existingUser.id);
 		setSessionTokenCookie(event, sessionToken, session.expiresAt);
@@ -78,7 +78,7 @@ export async function GET(event: RequestEvent): Promise<Response> {
 	};
 
 	const authMethod = {
-		authType: "google",
+		authType: "google" as AuthProvider,
 		providerId: googleUserId,
 		passwordHash: null, 
 		metadata: {

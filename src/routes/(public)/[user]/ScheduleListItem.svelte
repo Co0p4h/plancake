@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { ScheduleItem, ScheduleTheme, ScheduleSettings } from "$lib/server/db/schema";
 	import dayjs from "dayjs";
-	import StyledText from "../../StyledText.svelte";
+	import StyledText from "$lib/components/StyledText.svelte";
 	import { createGoogleCalendarLink } from "$lib/utils/calendar";
 	import { CalendarPlus, ExternalLink } from "@lucide/svelte";
 

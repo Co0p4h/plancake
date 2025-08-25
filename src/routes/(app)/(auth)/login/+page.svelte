@@ -18,11 +18,8 @@
   }
 
   $effect(() => {
-    if (form?.incorrect || form?.invalid) {
-      toast.error(form.message, {
-        // style: "box-shadow: 0 3px 10px #8c00ff20, 0 3px 3px #8c00ff25;",
-        // duration: 5000
-      });
+    if (form?.incorrect || form?.invalid || form?.error) {
+      toast.error(form.message);
     }
   })
 

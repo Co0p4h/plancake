@@ -28,14 +28,9 @@
   });
 
   $effect(() => {
-    if (form?.invalid || form?.error) {
-      toast.error(form.message, {
-        // style: "box-shadow: 0 3px 10px #8c00ff20, 0 3px 3px #8c00ff25;",
-        // duration: 5000
-      });
+    if (form?.invalid) {
+      toast.error(form.message);
     }
-
-    console.log('email test: ', page.form?.email);
   })
 </script>
 

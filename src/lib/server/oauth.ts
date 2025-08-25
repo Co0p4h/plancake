@@ -18,3 +18,9 @@ export const google = new Google(
 //   process.env.TWITTER_CLIENT_SECRET!,
 //   process.env.TWITTER_REDIRECT_URI!
 // );
+
+// export const discord = new Discord(
+//   env.DISCORD_CLIENT_ID!,
+//   env.DISCORD_CLIENT_SECRET!,
+//   env.DISCORD_REDIRECT_URI!
+// );

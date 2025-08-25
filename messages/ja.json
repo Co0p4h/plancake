@@ -65,7 +65,8 @@
 		"next_month": "来月",
 		"last_month": "先月",
 		"add_event": "イベントを追加",
-		"weekly_schedule": "週間スケジュール"
+		"weekly_schedule": "週間スケジュール",
+		"no_items_scheduled": "予定がありません"
 	},
 	"_appearance": {
 		"appearance": "カスタマイズ",
@@ -89,7 +90,8 @@
 			"font": "フォント",
 			"text_size": ""
 		},
-		"null": "選択してください"
+		"null": "選択してください",
+		"color-mappings": "カラーマッピング"
 	},
 	"login": "ログイン",
 	"logout": "ログアウト",

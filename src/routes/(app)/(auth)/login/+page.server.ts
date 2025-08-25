@@ -34,47 +34,55 @@ export const actions: Actions = {
 			 });
 		}
 
-		// const results = await db.select().from(table.users).where(eq(table.users.username, username));
-		const results = await db
-		.select({
-				userId: table.users.id,
-				passwordHash: table.userAuthMethods.passwordHash
-		})
-		.from(table.users)
-		.innerJoin(table.userAuthMethods, eq(table.users.id, table.userAuthMethods.userId))
-		.where(
-			and(
-				eq(table.users.username, username),
-				eq(table.userAuthMethods.authType, 'password')
-			)
-		);
-
-		const userAuth = results.at(0);
+		try {
+			const results = await db
+				.select({
+						userId: table.users.id,
+						passwordHash: table.userAuthMethods.passwordHash
+				})
+				.from(table.users)
+				.innerJoin(table.userAuthMethods, eq(table.users.id, table.userAuthMethods.userId))
+				.where(
+					and(
+						eq(table.users.username, username),
+						eq(table.userAuthMethods.authType, 'password')
+					)
+				);
+	
+			const userAuth = results.at(0);
+			
+			if (!userAuth || !userAuth.passwordHash) {
+				return fail(400, { 
+					message: 'incorrect username or password',
+					incorrect: true
+				 });
+			}
+	
+			const validPassword = await verify(userAuth.passwordHash, password, {
+				memoryCost: 19456,
+				timeCost: 2,
+				outputLen: 32,
+				parallelism: 1
+			});
+	
+			if (!validPassword) {
+				return fail(400, { 
+					message: 'incorrect username or password',
+					incorrect: true
+				});
+			}
+	
+			const sessionToken = auth.generateSessionToken();
+			const session = await auth.createSession(sessionToken, userAuth.userId);
+			auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
 		
-		if (!userAuth || !userAuth.passwordHash) {
-			return fail(400, { 
-				message: 'incorrect username or password',
-				incorrect: true
-			 });
-		}
-
-		const validPassword = await verify(userAuth.passwordHash, password, {
-			memoryCost: 19456,
-			timeCost: 2,
-			outputLen: 32,
-			parallelism: 1
-		});
-
-		if (!validPassword) {
-			return fail(400, { 
-				message: 'incorrect username or password',
-				incorrect: true
+		} catch (e) {
+			console.error("login error: ", e);
+			return fail(500, {
+				message: 'an unexpected error occurred during login',
+				error: true
 			});
 		}
-
-		const sessionToken = auth.generateSessionToken();
-		const session = await auth.createSession(sessionToken, userAuth.userId);
-		auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
 
 		return redirect(302, '/schedule');
 	}

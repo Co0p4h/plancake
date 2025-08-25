@@ -1,6 +1,5 @@
 
 export function validateUsername(username: unknown): username is string {
-	// TODO: compare it against db? 
 	return (
 		typeof username === 'string' &&
 		username.length >= 3 &&

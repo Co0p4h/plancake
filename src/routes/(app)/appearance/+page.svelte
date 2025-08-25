@@ -7,7 +7,7 @@
 	import type { ThemeCategories } from '$lib/server/db/schema';
 	import { beforeNavigate } from '$app/navigation';
 	import ScheduleListItem from '../../(public)/[user]/ScheduleListItem.svelte';
-	import StyledText from '../../StyledText.svelte';
+	import StyledText from '$lib/components/StyledText.svelte';
 	import { initThemeStore, themeStore } from './appearance.svelte';
 	import ScheduleGridItem from '../../(public)/[user]/ScheduleGridItem.svelte';
 	import { getCurrentWeekDates } from '$lib/utils/date';
@@ -186,21 +186,26 @@
 					class="flex w-full max-w-4xl flex-col items-center gap-4 sm:gap-6 md:gap-8 {themeStore.clientTheme.image?.url ? 'lg:flex-row lg:items-start' : ''}"
 					style:color={themeStore.clientTheme.colours.text}
 				>
-										<div class="w-full max-w-2xl {themeStore.clientTheme.image?.url ? 'lg:max-w-none' : ''} flex-1"
+					<div class="w-full max-w-2xl {themeStore.clientTheme.image?.url ? 'lg:max-w-none' : ''} flex-1"
 						style:order={themeStore.clientTheme.layout.image_position === 'left' ? '1' : '0'}>
-						<div class="mb-4">
+						<div>
 							<div class="flex flex-col sm:flex-row sm:justify-between mb-4 gap-2 sm:gap-0 sm:items-center">
-								<StyledText 
-									theme={themeStore.clientTheme}
-									typography={themeStore.clientTheme.typography.header_title}
-									colour={themeStore.clientTheme.colours.primary}
-									tag="h1"
-									class="flex-1"
+								<div class="flex-1"
+										style:text-shadow="2px 2px 0px {themeStore.clientTheme.colours.secondary}"
 								>
-									{scheduleData.schedule.title || `${scheduleData.user.displayName || scheduleData.user.username}'s schedule`}
-								</StyledText>
+									<StyledText 
+										theme={themeStore.clientTheme}
+										typography={themeStore.clientTheme.typography.header_title}
+										colour={themeStore.clientTheme.colours.primary}
+										tag="h1"
+										class="flex-1"
+									>
+										{scheduleData.schedule.title || `${scheduleData.user.displayName || scheduleData.user.username}'s schedule`}
+									</StyledText>
+								</div>
 								<div class="p-2 max-w-32 sm:max-w-32 text-center w-full sm:w-auto flex-shrink-0"
 									style:background-color={themeStore.clientTheme.colours.accent}
+									style:border-radius={`${themeStore.clientTheme.item_theme.border_radius}px`}
 								>
 									<StyledText 
 										theme={themeStore.clientTheme}
@@ -208,8 +213,6 @@
 										colour={themeStore.clientTheme.colours.secondary}
 										class="text-xs sm:text-sm"
 									>
-										<!-- {dayjs().isoWeekday(1).format('DD/MM')} → -->
-										<!-- {dayjs().isoWeekday(7).format('DD/MM')} -->
 										{(() => {
 											const { start: startDate } = scheduleData.schedule_settings.settings.first_day_of_week === 'monday' 
 												? { start: dayjs().startOf('isoWeek') }
@@ -233,30 +236,43 @@
 							{/if}
 						</div>
 
-						{#if themeStore.clientTheme.layout.items === 'list'}
-							<div class="flex flex-col"
-									style:gap={`${2 * themeStore.clientTheme.layout.gap}px`}
-							>
-								{#each scheduleData.schedule_settings.settings.show_empty_days ? items_with_empty_days : items as item (item.id)}
-									<ScheduleListItem {item} theme={themeStore.clientTheme} settings={scheduleData.schedule_settings.settings} />
-								{/each}
-							</div>
-						{:else if themeStore.clientTheme.layout.items === 'grid'}
-							<div class="grid grid-cols-2 md:grid-cols-3"
-									style:grid-gap={`${2 * (themeStore.clientTheme.layout.gap || 0)}px`}
-							>
-								{#each scheduleData.schedule_settings.settings.show_empty_days ? items_with_empty_days : items as item (item.id)}
-									<ScheduleGridItem {item} theme={themeStore.clientTheme} settings={scheduleData.schedule_settings.settings} />
-								{/each}
+						{#if items.length > 0 || items_with_empty_days.length > 0} <!-- TODO: this does not work -->
+							{#if themeStore.clientTheme.layout.items === 'list'}
+								<div class="flex flex-col"
+										style:gap={`${2 * themeStore.clientTheme.layout.gap}px`}
+								>
+									{#each scheduleData.schedule_settings.settings.show_empty_days ? items_with_empty_days : items as item (item.id)}
+										<ScheduleListItem {item} theme={themeStore.clientTheme} settings={scheduleData.schedule_settings.settings} />
+									{/each}
+								</div>
+							{:else if themeStore.clientTheme.layout.items === 'grid'}
+								<div class="grid grid-cols-2 md:grid-cols-3"
+										style:grid-gap={`${2 * (themeStore.clientTheme.layout.gap || 0)}px`}
+								>
+									{#each scheduleData.schedule_settings.settings.show_empty_days ? items_with_empty_days : items as item (item.id)}
+										<ScheduleGridItem {item} theme={themeStore.clientTheme} settings={scheduleData.schedule_settings.settings} />
+									{/each}
+								</div>
+							{/if}
+						{:else}
+							<div class="flex flex-col items-center justify-center min-h-[400px] py-16">
+								<StyledText 
+									theme={themeStore.clientTheme}
+									typography={themeStore.clientTheme.typography.empty_day}
+									colour={themeStore.clientTheme.colours.text}
+								>
+									{m['_schedule.no_items_scheduled']()}
+								</StyledText>
 							</div>
 						{/if}
 					</div>
 
 					{#if themeStore.clientTheme.image?.url}
-						<div class="sticky top-4 w-full lg:min-w-0 lg:max-w-md xl:max-w-lg hidden lg:block flex-1 items-start"
+						<div class="sticky top-4 w-full lg:min-w-0 lg:max-w-md xl:max-w-lg hidden lg:block flex-1 items-start overflow-hidden"
 								style:border={`1px ${themeStore.clientTheme.colours.text} solid`}
-								style:order={themeStore.clientTheme.layout.image_position === 'left' ? '0' : '1'}>
-							<img src={themeStore.clientTheme.image?.url} alt={themeStore.clientTheme.image?.alt} class="object-cover" />
+								style:order={themeStore.clientTheme.layout.image_position === 'left' ? '0' : '1'}
+								style:border-radius={`${themeStore.clientTheme.item_theme.border_radius}px`}>
+							<img src={themeStore.clientTheme.image?.url} alt={themeStore.clientTheme.image?.alt} class="object-cover" loading="lazy" />
 							<span class="absolute right-1 bottom-1 p-1"
 								style:background-color={themeStore.clientTheme.colours.secondary}>
 								<StyledText 
