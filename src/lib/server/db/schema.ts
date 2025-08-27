@@ -110,12 +110,23 @@ export type LayoutTheme = {
 	// content_padding: string; // e.g., "16px"
 }
 
+// export const roles = ["user", "admin"] as const;
+// export type Role = (typeof roles)[number];
+// export const roleEnum = pgEnum('role', roles);
+
+// export const plans = ["free", "premium"] as const;
+// export type Plan = (typeof plans)[number];
+// export const planEnum = pgEnum('role', plans);
+
 export const users = pgTable('users', {
 	...baseEntity,
-	username: varchar('username', { length: 63 }).notNull().unique(),
+	username: varchar('username', { length: 63 }).unique(),
 	displayName: varchar('display_name', { length: 63 }),
+	// role: roleEnum('role').default('user').notNull(),
+	// plan: planEnum('plan').default('free').notNull(),
 	email: varchar('email', { length: 127 }).notNull().unique(),
 	emailVerified: boolean('email_verified').default(false).notNull(),
+	setupComplete: boolean('setup_complete').default(false).notNull(),
 }, (table) => [
   check("valid_email", sql`${table.email} ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'`),
   check("username_length", sql`length(${table.username}) >= 3`),
@@ -144,6 +155,21 @@ export const userAuthMethods = pgTable('user_auth_methods', {
   unique('unique_user_auth_type').on(table.userId, table.authType),
 	// primaryKey({ columns: [table.providerId, table.authType] })
 ]);
+
+// export const subscriptions = pgTable('subscriptions', {
+// 	...baseEntity,
+// 	userId: text('user_id')
+// 		.notNull()
+// 		.references(() => users.id, { onDelete: 'cascade' }),
+// 		stripeCustomerId: varchar('stripe_customer_id', { length: 255 }).notNull(),
+// 	stripeSubscriptionId: varchar('stripe_subscription_id', { length: 255 }).notNull(),
+// 	status: varchar('status', { length: 50 }).notNull(), // active, past_due, canceled
+// 	planType: varchar('plan_type', { length: 50 }).notNull(), // free, premium, enterprise
+// 	currentPeriodEndsAt: timestamp('current_period_ends_at', { withTimezone: true, mode: 'date' }).notNull()
+// }, (table) => [
+// 	index('idx_subscriptions_user_id').on(table.userId),
+// 	unique('unique_stripe_subscription').on(table.stripeSubscriptionId),
+// ]);
 
 export const user_settings = pgTable('user_settings', {
 	...baseEntity,

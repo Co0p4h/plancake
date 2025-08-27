@@ -1,11 +1,44 @@
 import * as table from '$lib/server/db/schema';
 import { db } from "$lib/server/db";
-import { eq, and } from 'drizzle-orm';
+import { eq, and, ne } from 'drizzle-orm';
 import { generateId } from '../utils';
+import { validateUsername } from '$lib/utils/validate';
 
 export async function createUser(userData: table.NewUser) {
   const [user] = await db.insert(table.users).values(userData).returning();
   return user;
+}
+
+export async function deleteUser(userId: string) {
+  await db.delete(table.users)
+    .where(eq(table.users.id, userId));
+}
+
+export async function isUsernameAvailable(username: unknown, excludeUserId?: string): Promise<boolean> {
+  if (!validateUsername(username)) {
+    return false;
+  }
+
+  try {
+    const baseCondition = eq(table.users.username, username);
+    
+    // if updating existing user, exclude their current record
+    const whereCondition = excludeUserId 
+      ? and(baseCondition, ne(table.users.id, excludeUserId))!
+      : baseCondition;
+
+    const existing = await db
+      .select({ id: table.users.id })
+      .from(table.users)
+      .where(whereCondition)
+      .limit(1);
+
+    return existing.length === 0;
+    
+  } catch (error) {
+    console.error('error checking username availability:', error);
+    return false;
+  }
 }
 
 export async function getUserByUsername(username: string): Promise<typeof table.users.$inferSelect | null> {
@@ -47,7 +80,8 @@ export async function createUserWithAuth(
       .insert(table.users)
       .values({
         ...userData,
-        id: userId
+        id: userId,
+        setupComplete: authMethod.authType === 'password' ? true : false
       })
       .returning();
 
@@ -65,13 +99,8 @@ export async function createUserWithAuth(
       settings: {
         language: 'ja',
         timezone: 'Asia/Tokyo',
-        social_links: [
-          {
-            platform: 'twitter',
-            url: 'https://twitter.com/coopa_2'
-          },
-        ],
-        discord_webhook: 'https://discord.com/api/webhooks/1353543991995404449/FhP_5GBqnsfRxDTsW5mP55oH1KHGjodxht0yVXlUxp7KHG8e2SMdsQYPWfzmJ0W7h7st'
+        social_links: [],
+        discord_webhook: ''
       }
     });
 
@@ -150,4 +179,31 @@ export async function getUserSettingsByUserId(userId: string) {
 export async function updateUserSettingsByUserId(userId: string, settings: typeof table.user_settings.$inferSelect.settings) {
   const [updated_settings] = await db.update(table.user_settings).set({ settings: settings }).where(eq(table.user_settings.userId, userId)).returning();
   return updated_settings.settings;
+}
+
+export async function updateUsername(userId: string, newUsername: string) {
+  try {
+    const [updatedUser] = await db
+      .update(table.users)
+      .set({ 
+        username: newUsername 
+      })
+      .where(eq(table.users.id, userId))
+      .returning();
+
+    if (!updatedUser) {
+      throw new Error('user_not_found');
+    }
+
+    return { updatedUser };
+
+  } catch (error) {
+    console.error('error updating username:', error);
+    throw error;
+  }
+}
+
+export async function markUserSetupComplete(userId: string) {
+  const [updatedUser] = await db.update(table.users).set({ setupComplete: true }).where(eq(table.users.id, userId)).returning();
+  return updatedUser;
 }

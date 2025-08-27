@@ -1,10 +1,31 @@
+import { ENV_RESERVED_USERNAMES } from "$env/static/private";
+
+const DEFAULT_RESERVED = ['admin', 'api', 'root', 'system'];
+
+function getReservedUsernames(): string[] {
+  const envReserved = ENV_RESERVED_USERNAMES;
+  
+  if (!envReserved) {
+    console.warn('RESERVED_USERNAMES not set, using defaults');
+    return DEFAULT_RESERVED;
+  }
+  
+  return envReserved.split(',').map(u => u.trim().toLowerCase());
+}
+
+const reserved_usernames = getReservedUsernames();
+
+function isReservedUsername(username: string): boolean {
+	return reserved_usernames.includes(username.toLowerCase());
+}
 
 export function validateUsername(username: unknown): username is string {
 	return (
 		typeof username === 'string' &&
 		username.length >= 3 &&
 		username.length <= 31 &&
-		/^[a-z0-9_-]+$/.test(username)
+		/^[a-z0-9_-]+$/.test(username) && 
+		!isReservedUsername(username)
 	);
 }
 

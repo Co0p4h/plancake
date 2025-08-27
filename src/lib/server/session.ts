@@ -32,11 +32,13 @@ export async function createSession(token: string, userId: string) {
 }
 
 export async function validateSessionToken(token: string) {
+	console.log("validating session token: ", token);
+	
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 	const [result] = await db
 		.select({
 			// adjust user table here to tweak returned data
-			user: { id: table.users.id, username: table.users.username },
+			user: { id: table.users.id, username: table.users.username, setupComplete: table.users.setupComplete },
 			session: table.sessions,
 			// schedule: { id: table.schedules.id }
 		})
@@ -64,6 +66,8 @@ export async function validateSessionToken(token: string) {
 			.set({ expiresAt: session.expiresAt, updatedAt: new Date() })
 			.where(eq(table.sessions.id, session.id));
 	}
+
+	console.log("validated session: ", { session, user });
 
 	return { session, user };
 }
