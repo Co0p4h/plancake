@@ -1,6 +1,7 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { getUserSettingsByUserId, updateUserSettingsByUserId } from '$lib/server/db/services/user-service';
+import { deleteUser, getUserSettingsByUserId, updateUserSettingsByUserId } from '$lib/server/db/services/user-service';
+import { deleteSessionTokenCookie } from '$lib/server/session';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
   if (!locals.user) {
@@ -39,8 +40,6 @@ export const actions = {
 
       const updated_settings = await updateUserSettingsByUserId(locals.user.id, { language, timezone, discord_webhook, social_links });
 
-      console.log('updated_settings????: ', updated_settings);
-
       return { 
         success: true, 
         message: 'user settings updated successfully',
@@ -48,10 +47,28 @@ export const actions = {
       };
     } catch (error) {
       if (error instanceof Error) {
-        console.error('error updating user settings: ', error);
         return fail(500, { error: `failed to update user settings: ${error.message}` });
       }
       return fail(500, { error: 'unexpected error occurred' });
     }
+  },
+
+  deleteUser: async (event) => {
+    if (!event.locals.user) {
+      return redirect(302, `/login?redirectTo=${event.url.pathname}`);
+    }
+    
+    try {
+      // await new Promise(resolve => setTimeout(resolve, 3000)); 
+      await deleteUser(event.locals.user.id);
+      deleteSessionTokenCookie(event);
+    } catch (error) {
+      if (error instanceof Error) {
+        return fail(500, { error: `failed to delete user: ${error.message}` });
+      }
+      return fail(500, { error: 'unexpected error occurred' });
+    }
+
+    return redirect(302, '/');
   }
 }

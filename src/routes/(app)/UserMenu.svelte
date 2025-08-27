@@ -1,5 +1,7 @@
 <script>
+	import { goto } from "$app/navigation";
 	import { LogOut, Settings } from "@lucide/svelte";
+	import toast from "svelte-french-toast";
   let { menuHovered = $bindable() } = $props();
 </script>
 
@@ -25,9 +27,11 @@
                     console.log("logout response", response);
                     
                     if (response.ok) {
-                        window.location.href = "/";
+                      toast.success("logout successful");
+                      await goto("/", { invalidateAll: true });
+                      
                     } else {
-                        console.error("Logout failed");
+                        toast.error("logout failed");
                     }
                   }}>
       <LogOut size={18} />

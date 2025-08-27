@@ -121,6 +121,17 @@
 		"timezone": "timezone",
 		"discord_webhook": "discord webhook",
 		"social_links": "social links",
-		"delete_account": "delete account"
-	}
+		"delete_account": "delete account",
+		"delete_account_description": "this action cannot be undone",
+		"delete_account_modal_title": "delete account",
+		"delete_account_modal_description": "this action will permanently delete your account and all associated data",
+		"delete_account_modal_confirm": "this action cannot be undone",
+		"delete_account_modal_button": "delete account",
+		"add_social_link": "add link",
+		"social_link_title": "link title",
+		"social_link_url": "URL",
+		"manage_your_social_links": "manage your social media links"
+	},
+	"deleting": "deleting...",
+	"remove": "remove"
 }

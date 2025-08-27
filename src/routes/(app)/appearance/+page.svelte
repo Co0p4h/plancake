@@ -188,7 +188,7 @@
 				>
 					<div class="w-full max-w-2xl {themeStore.clientTheme.image?.url ? 'lg:max-w-none' : ''} flex-1"
 						style:order={themeStore.clientTheme.layout.image_position === 'left' ? '1' : '0'}>
-						<div>
+						<div class="mb-4">
 							<div class="flex flex-col sm:flex-row sm:justify-between mb-4 gap-2 sm:gap-0 sm:items-center">
 								<div class="flex-1"
 										style:text-shadow="2px 2px 0px {themeStore.clientTheme.colours.secondary}"

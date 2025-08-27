@@ -1,5 +1,7 @@
 <script lang="ts">
 	import SocialLinks from './SocialLinks.svelte';
+	import ConfirmDeleteUserModal from './ConfirmDeleteUserModal.svelte';
+	import { deleteUserModal } from './deleteUserModal.svelte';
 	import { setLocale } from '$lib/paraglide/runtime';
 	import { m } from '$lib/paraglide/messages.js';
 	import type { SubmitFunction } from '@sveltejs/kit';
@@ -62,7 +64,7 @@
   <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg relative">
     <h1 class="mb-4 text-xl text-gray-500">{m['_account.account']()}</h1>
     
-    <form method="POST" action="?/updateUserSettings" use:enhance={enhance_form} class="space-y-7">
+    <form method="POST" use:enhance={enhance_form} class="space-y-7">
       <input type="hidden" name="language" value={settings.language} />
       <input type="hidden" name="timezone" value={settings.timezone} />
       <input type="hidden" name="discord_webhook" value={settings.discord_webhook} />
@@ -114,7 +116,7 @@
       <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg flex flex-col gap-7 mb-6">
         <div>
           <h2 class="text-lg">{m['_account.social_links']()}</h2>
-          <p class="text-gray-500 text-sm">Manage your social media links</p>
+          <p class="text-gray-500 text-sm">{m['_account.manage_your_social_links']()}</p>
           <div class="mt-2">
             <SocialLinks bind:socialLinks={settings.social_links} />
           </div>
@@ -124,8 +126,12 @@
       <div class="container max-w-8xl p-5 bg-white border border-gray-300 rounded-lg ">
         <div>
           <h2 class="text-lg">{m['_account.delete_account']()}</h2>
-          <p class="text-gray-500 text-sm">This action cannot be undone</p>
-          <button type="button" class="mt-2 rounded-md border-2 cursor-pointer p-2 bg-red-500 text-white hover:bg-red-600 transition-all duration-200 ease-in-out">
+          <p class="text-gray-500 text-sm">{m['_account.delete_account_description']()}</p>
+          <button 
+            type="button"
+            onclick={() => (deleteUserModal.show = true)}
+            class="mt-2 rounded-md border-2 cursor-pointer p-2 bg-red-500 text-white hover:bg-red-600 transition-all duration-200 ease-in-out"
+          >
             {m['_account.delete_account']()}
           </button>
         </div>
@@ -133,7 +139,7 @@
 
       <div class="flex items-center justify-end pt-5 sticky bottom-0 pb-5 bg-white">
         <button
-          type="submit"
+          formaction="?/updateUserSettings"
           class="focus:shadow-outline rounded bg-purple-400 px-4 py-2 font-bold text-white hover:bg-purple-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-in-out cursor-pointer flex items-center"
           disabled={isSubmitting} 
         >
@@ -151,3 +157,5 @@
     </form>
   </div>
 {/await}
+
+<ConfirmDeleteUserModal />

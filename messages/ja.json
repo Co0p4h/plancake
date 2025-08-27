@@ -123,6 +123,17 @@
 		"timezone": "タイムゾーン",
 		"discord_webhook": "discord webhook",
 		"social_links": "ソーシャルリンク",
-		"delete_account": "アカウントを削除"
-	}
+		"delete_account": "アカウントを削除",
+		"delete_account_description": "この操作は元に戻せません",
+		"delete_account_modal_title": "アカウントを削除",
+		"delete_account_modal_description": "この操作はアカウントとすべての関連データを永久に削除します",
+		"delete_account_modal_confirm": "この操作は元に戻せません",
+		"delete_account_modal_button": "アカウントを削除",
+		"add_social_link": "リンクを追加",
+		"social_link_title": "リンクタイトル",
+		"social_link_url": "URL",
+		"manage_your_social_links": "ソーシャルメディアリンクを管理する"
+	},
+	"deleting": "削除中...",
+	"remove": "削除"
 }
