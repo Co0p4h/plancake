@@ -6,7 +6,7 @@ import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import type { Actions, PageServerLoad } from './$types';
 import { generateId } from '$lib/server/db/utils';
-import { validatePassword, validateUsername } from '$lib/utils/validate';
+import { validatePassword, validateUsername } from '$lib/utils/ss-validate';
 
 export const load: PageServerLoad = async (event) => {
 	if (event.locals.user) {

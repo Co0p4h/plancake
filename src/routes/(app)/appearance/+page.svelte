@@ -11,7 +11,7 @@
 	import { initThemeStore, themeStore } from './appearance.svelte';
 	import ScheduleGridItem from '../../(public)/[user]/ScheduleGridItem.svelte';
 	import { getCurrentWeekDates } from '$lib/utils/date';
-	// import { onMount } from 'svelte';
+	import { validateImageUrl } from '$lib/utils/cs-validate';
 
 	let { data } = $props();
 
@@ -178,7 +178,7 @@
 		<div class="max-w-8xl flex-grow self-stretch rounded-lg border border-gray-300 bg-white p-5">
 			<h1 class="mb-4 text-xl text-gray-500">{m['_appearance.appearance']()}</h1>
 			<div
-				class="flex min-h-screen flex-col items-center rounded-lg border border-gray-300 p-4 sm:p-6 lg:p-8"
+				class="flex min-h-screen flex-col items-center rounded-lg border border-gray-300 p-4 sm:p-6 lg:p-8 lg:min-w-2xl"
 				style:background-color={themeStore.clientTheme.background === 'solid' ? themeStore.clientTheme.colours.background : undefined}
 				style:background-image={themeStore.clientTheme.background === 'gradient' ? `linear-gradient(180deg,${themeStore.clientTheme.colours.background} 0,hsla(0,0%,98%,0) 50%),radial-gradient(51% 51% at -11% 9%,${themeStore.clientTheme.colours.primary}80 1%,${themeStore.clientTheme.colours.primary}00 100%),radial-gradient(51% 67% at 115% 96%,${themeStore.clientTheme.colours.primary}80 0,${themeStore.clientTheme.colours.primary}00 100%),radial-gradient(50% 66% at 50% 50%,${themeStore.clientTheme.colours.accent}80 0,${themeStore.clientTheme.colours.primary}00 100%),radial-gradient(22% 117% at 2% 87%,${themeStore.clientTheme.colours.secondary}00 20%,${themeStore.clientTheme.colours.accent}80 100%),linear-gradient(0deg,${themeStore.clientTheme.colours.secondary}80,${themeStore.clientTheme.colours.secondary}80)` : undefined}
 			>
@@ -241,8 +241,10 @@
 								<div class="flex flex-col"
 										style:gap={`${2 * themeStore.clientTheme.layout.gap}px`}
 								>
-									{#each scheduleData.schedule_settings.settings.show_empty_days ? items_with_empty_days : items as item (item.id)}
-										<ScheduleListItem {item} theme={themeStore.clientTheme} settings={scheduleData.schedule_settings.settings} />
+									{#each scheduleData.schedule_settings.settings.show_empty_days ? items_with_empty_days : items as item, i (item.id)}
+										<div class="flex justify-center">
+											<ScheduleListItem {item} theme={themeStore.clientTheme} settings={scheduleData.schedule_settings.settings} />
+										</div>
 									{/each}
 								</div>
 							{:else if themeStore.clientTheme.layout.items === 'grid'}
@@ -267,7 +269,7 @@
 						{/if}
 					</div>
 
-					{#if themeStore.clientTheme.image?.url}
+					{#if themeStore.clientTheme.image?.url && scheduleData.schedule_settings.settings.show_schedule_image && validateImageUrl(themeStore.clientTheme.image.url) == ""}
 						<div class="sticky top-4 w-full lg:min-w-0 lg:max-w-md xl:max-w-lg hidden lg:block flex-1 items-start overflow-hidden"
 								style:border={`1px ${themeStore.clientTheme.colours.text} solid`}
 								style:order={themeStore.clientTheme.layout.image_position === 'left' ? '0' : '1'}

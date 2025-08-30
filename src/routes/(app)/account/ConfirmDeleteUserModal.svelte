@@ -35,6 +35,7 @@
       if (result.type === 'redirect') {
         toast.success('Account deleted successfully');
         dialog?.close();
+        console.log('what is this location? ', result.location);
         await goto(result.location, { invalidateAll: true });
       } else if (result.type === 'failure' && result.data) {
         const error_message = result.data.error || 'Failed to delete account';

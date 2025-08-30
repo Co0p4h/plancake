@@ -3,12 +3,13 @@
 	import dayjs from 'dayjs';
 	import weekday from 'dayjs/plugin/weekday';
 	import ScheduleListItem from './ScheduleListItem.svelte';
-	import { blur, fade, slide } from 'svelte/transition';
+	import { blur, fade } from 'svelte/transition';
 	import { onMount } from 'svelte';
 	import ScheduleGridItem from './ScheduleGridItem.svelte';
 	import StyledText from '$lib/components/StyledText.svelte';
 	import { getCurrentWeekDates } from '$lib/utils/date';
 	import { m } from '$lib/paraglide/messages.js';
+	import { validateImageUrl } from '$lib/utils/cs-validate';
 	dayjs.extend(weekday);
 
 	let { data } = $props();
@@ -113,7 +114,7 @@
 								style:gap={`${2 * schedule_data.theme.layout.gap}px`}>
 							{#each schedule_data.schedule_settings.settings.show_empty_days ? items_with_empty_days : items as item, i (item.id)}
 								{#if animate}
-									<div transition:fade={{ delay: i * 150}}>
+									<div transition:fade={{ delay: i * 150}} class="flex justify-center">
 										<ScheduleListItem {item} theme={schedule_data.theme} settings={schedule_data.schedule_settings.settings} />
 									</div>
 								{/if}
@@ -146,7 +147,7 @@
 			</div>
 
 			<!-- image section... -->
-			{#if schedule_data.theme.image?.url}
+			{#if schedule_data.theme.image?.url && schedule_data.schedule_settings.settings.show_schedule_image && validateImageUrl(schedule_data.theme.image.url) == ""}
 				{#if animate}
 					<div class="sticky top-4 flex-1 items-start w-full md:min-w-0 md:max-w-md lg:max-w-lg hidden md:block overflow-hidden"
 						style:border={`1px ${schedule_data.theme.colours.text} solid`}

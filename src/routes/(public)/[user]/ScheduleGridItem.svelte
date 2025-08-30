@@ -60,7 +60,7 @@
        style:border-bottom-right-radius={`${Math.max(0, theme.item_theme.border_radius - 1)}px`}
   >
     {#if !item.id.startsWith('empty-')}
-      <div class="flex items-center justify-center gap-1 px-2 py-1 whitespace-nowrap"
+      <div class="flex justify-center gap-1 px-2 py-1 whitespace-nowrap"
            style:color={theme.colours.secondary}
            style:background-color={theme.colours.accent}
            style:border-radius={`${theme.item_theme.border_radius}px`}>
@@ -70,16 +70,25 @@
           colour={theme.colours.secondary}
           tag="span"
         >
-          {dayjs(item.startTime).format('HH:mm')}
+          {#if settings.use_24_hour_time}
+            {dayjs(item.startTime).format('HH:mm')}
+          {:else}
+            {dayjs(item.startTime).format('hh:mmA')}
+          {/if}
         </StyledText>
         {#if item.endTime}
+          <span class="font-medium">-</span>
           <StyledText 
             theme={theme}
             typography={theme.typography.item_title}
             colour={theme.colours.secondary}
             tag="span"
           >
-            - {dayjs(item.endTime).format('HH:mm')}
+          {#if settings.use_24_hour_time}
+            {dayjs(item.endTime).format('HH:mm')}
+          {:else}
+            {dayjs(item.endTime).format('hh:mmA')}
+          {/if}
           </StyledText>
         {/if}
       </div>

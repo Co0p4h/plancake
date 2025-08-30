@@ -1,24 +1,25 @@
 <script lang="ts">
 	import { m } from '$lib/paraglide/messages.js';
 	import type { SubmitFunction } from '@sveltejs/kit';
-	import type { ScheduleSettings } from '$lib/server/db/schema';
+	import type { AllScheduleSettings } from '$lib/server/db/schema';
 	import Toggle from './Toggle.svelte';
 	import toast from 'svelte-french-toast';
 	import { enhance } from '$app/forms';
 	import { fade } from 'svelte/transition';
-	import { LockIcon } from '@lucide/svelte';
+	import { LinkIcon, LockIcon } from '@lucide/svelte';
 
   let { data } = $props();
 
   console.log('data: ', data);
 
+  let descriptionElement: HTMLTextAreaElement | undefined = $state();
+
   let isSubmitting = $state(false);
   let isSubmittingSchedule = $state(false);
-  
-  let scheduleTitle = $state('');
-  let scheduleDescription = $state('');
 
-  let settings: ScheduleSettings = $state({
+  let settings: AllScheduleSettings = $state({
+    title: '',
+    description: '',
     show_empty_days: true,
     empty_day_text: "",
     show_past_events: false,
@@ -27,36 +28,25 @@
     first_day_of_week: "monday",
     show_logo: true,
     show_schedule_description: false,
+    show_schedule_image: false
   });
 
   const enhance_form: SubmitFunction = ({ formData, action }) => {
+
     console.log('Form submitting with settings:', settings);
+
     isSubmitting = true;
     return async ({ result }) => {
       isSubmitting = false;
 
-      if (result.type == "success" && result.data) {
-        const updated_settings = await result.data.updated_settings;
-        if (updated_settings) {
-          toast.success('Settings updated successfully!');
-        }
-      } else if (result.type == "failure" && result.data) { 
-        const error_message = result.data.error || 'An unexpected error occurred';
-        toast.error(error_message);
-      }
-    }
-  }
-
-  const enhance_schedule_form: SubmitFunction = ({ formData, action }) => {
-    console.log('Form submitting with schedule:', { title: scheduleTitle, description: scheduleDescription });
-    isSubmittingSchedule = true;
-    return async ({ result }) => {
-      isSubmittingSchedule = false;
-
+      console.log("result", result);
+      
       if (result.type == "success" && result.data) {
         const updated_schedule = await result.data.updated_schedule;
+        console.log("updated_settings", updated_schedule);
+        
         if (updated_schedule) {
-          toast.success('schedule updated successfully!');
+          toast.success('settings updated successfully!');
         }
       } else if (result.type == "failure" && result.data) { 
         const error_message = result.data.error || 'An unexpected error occurred';
@@ -67,17 +57,9 @@
 
   $effect(() => {
     data.schedule_settings?.then((result) => {
-      if (result.settings) {
-        settings = { ...result.settings };
+      if (result.schedule && result.schedule_settings) {
+        settings = { ...result.schedule_settings, title: result.schedule.title, description: result.schedule.description };
         console.log('settings loaded:', settings);
-      }
-    });
-    
-    data.schedule?.then((result) => {
-      if (result) {
-        scheduleTitle = result.title || '';
-        scheduleDescription = result.description || '';
-        console.log('schedule loaded:', { title: scheduleTitle, description: scheduleDescription });
       }
     });
   });
@@ -86,64 +68,51 @@
 {#await data.schedule_settings}
   <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg relative">
     <div class="flex items-center justify-center h-32">
-      <div class="text-gray-500">Loading schedule settings...</div>
+      <div class="text-gray-500">loading schedule settings...</div>
     </div>
   </div>
 {:then schedule_settings}
   <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg relative">
     <h1 class="mb-4 text-xl text-gray-500">{m['_settings.settings']()}</h1>
     {#if schedule_settings}
-      <!-- schedule title and description form -->
-      <form method="POST" action="?/updateSchedule" use:enhance={enhance_schedule_form} class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg flex flex-col gap-7 mb-6">
+      <form method="POST" action="?/updateScheduleSettings" use:enhance={enhance_form} class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg flex flex-col gap-7 mb-6">
+        <input type="hidden" name="schedule_settings" value={JSON.stringify(settings)} />
+
+        <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg flex flex-col gap-7">
           <div class="flex flex-col gap-1">
             <div class="text-lg">{m['_settings.schedule_title']()}</div>
             <p class="text-sm text-gray-500">{m['_settings.schedule_title_description']()}</p>
             <input 
               name="title"
-              bind:value={scheduleTitle}
-              class="border w-3/4 border-gray-300 rounded-sm px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500" 
+              bind:value={settings.title}
+              class="border w-full border-gray-300 rounded-sm px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500" 
               placeholder={m['_settings.schedule_title_placeholder']({ name: data.user.username })} 
               disabled={isSubmittingSchedule}
             />
           </div>
 
-          {#if settings.show_schedule_description}
+          <!-- {#if settings.show_schedule_description} -->
             <div in:fade={{ duration: 100 }} class="flex flex-col gap-1">
               <div class="text-lg">{m['_settings.show_schedule_text']()}</div>
               <p class="text-sm text-gray-500">{m['_settings.show_schedule_text_description']()}</p>
               <textarea 
                 name="description"
-                bind:value={scheduleDescription}
-                class="border w-3/4 border-gray-300 rounded-sm px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500 min-h-[80px] resize-y whitespace-pre-wrap" 
+                bind:value={settings.description}
+                bind:this={descriptionElement}
+                class={`border w-full border-gray-300 rounded-sm px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500 min-h-[80px] resize-y whitespace-pre-wrap ${!settings.show_schedule_description ? 'opacity-50 cursor-not-allowed' : ''}`}
                 placeholder={m['_settings.schedule_description_placeholder']()} 
-                disabled={isSubmittingSchedule}
+                disabled={isSubmittingSchedule || !settings.show_schedule_description}
+                onclick={() => {
+                  // if (!settings.show_schedule_description) {
+                  //   toast('please enable "Show Schedule Text" to edit the description.', { icon: 'ℹ️' });
+                  // }
+                }}
               ></textarea>
             </div>
-          {/if}
+          <!-- {/if} -->
+        </div>
 
-          <div class="flex items-center justify-end">
-            <button
-              type="submit"
-              class="focus:shadow-outline rounded bg-purple-400 px-4 py-2 font-bold text-white hover:bg-purple-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-in-out cursor-pointer flex items-center"
-              disabled={isSubmittingSchedule} 
-            >
-              {#if isSubmittingSchedule}
-                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                updating...
-              {:else}
-                update schedule
-              {/if}
-            </button>
-          </div>
-        </form>
-
-      <!-- schedule settings form -->
-      <form method="POST" action="?/updateSettings" use:enhance={enhance_form} class="flex-1">
-        <input type="hidden" name="settings" value={JSON.stringify(settings)} />
-        <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg flex flex-col gap-7 mb-6">
+        <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg flex flex-col gap-7">
           <div class="flex justify-between items-center">
             <div>
               <h2 class="text-lg">{m['_settings.show_schedule_description']()}</h2>
@@ -151,7 +120,14 @@
             </div>
             <Toggle 
               toggled={settings.show_schedule_description} 
-              onclick={() => { settings.show_schedule_description = !settings.show_schedule_description }} 
+              onclick={() => { 
+                settings.show_schedule_description = !settings.show_schedule_description;
+                if (settings.show_schedule_description) {
+                  requestAnimationFrame(() => {
+                    descriptionElement?.focus();
+                  });
+                } 
+              }}
               disabled={isSubmitting} 
             />
           </div>
@@ -182,6 +158,18 @@
 
           <div class="flex justify-between items-center">
             <div>
+              <h2 class="text-lg">{m['_settings.show_schedule_image']()}</h2>
+              <p class="text-gray-500 text-sm">{m['_settings.show_schedule_image_description']()}</p>
+            </div>
+            <Toggle 
+              toggled={settings.show_schedule_image} 
+              onclick={() => { settings.show_schedule_image = !settings.show_schedule_image }} 
+              disabled={isSubmitting} 
+            />
+          </div>
+
+          <div class="flex justify-between items-center">
+            <div>
               <h2 class="text-lg">{m['_settings.show_past_events']()}</h2>
               <p class="text-gray-500 text-sm">{m['_settings.show_past_events_description']()}</p>
             </div>
@@ -206,7 +194,12 @@
 
           <div class="flex justify-between items-center">
             <div>
-              <h2 class="text-lg">{m['_settings.show_social_links']()}</h2>
+              <div class="flex items-center gap-2">
+                <h2 class="text-lg">{m['_settings.show_social_links']()}</h2>
+                <a href="/account#social-links">
+                  <LinkIcon class="w-4 h-4 text-gray-500" />
+                </a>
+              </div>
               <p class="text-gray-500 text-sm">{m['_settings.show_social_links_description']()}</p>
             </div>
             <Toggle 
@@ -251,7 +244,7 @@
           <button
             type="submit"
             class="focus:shadow-outline rounded bg-purple-400 px-4 py-2 font-bold text-white hover:bg-purple-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-in-out cursor-pointer flex items-cente"
-            disabled={isSubmitting || schedule_settings.settings == settings} 
+            disabled={isSubmitting} 
           >
             {#if isSubmitting}
               <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

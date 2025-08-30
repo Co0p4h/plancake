@@ -1,38 +1,17 @@
 <script lang="ts">
-	// import type { ScheduleImage } from "$lib/server/db/schema";
+	import { validateImageUrl } from "$lib/utils/cs-validate";
   import { onDestroy } from "svelte";
 
   let { image = $bindable() } = $props();
 
-  console.log(image);
-  
-
   let error: string = $state("");
   let debounceTimeout: ReturnType<typeof setTimeout>;
-
-  const validateUrl = (url: string) => {
-    if (!url) return "please enter an image url";
-    try {
-      const urlObj = new URL(url);
-      const validImageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.bmp'];
-      const pathname = urlObj.pathname.toLowerCase();
-      const hasValidExtension = validImageExtensions.some(ext => pathname.endsWith(ext));
-      
-      if (!hasValidExtension) {
-        return "please enter a valid image url";
-      }
-      
-      return "";
-    } catch (e) {
-      return "please enter a valid url";
-    }
-  };
 
   function onInput() {
     error = "";
     clearTimeout(debounceTimeout);
     debounceTimeout = setTimeout(() => {
-      error = validateUrl(image.url);
+      error = validateImageUrl(image.url);
     }, 500); 
   }
 

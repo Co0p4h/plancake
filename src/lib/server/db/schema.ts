@@ -193,7 +193,11 @@ export const user_settings = pgTable('user_settings', {
 		social_links: [],
 		discord_webhook: ""
 	}).notNull(),
-});
+}, (table) => ({ 
+	socialLinksLimit: check("social_links_count_limit", 
+		sql`jsonb_array_length(${table.settings}->'social_links') <= 4`
+	),
+}));
 
 export const sessions = pgTable('sessions', {
 	...baseEntity,

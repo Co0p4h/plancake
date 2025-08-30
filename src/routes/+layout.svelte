@@ -5,13 +5,17 @@
   import ja from "dayjs/locale/ja";
 	import isoWeek from 'dayjs/plugin/isoWeek';
 	import weekday from 'dayjs/plugin/weekday';
+	import timezone from 'dayjs/plugin/timezone';
 	import { Toaster } from 'svelte-french-toast';
 
 	dayjs.extend(weekday);
 	dayjs.extend(isoWeek);
+	dayjs.extend(timezone)
 	
 	// TODO: come up with a better way to handle locales ? 
 	const locale = getLocale();
+	console.log('current locale:', locale);
+	
   dayjs.locale(locale);
 
 	let { children } = $props();

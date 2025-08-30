@@ -1,7 +1,8 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { deleteUser, getAllUserSettingsByUserId, updateUserSettings } from '$lib/server/db/services/user-service';
+import { deleteUser, getAllUserSettingsByUserId, isUsernameAvailable, updateUsername, updateUserSettings } from '$lib/server/db/services/user-service';
 import { deleteSessionTokenCookie } from '$lib/server/session';
+import { validateUsername } from '$lib/utils/ss-validate';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
   if (!locals.user) {
@@ -35,23 +36,27 @@ export const actions = {
 
     const { display_name, ...settings } = settingsData;
 
+    if (!display_name.trim()) {
+      return fail(400, { error: 'display name is required.' });
+    }
+
     try {
       if (Math.random() < 0.5) {
         throw new Error('kys');
       }
 
       const result = await updateUserSettings(locals.user.id, settings, display_name);
-      const languageChanged = result.previousSettings?.settings?.language !== result.user_settings.user_settings?.language;
+      // const languageChanged = result.previousSettings?.settings?.language !== result.user_settings.user_settings?.language;
 
       return { 
         success: true, 
         message: 'user settings updated successfully',
         updated_settings: result.user_settings,
-        languageChanged
+        // languageChanged
       };
     } catch (error) {
       if (error instanceof Error) {
-        return fail(500, { error: `failed to update user settings: ${error.message}` });
+        return fail(500, { error: error.message });
       }
       return fail(500, { error: 'unexpected error occurred' });
     }
@@ -76,42 +81,61 @@ export const actions = {
     return redirect(302, '/');
   },
 
-  changeUsername: async (event) => {
+  updateUsername: async (event) => {
     if (!event.locals.user) {
       return redirect(302, `/login?redirectTo=${event.url.pathname}`);
     }
 
     const formData = await event.request.formData();
-    const newUsername = formData.get('new_username') as string;
+    const newUsername = formData.get('new_username')?.toString().trim().toLowerCase();
 
-    if (!newUsername || newUsername.trim().length === 0) {
-      return fail(400, { error: 'username is required' });
+    if (!validateUsername(newUsername)) {
+      return fail(400, {
+        username: newUsername,
+        message: 'invalid username',
+        invalid: true
+      });
+    }
+
+    const isAvailable = await isUsernameAvailable(newUsername, event.locals.user.id);
+    if (!isAvailable) {
+      return fail(400, {
+        new_username: newUsername,
+        message: 'username is already taken',
+        invalid: true
+      });
     }
 
     try {
       if (Math.random() < 0.5) {
         throw new Error('kys');
       }
-
       console.log("changeUsername action called with newUsername: ", newUsername);
 
-      // const { updatedUser } = await updateUsername(event.locals.user.id, newUsername.trim());
+      const updated_user = await updateUsername(event.locals.user.id, newUsername)
 
-      // if (updatedUser) {
-      //   event.locals.user.username = updatedUser.username;
-      //   event.locals.user.displayName = updatedUser.displayName;
-      // }
+      if (!updated_user) {
+        return { success: false, error: 'failed to update username' };
+      }
+
+      console.log("updated username: ", updated_user.updatedUser.username);
 
       return { 
         success: true, 
         message: 'username updated successfully',
-        // updatedUser 
+        updated_username: updated_user.updatedUser.username         
       };
     } catch (error) {
       if (error instanceof Error) {
-        return fail(500, { error: `failed to update username: ${error.message}` });
+        return fail(500, { 
+          message: `failed to update username: ${error.message}`,
+          username: newUsername,
+          invalid: true
+        });
       }
-      return fail(500, { error: 'unexpected error occurred' });
+      return fail(500, { 
+        message: 'unexpected error occurred',
+      });
     }
   }
 }

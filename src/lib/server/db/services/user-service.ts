@@ -4,12 +4,6 @@ import { eq, and, ne } from 'drizzle-orm';
 import { generateId } from '../utils';
 import { validateUsername } from '$lib/utils/ss-validate';
 import { getLocale } from '$lib/paraglide/runtime';
-import dayjs from 'dayjs';
-
-// export async function createUser(userData: table.NewUser) {
-//   const [user] = await db.insert(table.users).values(userData).returning();
-//   return user;
-// }
 
 export async function deleteUser(userId: string) {
   await db.delete(table.users)
@@ -70,10 +64,10 @@ export async function getUserByAuthProvider(authType: table.AuthProvider, provid
   return result[0]?.users || null;
 }
 
-
 export async function createUserWithAuth(
   userData: Omit<typeof table.users.$inferInsert, 'id'>,
-  authMethod: Omit<typeof table.userAuthMethods.$inferInsert, 'id' | 'userId'>
+  authMethod: Omit<typeof table.userAuthMethods.$inferInsert, 'id' | 'userId'>,
+  timezone?: string
 ) {
   return await db.transaction(async (tx) => {
     const userId = generateId();
@@ -93,16 +87,13 @@ export async function createUserWithAuth(
       userId: user.id
     });
 
-    console.log('test timezone', dayjs.tz.guess());
-    
-
     // create user settings
     await tx.insert(table.user_settings).values({
       id: generateId(),
       userId: user.id,
       settings: {
         language: getLocale() || 'en',
-        timezone: dayjs.tz.guess() || 'UTC',
+        timezone: timezone || 'UTC',
         social_links: [],
         discord_webhook: ''
       }
@@ -199,6 +190,12 @@ export async function getAllUserSettingsByUserId(userId: string) {
 }
 
 export async function updateUserSettings(userId: string, settings: typeof table.user_settings.$inferSelect.settings, displayName: string) {
+  const MAX_SOCIAL_LINKS = 4;
+
+  if (settings.social_links && settings.social_links.length > MAX_SOCIAL_LINKS) {
+    throw new Error(`maximum ${MAX_SOCIAL_LINKS} social links allowed`);
+  }
+
   const result = await db.transaction(async (tx) => {
     const [currentSettings] = await tx
       .select({ settings: table.user_settings.settings })

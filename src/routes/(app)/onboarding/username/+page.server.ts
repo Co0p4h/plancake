@@ -1,5 +1,5 @@
 import { isUsernameAvailable, markUserSetupComplete, updateUsername } from '$lib/server/db/services/user-service.js'
-import { validateUsername } from '$lib/utils/validate.js';
+import { validateUsername } from '$lib/utils/ss-validate.js';
 import { fail, redirect } from '@sveltejs/kit';
 
 export const actions = {

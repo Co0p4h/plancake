@@ -1,5 +1,5 @@
 import { fail, redirect } from '@sveltejs/kit';
-import { validatePassword, validateUsername } from '$lib/utils/validate';
+import { validatePassword, validateUsername } from '$lib/utils/ss-validate';
 import { verify } from '@node-rs/argon2';
 import { eq, and } from 'drizzle-orm';
 import * as auth from '$lib/server/session';

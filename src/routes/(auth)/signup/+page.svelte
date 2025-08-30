@@ -7,6 +7,7 @@
 	import { m } from '$lib/paraglide/messages';
 	import toast from 'svelte-french-toast';
 	import type { PageProps } from './$types';
+	import dayjs from 'dayjs';
 
   let { form }: PageProps = $props();
 
@@ -38,6 +39,7 @@
   <div class="w-full max-w-md">
     <h1 class="mb-8 mt-4 text-center text-2xl font-semibold sm:mt-0">{m['_auth.signup.title']()}</h1>
     <form method="POST" class="space-y-4" use:enhance>
+      <input type="hidden" name="timezone" value={dayjs.tz.guess()} />
       <div class="">
         <input
           class="w-full rounded border px-3 py-2 focus:border-purple-500 focus:outline-none"

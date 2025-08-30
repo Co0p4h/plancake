@@ -48,7 +48,9 @@
 		"first_day_of_week_description": "choose which day appears first in your weekly schedule",
 		"empty_day_text_placeholder": "e.g. nothing planned :'(",
 		"show_logo_description": "display the application logo on your schedule",
-		"schedule_description_placeholder": "my schedule description"
+		"schedule_description_placeholder": "my schedule description",
+		"show_schedule_image": "show schedule image",
+		"show_schedule_image_description": "display the image on your schedule page"
 	},
 	"_navigation": {
 		"about": "about",

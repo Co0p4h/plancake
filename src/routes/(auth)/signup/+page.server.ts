@@ -2,7 +2,7 @@ import { hash } from '@node-rs/argon2';
 import { fail, redirect } from '@sveltejs/kit';
 import * as auth from '$lib/server/session';
 import type { Actions, PageServerLoad } from './$types';
-import { validateEmail, validatePassword, validateUsername } from '$lib/utils/validate';
+import { validateEmail, validatePassword, validateUsername } from '$lib/utils/ss-validate';
 import { createUserWithAuth } from '$lib/server/db/services/user-service';
 import type { AuthProvider } from '$lib/server/db/schema';
 import { parseDbError } from '$lib/utils/db-errors';
@@ -19,6 +19,7 @@ export const actions: Actions = {
     const email = formData.get('email')?.toString().trim();
 		const username = formData.get('username')?.toString().trim();
 		const password = formData.get('password')?.toString().trim();
+		const timezone = formData.get('timezone')?.toString().trim();
 
 		if (!validateUsername(username)) {
 			return fail(400, { 
@@ -68,7 +69,7 @@ export const actions: Actions = {
 				}
 			};
 
-			const user = await createUserWithAuth(userData, authMethod);
+			const user = await createUserWithAuth(userData, authMethod, timezone);
 
 			const sessionToken = auth.generateSessionToken();
 			const session = await auth.createSession(sessionToken, user.id);

@@ -1,9 +1,9 @@
 <script lang="ts">
 	import SocialLinks from './SocialLinks.svelte';
 	import ConfirmDeleteUserModal from './ConfirmDeleteUserModal.svelte';
-	import ChangeUsernameModal from './ChangeUsernameModal.svelte';
-	import { changeUsernameModal, deleteUserModal } from './accountModal.svelte';
-	import { setLocale } from '$lib/paraglide/runtime';
+	import ChangeUsernameModal from './UpdateUsernameModal.svelte';
+	import { updateUsernameModal, deleteUserModal } from './accountModal.svelte';
+	import { getLocale, locales, setLocale } from '$lib/paraglide/runtime';
 	import { m } from '$lib/paraglide/messages.js';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import toast from 'svelte-french-toast';
@@ -15,11 +15,11 @@
 
   let isSubmitting = $state(false);
 
-  let username = $state(data.user.username);
+  let username = $derived(data.user.username);
 
   let settings: AllUserSettings = $state({
     display_name: '',
-    language: 'en',
+    language: 'en', // not using this for now, using paraglide runtime instead...
     timezone: '',
     social_links: [{platform: '', url: ''}],
     discord_webhook: '',
@@ -44,11 +44,12 @@
       isSubmitting = false;
 
       if (result.type == "success" && result.data) {
-        const { updated_settings, languageChanged } = result.data;
+        // const { updated_settings, languageChanged } = result.data;
+        const { updated_settings } = result.data;
         if (updated_settings) {
-          if (languageChanged) {
-            setLocale(updated_settings.user_settings.language);
-          }
+          // if (languageChanged) {
+          //   setLocale(updated_settings.user_settings.language);
+          // }
           toast.success('user settings updated successfully!');
         }
       } else if (result.type == "failure" && result.data) { 
@@ -57,6 +58,18 @@
       }
     }
   }
+
+  const localeToLanguage = (locale: string) => {
+    switch (locale) {
+      case 'en':
+        return 'English';
+      case 'ja':
+        return '日本語';
+      default:
+        return 'English';
+    }
+  }
+
 </script>
 
 {#await data.streamed.user_settings}
@@ -75,15 +88,20 @@
       <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg flex flex-col gap-7 mb-6">
         <div>
           <h2 class="text-lg">{m['_account.display_name']()}</h2>
-          <input placeholder={m['_account.display_name_placeholder']()} name="display_name" id="display_name" class="mt-2 rounded-md border-1 border-gray-300 p-2" bind:value={settings.display_name} disabled={isSubmitting} />
+          <input placeholder={m['_account.display_name_placeholder']()} name="display_name" id="display_name" class="mt-2 rounded-md border-1 border-gray-300 p-2" bind:value={settings.display_name} disabled={isSubmitting} required />
         </div>
 
         <div>
           <h2 class="text-lg">{m['_account.language']()}</h2>
-          <p class="text-gray-500 text-sm">Current: {settings.language}</p>
-          <select name="language" id="language" class="mt-2 rounded-md border-1 border-gray-300 p-2" bind:value={settings.language}>
-            <option value="en">English</option>
-            <option value="ja">日本語</option>
+          <p class="text-gray-500 text-sm">Current: {getLocale()}</p>
+          <select name="language" id="language" class="mt-2 rounded-md border-1 border-gray-300 p-2" value={getLocale()} 
+            onchange={(e: Event) => {
+              setLocale((e.target as HTMLSelectElement).value as "en" | "ja")
+            }}
+          >
+            {#each locales as locale}
+              <option value={locale} selected={locale === getLocale()}>{localeToLanguage(locale)}</option>
+            {/each}
           </select>
         </div>
 
@@ -109,11 +127,9 @@
           </div>
           <button class="mt-2 rounded-md border-1 border-gray-500 r-2 cursor-pointer px-5 py-2 bg-white text-gray-500 hover:bg-gray-200 transition-all duration-200 ease-in-out h-fit"
             type="button"
-            onclick={(e) => {
-              e.preventDefault();
-              toast('feature not implemented yet', { icon: '⚠️' });
-              changeUsernameModal.show = true
-              changeUsernameModal.username = username;
+            onclick={() => {
+              updateUsernameModal.show = true
+              updateUsernameModal.username = username;
             }}
           >
             {"change"}

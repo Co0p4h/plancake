@@ -6,6 +6,7 @@ import { decodeIdToken } from "arctic";
 import type { RequestEvent } from "@sveltejs/kit";
 import type { OAuth2Tokens } from "arctic";
 import type { AuthProvider } from "$lib/server/db/schema";
+import dayjs from "dayjs";
 
 export async function GET(event: RequestEvent): Promise<Response> {
 	const code = event.url.searchParams.get("code");
@@ -88,7 +89,7 @@ export async function GET(event: RequestEvent): Promise<Response> {
 		}
 	};
 
-  const user = await createUserWithAuth(userData, authMethod)
+  const user = await createUserWithAuth(userData, authMethod, dayjs.tz.guess());
 
 	const sessionToken = generateSessionToken();
 	const session = await createSession(sessionToken, user.id);

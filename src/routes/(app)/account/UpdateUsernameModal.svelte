@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { changeUsernameModal } from "./accountModal.svelte";
+	import { updateUsernameModal } from "./accountModal.svelte";
   import { m } from '$lib/paraglide/messages.js';
 	import { enhance } from "$app/forms";
 	import { goto } from '$app/navigation';
@@ -11,7 +11,7 @@
   let isUpdating = $state(false);
 
   $effect(() => {
-    if (changeUsernameModal.show && dialog) dialog.showModal();
+    if (updateUsernameModal.show && dialog) dialog.showModal();
   });
 
   function handleMouseDown(e: MouseEvent) {
@@ -27,17 +27,17 @@
     isMouseDownOnDialog = false;
   }
 
-  const enhanceChangeUsernname: SubmitFunction = () => {
+  const enhanceUpdateUsernname: SubmitFunction = () => {
     isUpdating = true;
     return async ({ result }) => {
       isUpdating = false;
       
-      if (result.type === 'redirect') {
-        toast.success('username changed successfully');
+      if (result.type === 'success' && result.data?.success) {
+        toast.success('username updated successfully');
         dialog?.close();
-        await goto(result.location, { invalidateAll: true });
+        await goto('/account', { invalidateAll: true });
       } else if (result.type === 'failure' && result.data) {
-        const error_message = result.data.error || 'failed to change username';
+        const error_message = result.data.message || 'failed to update username';
         toast.error(error_message);
       }
     };
@@ -47,15 +47,15 @@
 <dialog
   class="rounded-lg mx-auto my-auto p-0 shadow-lg max-w-xl w-full border border-gray-300 bg-white"
   bind:this={dialog}
-  onclose={() => (changeUsernameModal.show = false)}
+  onclose={() => (updateUsernameModal.show = false)}
   onmousedown={handleMouseDown}
   onmouseup={handleMouseUp}
   onmouseleave={() => (isMouseDownOnDialog = false)}
 >
-  <form method="POST" action="?/changeUsername" class="space-y-3 p-6" use:enhance={enhanceChangeUsernname} autocomplete="off">
+  <form method="POST" action="?/updateUsername" class="space-y-3 p-6" use:enhance={enhanceUpdateUsernname} autocomplete="off">
     <h3 class="text-lg font-semibold">
       <!-- {m['_account.delete_account_modal_title']()} -->
-       change username
+       update username
     </h3>
     <div class="space-y-3">
       <p class="text-gray-600">
@@ -71,7 +71,7 @@
       class="w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-1 focus:ring-purple-500" 
       required 
       autocomplete="off" 
-      value={changeUsernameModal.username}
+      bind:value={updateUsernameModal.username}
     />
 
     <div class="space-y-2 pt-4">
@@ -89,7 +89,7 @@
           updating...
         {:else}
           <!-- {m['_account.delete_account_modal_button']()} -->
-          change username
+          update username
         {/if}
       </button>
       <button

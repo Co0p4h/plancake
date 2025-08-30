@@ -14,7 +14,7 @@
   }
 </script>
 
-<div class="flex w-full h-full relative z-0 group"
+<div class="flex w-full h-full relative z-0 group max-w-lg"
      style:border-radius={`${theme.item_theme.border_radius}px`}
      style:border={`1px ${theme.colours.primary} ${theme.item_theme.border_style}`}
      style:box-shadow={
@@ -62,27 +62,38 @@
        style:border-bottom-right-radius={`${Math.max(0, theme.item_theme.border_radius - 1)}px`}
   >
     <div class="flex items-center gap-1">
-      {#if !item.id.startsWith('empty-')}
-        <StyledText 
-        theme={theme}
-        typography={theme.typography.item_title}
-        colour={theme.colours.text}
-        tag="span"
-        >
-          {dayjs(item.startTime).format('HH:mm')}
-        </StyledText>
-        {#if item.endTime}
-          <span class="font-medium">-</span>
+      <div class="flex gap-1">
+        {#if !item.id.startsWith('empty-')}
           <StyledText 
           theme={theme}
           typography={theme.typography.item_title}
           colour={theme.colours.text}
           tag="span"
           >
-            {dayjs(item.endTime).format('HH:mm')}
+            {#if settings.use_24_hour_time}
+              {dayjs(item.startTime).format('HH:mm')}
+            {:else}
+              {dayjs(item.startTime).format('hh:mmA')}
+            {/if}
           </StyledText>
+          {#if item.endTime}
+            <span class="font-medium">-</span>
+            <StyledText 
+            theme={theme}
+            typography={theme.typography.item_title}
+            colour={theme.colours.text}
+            tag="span"
+            >
+              {#if settings.use_24_hour_time}
+                {dayjs(item.endTime).format('HH:mm')}
+              {:else}
+                {dayjs(item.endTime).format('hh:mmA')}
+              {/if}
+            </StyledText>
+          {/if}
         {/if}
-      {/if}
+      </div>  
+
       <StyledText 
         theme={theme}
         typography={item.id.startsWith('empty-') ? theme.typography.empty_day : theme.typography.item_title}
