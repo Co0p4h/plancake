@@ -18,6 +18,10 @@ export type UserSettings = {
 	discord_webhook?: string;
 }
 
+export type AllUserSettings = UserSettings & {
+		display_name: string;
+}
+
 export type ScheduleSettings = {
 	show_empty_days: boolean;
 	empty_day_text: string | null;
@@ -27,8 +31,14 @@ export type ScheduleSettings = {
 	first_day_of_week: "monday" | "sunday";
 	show_logo: boolean;
 	show_schedule_description: boolean;
+	show_schedule_image: boolean;
 	// custom_url: string;
 	// sharing_preview: jsonb; // I think this should be a different table? 
+}
+
+export type AllScheduleSettings = ScheduleSettings & {
+    title: string;
+    description?: string | null;
 }
 
 export type ThemeCategories = "background" | "image" | "colours" | "item" | "typography" | "layout" | null;
@@ -177,7 +187,12 @@ export const user_settings = pgTable('user_settings', {
 		.notNull()
 		.references(() => users.id, { onDelete: 'cascade' })
 		.unique(),
-	settings: jsonb('settings').$type<UserSettings>(),
+	settings: jsonb('settings').$type<UserSettings>().default({
+		language: "en",
+		timezone: "UTC",
+		social_links: [],
+		discord_webhook: ""
+	}).notNull(),
 });
 
 export const sessions = pgTable('sessions', {
@@ -332,7 +347,8 @@ export const schedule_settings = pgTable('schedule_settings', {
 		show_social_links: false,
 		first_day_of_week: "monday", 
 		show_logo: true,
-		show_schedule_description: false
+		show_schedule_description: false,
+		show_schedule_image: false
 	}).notNull(),
 });
 

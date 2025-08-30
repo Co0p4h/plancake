@@ -32,8 +32,6 @@ export async function createSession(token: string, userId: string) {
 }
 
 export async function validateSessionToken(token: string) {
-	console.log("validating session token: ", token);
-	
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 	const [result] = await db
 		.select({
@@ -67,7 +65,7 @@ export async function validateSessionToken(token: string) {
 			.where(eq(table.sessions.id, session.id));
 	}
 
-	console.log("validated session: ", { session, user });
+	// console.log("validated session: ", { session, user });
 
 	return { session, user };
 }

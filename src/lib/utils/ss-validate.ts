@@ -13,10 +13,8 @@ function getReservedUsernames(): string[] {
   return envReserved.split(',').map(u => u.trim().toLowerCase());
 }
 
-const reserved_usernames = getReservedUsernames();
-
 function isReservedUsername(username: string): boolean {
-	return reserved_usernames.includes(username.toLowerCase());
+	return getReservedUsernames().includes(username.toLowerCase());
 }
 
 export function validateUsername(username: unknown): username is string {

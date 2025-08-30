@@ -4,14 +4,16 @@ import { eq } from 'drizzle-orm';
 import { fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import type { ScheduleTheme } from '$lib/server/db/schema';
-import { getScheduleByUsername } from '$lib/server/db/services/schedule-service';
+import { getWholeScheduleByUserId } from '$lib/server/db/services/schedule-service';
 
 export const load: PageServerLoad = (async ({ locals, url }) => {
-  if (!locals.user) {
-    return redirect(401, `/login?redirectTo=${url.pathname}`);
+  const user = locals.user;
+
+  if (!user) {
+    return redirect(302, `/login?redirectTo=${url.pathname}`);
   }
 
-  return { schedule_data: await getScheduleByUsername(locals.user.username) };
+  return { schedule_data: await getWholeScheduleByUserId(user.id) };
 });
 
 export const actions = {

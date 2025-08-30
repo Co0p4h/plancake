@@ -2,12 +2,14 @@ import * as table from '$lib/server/db/schema';
 import { db } from "$lib/server/db";
 import { eq, and, ne } from 'drizzle-orm';
 import { generateId } from '../utils';
-import { validateUsername } from '$lib/utils/validate';
+import { validateUsername } from '$lib/utils/ss-validate';
+import { getLocale } from '$lib/paraglide/runtime';
+import dayjs from 'dayjs';
 
-export async function createUser(userData: table.NewUser) {
-  const [user] = await db.insert(table.users).values(userData).returning();
-  return user;
-}
+// export async function createUser(userData: table.NewUser) {
+//   const [user] = await db.insert(table.users).values(userData).returning();
+//   return user;
+// }
 
 export async function deleteUser(userId: string) {
   await db.delete(table.users)
@@ -65,7 +67,6 @@ export async function getUserByAuthProvider(authType: table.AuthProvider, provid
 
     console.log("getUserByAuthProvider result: ", result);
     
-
   return result[0]?.users || null;
 }
 
@@ -92,13 +93,16 @@ export async function createUserWithAuth(
       userId: user.id
     });
 
+    console.log('test timezone', dayjs.tz.guess());
+    
+
     // create user settings
     await tx.insert(table.user_settings).values({
       id: generateId(),
       userId: user.id,
       settings: {
-        language: 'ja',
-        timezone: 'Asia/Tokyo',
+        language: getLocale() || 'en',
+        timezone: dayjs.tz.guess() || 'UTC',
         social_links: [],
         discord_webhook: ''
       }
@@ -176,9 +180,51 @@ export async function getUserSettingsByUserId(userId: string) {
   return user_settings.settings;
 }
 
-export async function updateUserSettingsByUserId(userId: string, settings: typeof table.user_settings.$inferSelect.settings) {
-  const [updated_settings] = await db.update(table.user_settings).set({ settings: settings }).where(eq(table.user_settings.userId, userId)).returning();
-  return updated_settings.settings;
+export async function getAllUserSettingsByUserId(userId: string) {
+  const [result] = await db
+    .select(
+      {
+        user: { id: table.users.id, username: table.users.username, display_name: table.users.displayName, email: table.users.email },
+        settings: table.user_settings.settings
+      }
+    )
+    .from(table.users)
+    .leftJoin(table.user_settings, eq(table.users.id, table.user_settings.userId))
+    .where(eq(table.users.id, userId))
+    .limit(1);
+
+  console.log("getAllUserSettingsByUserId result: ", result);
+
+  return result;
+}
+
+export async function updateUserSettings(userId: string, settings: typeof table.user_settings.$inferSelect.settings, displayName: string) {
+  const result = await db.transaction(async (tx) => {
+    const [currentSettings] = await tx
+      .select({ settings: table.user_settings.settings })
+      .from(table.user_settings)
+      .where(eq(table.user_settings.userId, userId));
+
+    await tx.update(table.user_settings)
+      .set({ settings: settings })
+      .where(eq(table.user_settings.userId, userId));
+
+    await tx.update(table.users)
+      .set({
+        displayName: displayName
+      })
+      .where(eq(table.users.id, userId));
+
+    const [user_settings] = await tx
+      .select({ user: { displayName: table.users.displayName }, user_settings: table.user_settings.settings })
+      .from(table.users)
+      .leftJoin(table.user_settings, eq(table.users.id, table.user_settings.userId))
+      .where(eq(table.users.id, userId))
+
+    return { user_settings, previousSettings: currentSettings };
+  });
+
+  return result;
 }
 
 export async function updateUsername(userId: string, newUsername: string) {

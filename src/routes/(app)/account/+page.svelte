@@ -1,13 +1,14 @@
 <script lang="ts">
 	import SocialLinks from './SocialLinks.svelte';
 	import ConfirmDeleteUserModal from './ConfirmDeleteUserModal.svelte';
-	import { deleteUserModal } from './deleteUserModal.svelte';
+	import ChangeUsernameModal from './ChangeUsernameModal.svelte';
+	import { changeUsernameModal, deleteUserModal } from './accountModal.svelte';
 	import { setLocale } from '$lib/paraglide/runtime';
 	import { m } from '$lib/paraglide/messages.js';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import toast from 'svelte-french-toast';
 	import { enhance } from '$app/forms';
-	import type { UserSettings } from '$lib/server/db/schema';
+	import type { AllUserSettings } from '$lib/server/db/schema';
 	import { page } from '$app/state';
 
   let { data } = $props();
@@ -15,11 +16,11 @@
   let isSubmitting = $state(false);
 
   let username = $state(data.user.username);
-  let display_name = $state('');
 
-  let settings: UserSettings = $state({
+  let settings: AllUserSettings = $state({
+    display_name: '',
     language: 'en',
-    timezone: 'Asia/Tokyo',
+    timezone: '',
     social_links: [{platform: '', url: ''}],
     discord_webhook: '',
   });
@@ -27,8 +28,10 @@
   $effect(() => {
     if (data.streamed.user_settings) {
       data.streamed.user_settings.then((result) => {
-        if (result && result) {
-          settings =  result;
+        console.log('loaded user settings:', result);
+        
+        if (result.settings && result.user.display_name) {
+          settings =  { ...result.settings, display_name: result.user.display_name };
           console.log('settings loaded:', settings);
         }
       });
@@ -41,9 +44,11 @@
       isSubmitting = false;
 
       if (result.type == "success" && result.data) {
-        const updated_settings = await result.data.updated_settings;
+        const { updated_settings, languageChanged } = result.data;
         if (updated_settings) {
-          setLocale(updated_settings.language)
+          if (languageChanged) {
+            setLocale(updated_settings.user_settings.language);
+          }
           toast.success('user settings updated successfully!');
         }
       } else if (result.type == "failure" && result.data) { 
@@ -64,16 +69,13 @@
   <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg relative">
     <h1 class="mb-4 text-xl text-gray-500">{m['_account.account']()}</h1>
     
-    <form method="POST" use:enhance={enhance_form} class="space-y-7">
-      <input type="hidden" name="language" value={settings.language} />
-      <input type="hidden" name="timezone" value={settings.timezone} />
-      <input type="hidden" name="discord_webhook" value={settings.discord_webhook} />
-      <input type="hidden" name="social_links" value={JSON.stringify(settings.social_links)} />
+    <form method="POST" action="?/updateUserSettings" use:enhance={enhance_form} class="space-y-7">
+      <input type="hidden" name="user_settings" value={JSON.stringify(settings)} />
 
       <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg flex flex-col gap-7 mb-6">
         <div>
           <h2 class="text-lg">{m['_account.display_name']()}</h2>
-          <input placeholder={m['_account.display_name_placeholder']()} name="display_name" id="display_name" class="mt-2 rounded-md border-1 border-gray-300 p-2" bind:value={display_name} disabled={isSubmitting} />
+          <input placeholder={m['_account.display_name_placeholder']()} name="display_name" id="display_name" class="mt-2 rounded-md border-1 border-gray-300 p-2" bind:value={settings.display_name} disabled={isSubmitting} />
         </div>
 
         <div>
@@ -89,21 +91,33 @@
           <h2 class="text-lg">{m['_account.timezone']()}</h2>
           <p class="text-gray-500 text-sm">Current: {settings.timezone}</p>
           <select name="timezone" id="timezone" class="mt-2 rounded-md border-1 border-gray-300 p-2" bind:value={settings.timezone}>
-            <option value="Asia/Tokyo">Asia/Tokyo</option>
-            <option value="Australia/Sydney">Australia/Sydney</option>
-            <option value="America/New_York">America/New_York</option>
-            <option value="America/Los_Angeles">America/Los_Angeles</option>
-            <option value="Europe/London">Europe/London</option>
+            {#each Intl.supportedValuesOf('timeZone') as tz}
+              <option value={tz}>{tz}</option>
+            {/each}
           </select>
         </div>
 
-        <div>
-          <h2 class="text-lg">{m['_account.username']()}</h2>
-          <p class="text-gray-500 text-sm">{m['_account.username_description']()}</p>
-          <div class="flex items-center gap-1 mt-2">
-            <p>{page.url.host}/</p>
-            <input placeholder={m['_account.username']()} name="username" id="username" class="rounded-md border-1 border-gray-300 p-2" bind:value={username} disabled={isSubmitting} />
+        <div class="flex gap-1 justify-between items-center">
+          <div>
+            <h2 class="text-lg">{m['_account.username']()}</h2>
+            <p class="text-gray-500 text-sm">{m['_account.username_description']()}</p>
+            <div class="flex items-center gap-1 mt-2">
+              <p>{page.url.host}/</p>
+              <!-- <input placeholder={m['_account.username']()} name="username" id="username" class="rounded-md border-1 border-gray-300 p-2" bind:value={username} disabled={isSubmitting} /> -->
+              <p class="text-gray-500">{username}</p>
+            </div>
           </div>
+          <button class="mt-2 rounded-md border-1 border-gray-500 r-2 cursor-pointer px-5 py-2 bg-white text-gray-500 hover:bg-gray-200 transition-all duration-200 ease-in-out h-fit"
+            type="button"
+            onclick={(e) => {
+              e.preventDefault();
+              toast('feature not implemented yet', { icon: '⚠️' });
+              changeUsernameModal.show = true
+              changeUsernameModal.username = username;
+            }}
+          >
+            {"change"}
+          </button>
         </div>
 
         <!-- <div>
@@ -113,7 +127,7 @@
         </div> -->
       </div>
 
-      <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg flex flex-col gap-7 mb-6">
+      <div id="social-links" class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg flex flex-col gap-7 mb-6">
         <div>
           <h2 class="text-lg">{m['_account.social_links']()}</h2>
           <p class="text-gray-500 text-sm">{m['_account.manage_your_social_links']()}</p>
@@ -139,7 +153,7 @@
 
       <div class="flex items-center justify-end pt-5 sticky bottom-0 pb-5 bg-white">
         <button
-          formaction="?/updateUserSettings"
+          type="submit"
           class="focus:shadow-outline rounded bg-purple-400 px-4 py-2 font-bold text-white hover:bg-purple-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-in-out cursor-pointer flex items-center"
           disabled={isSubmitting} 
         >
@@ -159,3 +173,4 @@
 {/await}
 
 <ConfirmDeleteUserModal />
+<ChangeUsernameModal />
