@@ -21,6 +21,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>{page.params.user}</title>
+</svelte:head>
+
 {#await data.schedule_data}
 	loading schedule...
 {:then schedule_data}
@@ -56,14 +60,14 @@
 		return items_with_empty_days;
 	})()}
 
-		<div id="user-schedule-gradient" class="flex flex-col items-center p-4 sm:p-6 lg:p-8 min-h-svh w-full justify-between"
-		 style:background-color={schedule_data.theme.background === 'solid' ? schedule_data.theme.colours.background : undefined}
-		 style:background-image={schedule_data.theme.background === 'gradient' ? `linear-gradient(180deg,${schedule_data.theme.colours.background} 0,hsla(0,0%,98%,0) 50%),radial-gradient(51% 51% at -11% 9%,${schedule_data.theme.colours.primary}80 1%,${schedule_data.theme.colours.primary}00 100%),radial-gradient(51% 67% at 115% 96%,${schedule_data.theme.colours.primary}80 0,${schedule_data.theme.colours.primary}00 100%),radial-gradient(50% 66% at 50% 50%,${schedule_data.theme.colours.accent}80 0,${schedule_data.theme.colours.primary}00 100%),radial-gradient(22% 117% at 2% 87%,${schedule_data.theme.colours.secondary}00 20%,${schedule_data.theme.colours.accent}80 100%),linear-gradient(0deg,${schedule_data.theme.colours.secondary}80,${schedule_data.theme.colours.secondary}80)` : undefined}
+	<div id="user-schedule-gradient" class="flex flex-col items-center p-4 sm:p-6 lg:p-8 min-h-svh w-full justify-between"
+		style:background-color={schedule_data.theme.background === 'solid' ? schedule_data.theme.colours.background : undefined}
+		style:background-image={schedule_data.theme.background === 'gradient' ? `linear-gradient(180deg,${schedule_data.theme.colours.background} 0,hsla(0,0%,98%,0) 50%),radial-gradient(51% 51% at -11% 9%,${schedule_data.theme.colours.primary}80 1%,${schedule_data.theme.colours.primary}00 100%),radial-gradient(51% 67% at 115% 96%,${schedule_data.theme.colours.primary}80 0,${schedule_data.theme.colours.primary}00 100%),radial-gradient(50% 66% at 50% 50%,${schedule_data.theme.colours.accent}80 0,${schedule_data.theme.colours.primary}00 100%),radial-gradient(22% 117% at 2% 87%,${schedule_data.theme.colours.secondary}00 20%,${schedule_data.theme.colours.accent}80 100%),linear-gradient(0deg,${schedule_data.theme.colours.secondary}80,${schedule_data.theme.colours.secondary}80)` : undefined}
 	>
 		<div
 			class="flex w-full max-w-4xl flex-col items-center gap-4 sm:gap-6 md:gap-8 mb-4 {schedule_data.theme.image?.url ? 'md:flex-row md:items-start' : ''}"
 		>
-						<!-- schedule section -->
+			<!-- schedule section -->
 			<div class="w-full max-w-2xl {schedule_data.theme.image?.url ? 'md:max-w-none' : ''} flex-1"
 				style:order={schedule_data.theme.layout.image_position === 'left' ? '1' : '0'}>
 				<div class="mb-4">

@@ -40,8 +40,6 @@
 	function toggleSideNav() {
 		sideNavOpen = !sideNavOpen;
 	}
-
-	// console.log("header - page", page.data);
 </script>
 
 <header>

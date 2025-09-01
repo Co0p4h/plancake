@@ -7,6 +7,7 @@
 	import weekday from 'dayjs/plugin/weekday';
 	import timezone from 'dayjs/plugin/timezone';
 	import { Toaster } from 'svelte-french-toast';
+	import { page } from '$app/state';
 
 	dayjs.extend(weekday);
 	dayjs.extend(isoWeek);
@@ -20,6 +21,10 @@
 
 	let { children } = $props();
 </script>
+
+<svelte:head>
+	<title>plancake | {page.url.pathname.slice(1)}</title>
+</svelte:head>
 
 <div class="app">
 	<main>

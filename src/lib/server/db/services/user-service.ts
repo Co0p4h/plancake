@@ -46,6 +46,15 @@ export async function getUserByUsername(username: string): Promise<typeof table.
   return user || null;
 }
 
+export async function getUserByEmail(email: string): Promise<typeof table.users.$inferSelect | null> {
+  const [user] = await db
+    .select()
+    .from(table.users)
+    .where(eq(table.users.email, email));
+    
+  return user || null;
+}
+
 export async function getUserByAuthProvider(authType: table.AuthProvider, providerId: string) {
   const result = await db
     .select()
@@ -76,7 +85,7 @@ export async function createUserWithAuth(
       .values({
         ...userData,
         id: userId,
-        setupComplete: authMethod.authType === 'password' ? true : false
+        setupComplete: userData.setupComplete || authMethod.authType === 'password' ? true : false
       })
       .returning();
 
@@ -159,6 +168,23 @@ export async function createUserWithAuth(
 
     return user;
   });
+}
+
+export async function addAuthMethodToUser(
+  userId: string,
+  authMethod: Omit<typeof table.userAuthMethods.$inferInsert, 'id' | 'userId'>
+) {
+  const authMethodId = generateId();
+  const [result] = await db
+    .insert(table.userAuthMethods)
+    .values({
+      ...authMethod,
+      id: authMethodId,
+      userId: userId
+    })
+    .returning();
+
+  return result;
 }
 
 export async function getUserSettingsByUserId(userId: string) {
