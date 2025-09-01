@@ -4,7 +4,7 @@
 	"hello": "hello",
 	"_auth": {
 		"signup": {
-			"title": "create your account",
+			"title": "get started with plancake",
 			"email": "email",
 			"password": "password",
 			"username": "username",

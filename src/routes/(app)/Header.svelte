@@ -5,11 +5,14 @@
 	import UserMenu from './UserMenu.svelte';
 	import Navigation from './Navigation.svelte';
 	import SideNavigation from './SideNavigation.svelte';
+
+	function toggleMenu() {
+		menuOpen = !menuOpen;
+	}
 	
-	let menuHovered = $state(false);
+	let menuOpen = $state(false);
 	let sideNavOpen = $state(false);
 
-	// Build navigation links based on user state
 	const links = $derived(page.data.user ? [
 		{
 			href: '/schedule',
@@ -42,7 +45,7 @@
 </script>
 
 <header>
-	<div class="nav-wrapper flex justify-between mt-4 mx-8 items-center">
+	<div class="flex justify-between mt-4 mx-8 items-center">
 		<div class="flex items-center">
 			<h1 class="text-2xl font-black">
 				<a href="/">P.</a>
@@ -58,16 +61,13 @@
 
 		{#if page.data.user}
 			<div class="flex gap-2 items-center relative">
-				<div class="flex gap-2 items-center cursor-pointer"
-						role="button"
+				<button class="flex gap-2 items-center cursor-pointer hover:bg-gray-200 rounded-md px-2 py-1"
 						tabindex="0"
-						onmouseenter={() => menuHovered = true }
+						onclick={toggleMenu}
 				>
-					<a href={`/${page.data.user.username}`}>
-						<p>@{page.data.user.username}</p>
-					</a>
+					@{page.data.user.username}
 					<CircleUserRound size={20} />
-				</div>
+				</button>
 				<button 
 					class="hamburger md:hidden flex flex-col justify-center items-center w-8 h-8 cursor-pointer"
 					onclick={toggleSideNav}
@@ -77,8 +77,8 @@
 					<span class="block w-6 h-0.5 bg-gray-600 my-1 transition-opacity duration-300 {sideNavOpen ? 'opacity-0' : ''}"></span>
 					<span class="block w-6 h-0.5 bg-gray-600 transition-transform duration-300 {sideNavOpen ? '-rotate-45 -translate-y-1.5' : ''}"></span>
 				</button>
-				{#if menuHovered}
-					<UserMenu bind:menuHovered />
+				{#if menuOpen}
+					<UserMenu bind:menuOpen={menuOpen} />
 				{/if}
 			</div>
 		{:else}

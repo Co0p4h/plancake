@@ -11,8 +11,6 @@ export const actions = {
     const formData = await request.formData();
     const username = formData.get('username')?.toString().trim().toLowerCase();
 
-    console.log("updating username to: ", username);
-
     if (!validateUsername(username)) {
       return fail(400, {
         username: username,
@@ -32,7 +30,6 @@ export const actions = {
 
     try {
       const updated_user = await updateUsername(locals.user.id, username)
-      console.log("updated username: ", updated_user);
 
       if (!updated_user) {
         return { success: false, error: 'failed to update username' };

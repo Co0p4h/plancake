@@ -31,13 +31,17 @@ export const actions = {
     }
 
     const formData = await request.formData();
-    const settingsData = JSON.parse(formData.get('user_settings') as string);
-    console.log('settingsData: ', settingsData);
+    const settingsJson = formData.get('user_settings');
+    
+    if (!settingsJson) {
+      return fail(400, { error: 'missing settings data' });
+    }
 
+    const settingsData = JSON.parse(settingsJson as string);
     const { display_name, ...settings } = settingsData;
 
     if (!display_name.trim()) {
-      return fail(400, { error: 'display name is required.' });
+      return fail(400, { error: 'display name is required' });
     }
 
     try {
@@ -102,6 +106,14 @@ export const actions = {
       return fail(400, {
         new_username: newUsername,
         message: 'username is already taken',
+        invalid: true
+      });
+    }
+
+    if (newUsername === event.locals.user.username) {
+      return fail(400, {
+        new_username: newUsername,
+        message: 'new username cannot be the same as the current username',
         invalid: true
       });
     }

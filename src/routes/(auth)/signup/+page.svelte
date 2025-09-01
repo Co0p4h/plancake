@@ -91,7 +91,7 @@
 
       <button
         type="submit"
-        class="w-full rounded bg-purple-500 px-4 py-2 font-bold text-white hover:bg-purple-700 focus:outline-none cursor-pointer"
+        class="w-full rounded bg-purple-500 px-4 py-2 font-medium text-white hover:bg-purple-700 focus:outline-none cursor-pointer"
       >
         {m['_auth.signup.button']()}
       </button>

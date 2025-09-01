@@ -8,7 +8,7 @@
 </svelte:head>
 
 <section class="showcase-gradient min-h-[80vh]">
-	<div class="flex flex-col text-left gap-4 p-8   w-full justify-center items-center">
+	<div class="flex flex-col text-left gap-4 p-8 w-full justify-center items-center">
 		<h1 class="text-5xl font-bold tracking-wide">your content schedule, simplified.</h1>
 		<p class="font-light">share your schedule with your audience worldwide—no more timezone confusion, no more missed connections</p>
 	</div>

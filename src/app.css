@@ -8,9 +8,11 @@
   --color-purple-dark: #a855f7;
   --color-purple-bg: #8c00ff26;
   --color-purple-text: #8c00ff;
+  --color-purple-background: #F9F8FA;
 
   /* grays */
   /* --color-gray-300: oklch(92.8% 0.006 264.531) */
+
 
   --color-red-500: #ff4646;
 }

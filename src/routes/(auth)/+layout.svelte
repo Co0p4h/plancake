@@ -1,37 +1,17 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { LogOut } from '@lucide/svelte';
-	import toast from 'svelte-french-toast';
-
-	let { children } = $props();
+  let { children } = $props();
 </script>
 
 <div class="min-h-screen flex flex-col bg-purple-background">
   <header class="flex mt-4 mx-8 items-center justify-between">
-    <!-- <div class="flex items-center">
+    <div class="flex items-center">
 			<h1 class="text-2xl font-black">
 				<a href="/">P.</a>
 			</h1>
 			<span class="ml-4 select-none rounded bg-purple-400 px-2 py-1 text-xs text-white hidden sm:block">
 				now in beta!
 			</span>
-    </div> -->
-		<div class="flex items-center justify-end w-full">
-			<button 
-				class="flex items-center gap-2 cursor-pointer text-gray-500 hover:bg-gray-200 rounded-md px-2 py-1" 
-				onclick={async () => {
-					const response = await fetch("/logout", { method: "POST" });
-					if (response.ok) {
-						toast.success("logout successful");
-						await goto("/", { invalidateAll: true });
-					} else {
-						toast.error("logout failed");
-					}
-				}}>
-				logout
-				<LogOut size={18} />
-			</button>
-		</div>
+    </div>
   </header>
   <div class="flex flex-1 flex-col p-4 z-10">
     {@render children()}

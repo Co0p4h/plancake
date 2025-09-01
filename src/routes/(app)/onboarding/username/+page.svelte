@@ -2,6 +2,7 @@
   import { enhance } from '$app/forms';
 	import toast from 'svelte-french-toast';
   import type { PageProps } from './$types';
+	import { page } from '$app/state';
 
   let { form }: PageProps = $props();
 
@@ -12,7 +13,27 @@
   })
 </script>
 
-<form method="POST" action="?/updateUsername" class="space-y-4" use:enhance>
-  <input type="text" name="username" placeholder="Choose a username" class="w-full rounded border px-3 py-2 focus:border-purple-500 focus:outline-none" value={form?.username ?? ''} required />
-  <button type="submit" class="w-full rounded bg-purple-600 px-3 py-2 text-white hover:bg-purple-700 focus:outline-none cursor-pointer">set username</button>  
-</form>
+<div class="grid place-items-center min-h-[calc(100vh-12rem)]">
+  <form method="POST" action="?/updateUsername" class="flex flex-col gap-5" use:enhance>
+    <div class="flex items-center justify-center ">
+      <span class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold whitespace-nowrap select-none">{page.url.host}/</span>    
+      <input 
+        class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold rounded focus:border-purple-500 focus:outline-none" 
+        type="text" 
+        name="username" 
+        placeholder="username" 
+        style="width: 8ch;"
+        autocomplete="off"
+        value={form?.username ?? ''} 
+        required 
+      />
+    </div>
+    <div class="flex ">
+      <button 
+        type="submit" 
+        class="w-1/2 rounded-full bg-black px-6 py-3 text-base sm:text-lg text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-700 cursor-pointer transition-all duration-200 ease-in-out">
+        continue
+      </button>  
+    </div>
+  </form>
+</div>
