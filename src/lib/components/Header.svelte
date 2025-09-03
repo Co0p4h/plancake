@@ -30,11 +30,11 @@
 			current: page.url.pathname.startsWith('/settings')
 		}
 	] : [
-		{
-			href: '/about',
-			label: m['_navigation.about'](),
-			current: page.url.pathname === '/about'
-		}
+		// {
+		// 	href: '/about',
+		// 	label: m['_navigation.about'](),
+		// 	current: page.url.pathname === '/about'
+		// }
 	]);
 
 	function toggleSideNav() {
@@ -48,7 +48,7 @@
 			<h1 class="text-2xl font-black">
 				<a href="/">P.</a>
 			</h1>
-			<span class="ml-4 select-none rounded bg-purple-400 px-2 py-1 text-xs text-white hidden sm:block">
+			<span class="ml-4 select-none rounded bg-purple-400 px-2 py-1 text-xs text-white">
 				now in beta!
 			</span>
 		</div>
@@ -81,7 +81,7 @@
 			</div>
 		{:else}
 			<div class="flex gap-4 items-center justify-center text-md">
-				<a class="rounded-md py-1 transition-colors hover:bg-gray-100" href="/login">
+				<a class="rounded-md px-3 py-1 transition-colors hover:bg-gray-200" href="/login">
 					<p>{m.login()}</p>
 				</a>
 				<a class="rounded-md bg-black px-3 py-1 text-white transition-colors hover:bg-gray-800" href="/signup">

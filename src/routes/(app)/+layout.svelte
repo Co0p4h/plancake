@@ -1,5 +1,6 @@
 <script lang="ts">
-	import Header from './Header.svelte';
+	import Header from '$lib/components/Header.svelte';
+	import Footer from '$lib/components/Footer.svelte';
 
 	let { children } = $props();
 </script>
@@ -10,8 +11,4 @@
 	{@render children()}
 </div>
 
-<footer class="flex flex-col items-center justify-center p-3">
-	<p>
-		visit <a class="font-bold" href="https://coopa.me/about">coopa</a> to learn about plancake
-	</p>
-</footer>
+<Footer />

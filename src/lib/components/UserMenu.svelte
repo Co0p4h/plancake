@@ -30,7 +30,7 @@
   bind:this={menuElement}
   onmousedown={handleMouseDown}
   onmouseup={handleMouseUp}
-  class="rounded-lg border border-gray-300 bg-white z-10 px-4 py-3 shadow-lg top-12 right-8 ml-auto backdrop:bg-transparent"
+  class="rounded-lg border border-gray-300 bg-white z-10 px-4 py-3 shadow-lg top-12 right-8 ml-auto backdrop:bg-transparent sticky"
   tabindex="0"
   onclick={() => {
     menuOpen = false;
