@@ -24,5 +24,6 @@
 	li[aria-current='page'] {
 		background-color: #8c00ff26;
 		color: #8C00FF;
+		/* view-transition-name: active-page; */
 	}
 </style>

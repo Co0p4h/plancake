@@ -13,17 +13,20 @@
 		<p class="font-light text-left w-full">share your schedule with your audience worldwide—no more timezone confusion, no more missed connections</p>
 	</div>
 	<div class="flex flex-col gap-3 w-full max-w-2xl px-4 sm:flex-row">
-		<input 
-			bind:value={username} 
-			type="text" 
-			placeholder="username" 
-			class="flex-1 rounded border focus:border-purple-500 focus:outline-none px-4 py-2" 
-		/>
-		<a 
-			href={username ? `/signup?username=${username}` : '/signup'}
-			class="px-6 py-2 rounded-md bg-purple-default text-base sm:text-lg text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-700 cursor-pointer transition-all duration-200 ease-in-out whitespace-nowrap">
-			claim your schedule now!
-		</a>  
+		<form method="get" action={`/signup?username=${username}`} >
+			<input 
+				name="username"
+				bind:value={username} 
+				type="text" 
+				placeholder="username" 
+				class="flex-1 rounded border focus:border-purple-500 focus:outline-none px-4 py-2" 
+			/>
+			<button 
+				type="submit"
+				class="px-6 py-2 rounded-md bg-purple-default text-base sm:text-lg text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-700 cursor-pointer transition-all duration-200 ease-in-out whitespace-nowrap">
+				claim your schedule now!
+			</button>  
+		</form>
 	</div>
 	<!-- <picture>
 		<img src="https://i.pinimg.com/736x/8c/34/dd/8c34ddbe9d9c3f5b0af2b14bfe989a2c.jpg" alt="Welcome" />

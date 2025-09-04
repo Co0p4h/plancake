@@ -11,7 +11,7 @@
 	import { initThemeStore, themeStore } from './appearance.svelte';
 	import ScheduleGridItem from '../../(public)/[user]/ScheduleGridItem.svelte';
 	import { getCurrentWeekDates } from '$lib/utils/date';
-	import { validateImageUrl } from '$lib/utils/cs-validate';
+	import { validateImageUrl, validateArtistUrl } from '$lib/utils/cs-validate';
 
 	let { data } = $props();
 
@@ -55,12 +55,12 @@
 <div class="mx-auto flex flex-1 items-start gap-4">
 	{#await data.schedule_data}
 		<!-- Loading skeleton that matches the actual layout -->
-		<div class="animate-pulse max-w-8xl flex-grow self-stretch rounded-lg border border-gray-300 bg-white p-5">
+		<div class="animate-pulse max-w-8xl flex-grow self-stretch rounded-lg border border-gray-300 bg-white p-5 flex flex-col min-h-0">
 			<!-- Header skeleton -->
 			<div class="h-6 bg-gray-200 rounded w-32 mb-4"></div>
 			
 			<!-- Main preview area skeleton -->
-			<div class="flex min-h-screen flex-col items-center rounded-lg border border-gray-300 p-4 bg-gray-50">
+			<div class="flex h-full min-h-0 flex-col items-center rounded-lg border border-gray-300 p-4 bg-gray-50">
 				<div class="flex w-full max-w-4xl flex-row items-start gap-8">
 					<!-- Schedule section skeleton -->
 					<div class="mx-auto w-full min-w-sm lg:min-w-xs lg:max-w-xl flex-1">
@@ -175,10 +175,10 @@
 			return items_with_empty_days;
 		})()}
 
-		<div class="max-w-8xl flex-grow self-stretch rounded-lg border border-gray-300 bg-white p-5">
+		<div class="max-w-8xl flex-grow self-stretch rounded-lg border border-gray-300 bg-white p-5 flex flex-col min-h-0">
 			<h1 class="mb-4 text-xl text-gray-500">{m['_appearance.appearance']()}</h1>
 			<div
-				class="flex min-h-screen flex-col items-center rounded-lg border border-gray-300 p-4 sm:p-6 lg:p-8 lg:min-w-2xl"
+				class="flex h-full min-h-0 flex-col items-center rounded-lg border border-gray-300 p-4 sm:p-6 lg:p-8 lg:min-w-2xl"
 				style:background-color={themeStore.clientTheme.background === 'solid' ? themeStore.clientTheme.colours.background : undefined}
 				style:background-image={themeStore.clientTheme.background === 'gradient' ? `linear-gradient(180deg,${themeStore.clientTheme.colours.background} 0,hsla(0,0%,98%,0) 50%),radial-gradient(51% 51% at -11% 9%,${themeStore.clientTheme.colours.primary}80 1%,${themeStore.clientTheme.colours.primary}00 100%),radial-gradient(51% 67% at 115% 96%,${themeStore.clientTheme.colours.primary}80 0,${themeStore.clientTheme.colours.primary}00 100%),radial-gradient(50% 66% at 50% 50%,${themeStore.clientTheme.colours.accent}80 0,${themeStore.clientTheme.colours.primary}00 100%),radial-gradient(22% 117% at 2% 87%,${themeStore.clientTheme.colours.secondary}00 20%,${themeStore.clientTheme.colours.accent}80 100%),linear-gradient(0deg,${themeStore.clientTheme.colours.secondary}80,${themeStore.clientTheme.colours.secondary}80)` : undefined}
 			>
@@ -270,23 +270,29 @@
 					</div>
 
 					{#if themeStore.clientTheme.image?.url && scheduleData.schedule_settings.settings.show_schedule_image && validateImageUrl(themeStore.clientTheme.image.url) == ""}
-						<div class="sticky top-4 w-full lg:min-w-0 lg:max-w-md xl:max-w-lg hidden lg:block flex-1 items-start overflow-hidden"
+						<div class="relative block w-full mx-auto max-w-sm sm:max-w-md lg:min-w-0 lg:max-w-md xl:max-w-lg lg:sticky lg:top-4 lg:flex-1 items-start overflow-hidden"
 								style:border={`1px ${themeStore.clientTheme.colours.text} solid`}
 								style:order={themeStore.clientTheme.layout.image_position === 'left' ? '0' : '1'}
 								style:border-radius={`${themeStore.clientTheme.item_theme.border_radius}px`}>
-							<img src={themeStore.clientTheme.image?.url} alt={themeStore.clientTheme.image?.alt} class="object-cover" loading="lazy" />
-							<span class="absolute right-1 bottom-1 p-1"
-								style:background-color={themeStore.clientTheme.colours.secondary}>
-								<StyledText 
-									theme={themeStore.clientTheme}
-									typography={themeStore.clientTheme.typography.body}
-									colour={themeStore.clientTheme.colours.text}
-								>
-									<a href={themeStore.clientTheme.image.artist_url}>
-										@{themeStore.clientTheme.image?.artist_name}
-									</a>
-								</StyledText>
-							</span>
+							<img src={themeStore.clientTheme.image?.url} alt={themeStore.clientTheme.image?.alt} class="w-full h-auto object-cover block" loading="lazy" />
+							{#if themeStore.clientTheme.image?.artist_name}
+								<span class="absolute right-2 bottom-2 p-1 rounded"
+									style:background-color={themeStore.clientTheme.colours.secondary}>
+									<StyledText 
+										theme={themeStore.clientTheme}
+										typography={themeStore.clientTheme.typography.body}
+										colour={themeStore.clientTheme.colours.text}
+									>
+										{#if themeStore.clientTheme.image?.artist_url && validateArtistUrl(themeStore.clientTheme.image.artist_url) == ""}
+											<a href={themeStore.clientTheme.image.artist_url} target="_blank" rel="noopener noreferrer">
+												@{themeStore.clientTheme.image?.artist_name}
+											</a>
+										{:else}
+											<span>@{themeStore.clientTheme.image?.artist_name}</span>
+										{/if}
+									</StyledText>
+								</span>
+							{/if}
 						</div>
 					{/if}
 				</div>
@@ -304,7 +310,7 @@
 	{:catch error}
 		<div class="max-w-8xl flex-grow self-stretch rounded-lg border border-red-300 bg-red-50 p-5">
 			<div class="text-red-600">
-				<h2 class="text-lg font-semibold mb-2">Error loading schedule data</h2>
+				<h2 class="text-lg font-semibold mb-2">error loading schedule data</h2>
 				<p>{error.message}</p>
 			</div>
 		</div>

@@ -14,13 +14,13 @@
 
 </script>
 
-<div class="flex-1 min-w-[140px] rounded-lg">
+<div class="flex-1 min-w-[140px] rounded-lg flex flex-col">
   <div class={`p-2 rounded-t-md border ${isToday ? 'bg-black border-black text-white': 'border-gray-300'}`}>
     <h3 class="text-md font-medium">
       {dayjs(day).format("ddd. D")}
     </h3>
   </div>
-  <div class={`p-2 min-h-[600px] border-l border-r border-b rounded-b-md relative ${isToday ? 'border-black': 'border-gray-300'}`}>
+  <div class={`p-2 flex-1 border-l border-r border-b rounded-b-md relative overflow-y-auto ${isToday ? 'border-black': 'border-gray-300'}`}>
     {#each items as item, i (item.id)}
       {#if item.id === "loading"}
         <div class="h-32 bg-gray-100 rounded-md animate-pulse p-3">

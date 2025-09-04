@@ -9,7 +9,7 @@
 	import StyledText from '$lib/components/StyledText.svelte';
 	import { getCurrentWeekDates } from '$lib/utils/date';
 	import { m } from '$lib/paraglide/messages.js';
-	import { validateImageUrl } from '$lib/utils/cs-validate';
+	import { validateImageUrl, validateArtistUrl } from '$lib/utils/cs-validate';
 	dayjs.extend(weekday);
 
 	let { data } = $props();
@@ -153,25 +153,31 @@
 			<!-- image section... -->
 			{#if schedule_data.theme.image?.url && schedule_data.schedule_settings.settings.show_schedule_image && validateImageUrl(schedule_data.theme.image.url) == ""}
 				{#if animate}
-					<div class="sticky top-4 flex-1 items-start w-full md:min-w-0 md:max-w-md lg:max-w-lg hidden md:block overflow-hidden"
+					<div class="relative w-full mx-auto max-w-sm sm:max-w-md md:min-w-0 md:max-w-md lg:max-w-lg overflow-hidden block md:sticky md:top-4 md:flex-1"
 						style:border={`1px ${schedule_data.theme.colours.text} solid`}
 						style:order={schedule_data.theme.layout.image_position === 'left' ? '0' : '1'}
 						style:border-radius={`${schedule_data.theme.item_theme.border_radius}px`}
 						transition:blur={{ duration: 500 }}
 					>
-						<img src={schedule_data.theme.image.url} alt={schedule_data.theme.image.alt} class="object-cover" loading="lazy" 
+						<img src={schedule_data.theme.image.url} alt={schedule_data.theme.image.alt} class="w-full h-auto object-cover block" loading="lazy" 
 						/>
-						<span class="absolute bottom-1 right-1 p-1"
-							style:background-color={schedule_data.theme.colours.secondary} >
-							<StyledText 
-								theme={schedule_data.theme}
-								typography={schedule_data.theme.typography.body}
-							>
-								<a href={schedule_data.theme.image.artist_url}>
-									@{schedule_data.theme.image?.artist_name}
-								</a>
-							</StyledText>
-						</span>
+						{#if schedule_data.theme.image?.artist_name}
+							<span class="absolute bottom-2 right-2 p-1 rounded"
+								style:background-color={schedule_data.theme.colours.secondary} >
+								<StyledText 
+									theme={schedule_data.theme}
+									typography={schedule_data.theme.typography.body}
+								>
+									{#if schedule_data.theme.image?.artist_url && validateArtistUrl(schedule_data.theme.image.artist_url) == ""}
+										<a href={schedule_data.theme.image.artist_url} target="_blank" rel="noopener noreferrer">
+											@{schedule_data.theme.image?.artist_name}
+										</a>
+									{:else}
+										<span>@{schedule_data.theme.image?.artist_name}</span>
+									{/if}
+								</StyledText>
+							</span>
+						{/if}
 					</div>
 				{/if}
 			{/if}

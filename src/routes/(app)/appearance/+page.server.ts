@@ -23,7 +23,7 @@ export const actions = {
     }
 
     const formData = await request.formData();
-    console.log('formdata', formData);
+    // console.log('formdata', formData);
 
     const themeJson = formData.get("theme")
 
@@ -33,7 +33,7 @@ export const actions = {
 
     try {
       const theme: ScheduleTheme = JSON.parse(themeJson);
-      console.log('theme', theme);
+      // console.log('theme', theme);
 
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -57,7 +57,7 @@ export const actions = {
         .where(eq(table.schedule_themes.scheduleId, schedule.schedule_id))
         .returning({ theme: table.schedule_themes });
 
-      console.log("updated_theme: ", updated_theme);
+      // console.log("updated_theme: ", updated_theme);
       
       return { 
         updated_theme: updated_theme.theme, 

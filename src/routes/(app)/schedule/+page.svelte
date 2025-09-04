@@ -144,7 +144,7 @@
   } 
 </script>
 
-<div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg">
+<div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg flex flex-col min-h-[70vh]">
   <div class="flex justify-between items-center mb-4">
     <h2 class="text-lg font-medium">{weekDisplayText()}</h2>
     <h2 class="text-lg font-medium">{m["_schedule.weekly_schedule"]()}</h2>
@@ -163,7 +163,7 @@
       
   {#if isInitialised}
     {#await data.streamed.items}
-      <div class="flex gap-4">
+      <div class="flex gap-4 flex-1">
         {#each getCurrentWindow() as day}
           <DayColumn 
             isToday={isToday(day)} 
@@ -174,7 +174,7 @@
       </div>
     {:then items}
       {@const eventsByDate = groupEventsByDate(items)}
-      <div class="flex gap-4">
+      <div class="flex gap-4 flex-1">
         {#each getCurrentWindow() as day}
           {@const dayKey = day.format("YYYY-MM-DD")}
           {@const dayItems = eventsByDate.get(dayKey) || []}
@@ -187,7 +187,7 @@
       </div>
     {/await}
   {:else}
-    <div class="flex gap-4">
+    <div class="flex gap-4 flex-1">
       <div class="text-gray-500">initializing...</div>
     </div>
   {/if}

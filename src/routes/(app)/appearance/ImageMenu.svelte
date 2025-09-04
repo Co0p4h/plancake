@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { validateImageUrl } from "$lib/utils/cs-validate";
+	import type { ScheduleImage } from "$lib/server/db/schema";
+	import { validateImageUrl, validateArtistUrl } from "$lib/utils/cs-validate";
   import { onDestroy } from "svelte";
 
-  let { image = $bindable() } = $props();
+  let { image = $bindable() }: { image: ScheduleImage } = $props();
 
   let error: string = $state("");
   let debounceTimeout: ReturnType<typeof setTimeout>;
@@ -11,7 +12,10 @@
     error = "";
     clearTimeout(debounceTimeout);
     debounceTimeout = setTimeout(() => {
-      error = validateImageUrl(image.url);
+      if (image.url)
+        error += `${validateImageUrl(image.url)}`;
+      if (image.artist_url)
+        error += validateArtistUrl(image.artist_url);
     }, 500); 
   }
 
@@ -52,11 +56,12 @@
           name="artist_url" 
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
           bind:value={image.artist_url}
+          oninput={onInput}
         />
       </div>
       
       {#if error}
-        <div class="text-red-500 text-sm mt-2">{error}</div>
+        <div class="text-red-500 text-sm mt-2 whitespace-pre-wrap">{error}</div>
       {/if}
     </div>
   </div>
