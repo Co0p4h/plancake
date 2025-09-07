@@ -12,8 +12,8 @@
 		<h1 class="text-5xl font-bold tracking-wide text-left w-full">your content schedule, <span id="underline">simplified.</span></h1>
 		<p class="font-light text-left w-full">share your schedule with your audience worldwide—no more timezone confusion, no more missed connections</p>
 	</div>
-	<div class="flex flex-col gap-3 w-full max-w-2xl px-4 sm:flex-row">
-		<form method="get" action={`/signup?username=${username}`} >
+	<!-- <div class="flex flex-col gap-3 w-full max-w-2xl px-4 sm:flex-row"> -->
+		<form method="get" action={`/signup?username=${username}`} class="flex flex-col gap-3 w-full max-w-2xl px-4 sm:flex-row" >
 			<input 
 				name="username"
 				bind:value={username} 
@@ -27,7 +27,7 @@
 				claim your schedule now!
 			</button>  
 		</form>
-	</div>
+	<!-- </div> -->
 	<!-- <picture>
 		<img src="https://i.pinimg.com/736x/8c/34/dd/8c34ddbe9d9c3f5b0af2b14bfe989a2c.jpg" alt="Welcome" />
 	</picture> -->

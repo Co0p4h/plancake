@@ -10,6 +10,7 @@
 	import { enhance } from '$app/forms';
 	import type { AllUserSettings } from '$lib/server/db/schema';
 	import { page } from '$app/state';
+	import { localeToLanguage } from '$lib/utils/format';
 
   let { data } = $props();
 
@@ -58,22 +59,10 @@
       }
     }
   }
-
-  const localeToLanguage = (locale: string) => {
-    switch (locale) {
-      case 'en':
-        return 'English';
-      case 'ja':
-        return '日本語';
-      default:
-        return 'English';
-    }
-  }
-
 </script>
 
 {#await data.streamed.user_settings}
-  <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg relative">
+  <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg relative min-h-screen">
     <div class="flex items-center justify-center h-32">
       <div class="text-gray-500">Loading user settings...</div>
     </div>

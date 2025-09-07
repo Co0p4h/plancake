@@ -7,10 +7,7 @@
 	import { onNavigate } from '$app/navigation';
 
 	onNavigate((navigation) => {
-		console.log('wah2');
 		if (!document.startViewTransition) return;
-
-		console.log('wah');
 
 		return new Promise((resolve) => {
 			document.startViewTransition(async () => {
@@ -22,10 +19,12 @@
 
 </script>
 
-<Header />
-
-<div class="flex flex-1 flex-col p-4">
-	{@render children()}
+<div class="min-h-screen flex flex-col bg-purple-background">
+	<Header />
+	
+	<div class="flex flex-1 flex-col p-4">
+		{@render children()}
+	</div>
 </div>
 
 <Footer />

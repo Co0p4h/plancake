@@ -66,7 +66,7 @@
 </script>
 
 {#await data.schedule_settings}
-  <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg relative">
+  <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg min-h-screen relative">
     <div class="flex items-center justify-center h-32">
       <div class="text-gray-500">loading schedule settings...</div>
     </div>
