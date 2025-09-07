@@ -2,7 +2,7 @@
   let { children } = $props();
 </script>
 
-<div class="min-h-screen flex flex-col bg-purple-background">
+<div class="min-h-svh flex flex-col bg-purple-background">
   <header class="flex mt-4 mx-8 items-center justify-between">
     <div class="flex items-center">
 			<h1 class="text-2xl font-black">

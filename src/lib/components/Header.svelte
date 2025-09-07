@@ -48,7 +48,7 @@
 			<h1 class="text-2xl font-black">
 				<a href="/">P.</a>
 			</h1>
-			<span class="ml-4 select-none rounded bg-purple-400 px-2 py-1 text-xs text-white">
+			<span class="ml-4 select-none rounded bg-purple-400 px-2 py-1 text-xs text-white hidden xs:block">
 				now in beta!
 			</span>
 		</div>

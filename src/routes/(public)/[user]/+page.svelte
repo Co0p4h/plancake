@@ -65,13 +65,15 @@
 		style:background-color={schedule_data.theme.background === 'solid' ? schedule_data.theme.colours.background : undefined}
 		style:background-image={schedule_data.theme.background === 'gradient' ? `linear-gradient(180deg,${schedule_data.theme.colours.background} 0,hsla(0,0%,98%,0) 50%),radial-gradient(51% 51% at -11% 9%,${schedule_data.theme.colours.primary}80 1%,${schedule_data.theme.colours.primary}00 100%),radial-gradient(51% 67% at 115% 96%,${schedule_data.theme.colours.primary}80 0,${schedule_data.theme.colours.primary}00 100%),radial-gradient(50% 66% at 50% 50%,${schedule_data.theme.colours.accent}80 0,${schedule_data.theme.colours.primary}00 100%),radial-gradient(22% 117% at 2% 87%,${schedule_data.theme.colours.secondary}00 20%,${schedule_data.theme.colours.accent}80 100%),linear-gradient(0deg,${schedule_data.theme.colours.secondary}80,${schedule_data.theme.colours.secondary}80)` : undefined}
 	></div>
-	<div id="user-schedule-gradient" class="flex flex-col items-center p-4 sm:p-6 lg:p-8 min-h-svh w-full justify-between">
-		<div
-			class="flex w-full max-w-4xl flex-col items-center gap-4 sm:gap-6 md:gap-8 mb-4 {schedule_data.theme.image?.url ? 'md:flex-row md:items-start' : ''}"
+	<div id="user-schedule-gradient" class="flex flex-col items-center gap-4 p-4 sm:p-6 lg:p-8 min-h-svh w-full justify-between">
+		<div class="flex w-full max-w-4xl flex-col items-center gap-4 sm:gap-6 md:gap-8 
+			{schedule_data.theme.image?.url ? 'md:flex-row md:items-start' : ''}"
 		>
 			<!-- schedule section -->
-			<div class="w-full max-w-2xl {schedule_data.theme.image?.url ? 'md:max-w-none' : ''} flex-1"
-				style:order={schedule_data.theme.layout.image_position === 'left' ? '1' : '0'}>
+			<div class="w-full max-w-2xl order-1
+				{schedule_data.theme.layout.image_position === 'left' ? 'md:order-2' : 'md:order-1'}
+				{schedule_data.theme.image?.url ? 'md:max-w-none' : ''} flex-1"
+			>
 				<div class="mb-4">
 					<div class="flex flex-col sm:flex-row sm:justify-between mb-4 gap-2 sm:gap-0 sm:items-center">
 						<div class="flex-1"
@@ -132,11 +134,11 @@
 								style:gap={`${2 * schedule_data.theme.layout.gap}px`}
 						>
 							{#each schedule_data.schedule_settings.settings.show_empty_days ? items_with_empty_days : items as item, i (item.id)}
-								{#if animate}
-									<div transition:fade={{ delay: i * 150}}>
+								<!-- {#if animate} -->
+									<!-- <div transition:fade={{ delay: i * 150}}> -->
 										<ScheduleGridItem {item} theme={schedule_data.theme} settings={schedule_data.schedule_settings.settings} />
-									</div>
-								{/if}
+									<!-- </div> -->
+								<!-- {/if} -->
 							{/each}
 						</div>
 					{/if}
@@ -156,9 +158,9 @@
 			<!-- image section... -->
 			{#if schedule_data.theme.image?.url && schedule_data.schedule_settings.settings.show_schedule_image && validateImageUrl(schedule_data.theme.image.url) == ""}
 				<!-- {#if animate} -->
-					<div class="relative w-full mx-auto max-w-sm sm:max-w-md md:min-w-0 md:max-w-md lg:max-w-lg overflow-hidden block md:sticky md:top-4 md:flex-1"
+					<div class="relative w-full mx-auto max-w-sm sm:max-w-md md:min-w-0 md:max-w-md lg:max-w-lg overflow-hidden block md:sticky md:top-4 md:flex-1 order-2 
+						{schedule_data.theme.layout.image_position === 'left' ? 'md:order-1' : 'md:order-2'}"
 						style:border={`1px ${schedule_data.theme.colours.text} solid`}
-						style:order={schedule_data.theme.layout.image_position === 'left' ? '0' : '1'}
 						style:border-radius={`${schedule_data.theme.item_theme.border_radius}px`}
 						>
 						<!-- transition:blur={{ duration: 500 }} -->
@@ -184,22 +186,24 @@
 				<!-- {/if} -->
 			{/if}
 		</div>
-		{#if schedule_data.schedule_settings.settings.show_social_links && data.user_settings?.social_links}
-			<div class="flex flex-wrap gap-3 justify-center mt-4 sm:mt-6 lg:mt-8 sm:mb-4">
-				{#each data.user_settings.social_links as { platform, url }, index (index)}
-					<SocialLink {platform} {url} {schedule_data}  />
-				{/each}
-			</div>
-		{/if}
-		{#if schedule_data.schedule_settings.settings.show_logo}
-			<footer class="z-10">
-				<a class={`rounded-full px-5 py-3 text-sm shadow-lg text-white transition-colors`} href="/"
-					style:background-color={schedule_data.theme.colours.secondary}
-					style:color={schedule_data.theme.colours.text}>
-					schedule.com
-				</a>
-			</footer>
-		{/if}
+		<div class="justify-center items-center flex flex-col gap-6">
+			{#if schedule_data.schedule_settings.settings.show_social_links && data.user_settings?.social_links}
+				<div class="flex flex-wrap gap-2 justify-center items-center">
+					{#each data.user_settings.social_links as { platform, url }, index (index)}
+						<SocialLink {platform} {url} {schedule_data}  />
+					{/each}
+				</div>
+			{/if}
+			{#if schedule_data.schedule_settings.settings.show_logo}
+				<footer class="z-10">
+					<a class="rounded-full px-5 py-3 text-sm shadow-lg" href="/"
+						style:background-color={schedule_data.theme.colours.secondary}
+						style:color={schedule_data.theme.colours.text}>
+						schedule.com
+					</a>
+				</footer>
+			{/if}
+		</div>
 	</div>
 {:catch error}
 	{error.message}

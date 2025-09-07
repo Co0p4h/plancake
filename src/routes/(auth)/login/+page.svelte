@@ -22,7 +22,6 @@
       toast.error(form.message);
     }
   })
-
 </script>
 
 <div class="flex min-h-[calc(100vh-24rem)] flex-col items-center justify-center gap-y-4 px-4 py-8 sm:py-12">

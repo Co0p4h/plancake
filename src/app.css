@@ -15,4 +15,8 @@
 
 
   --color-red-500: #ff4646;
+
+
+  /* breakpoints */
+  --breakpoint-xs: 480px;
 }

@@ -8,14 +8,6 @@
 
 <div class="min-h-screen flex flex-col bg-purple-background">
   <header class="flex mt-4 mx-8 items-center justify-between">
-    <!-- <div class="flex items-center">
-			<h1 class="text-2xl font-black">
-				<a href="/">P.</a>
-			</h1>
-			<span class="ml-4 select-none rounded bg-purple-400 px-2 py-1 text-xs text-white hidden sm:block">
-				now in beta!
-			</span>
-    </div> -->
 		<div class="flex items-center justify-end w-full">
 			<button 
 				class="flex items-center gap-2 cursor-pointer text-gray-500 hover:bg-gray-200 rounded-md px-2 py-1" 

@@ -248,7 +248,7 @@ export const schedule_themes = pgTable('schedule_themes', {
 		alt: 'schedule image',
 		artist_name: 'artist name',
 		artist_url: "google.com"
-	}),
+	}).notNull(),
 	typography: jsonb('typography').$type<TypographyTheme>().default({
 		base_font: 'Inter', 
 		header_title: {

@@ -80,7 +80,7 @@
           <input placeholder={m['_account.display_name_placeholder']()} name="display_name" id="display_name" class="mt-2 rounded-md border-1 border-gray-300 p-2" bind:value={settings.display_name} disabled={isSubmitting} required />
         </div>
 
-        <div>
+        <!-- <div>
           <h2 class="text-lg">{m['_account.language']()}</h2>
           <p class="text-gray-500 text-sm">Current: {getLocale()}</p>
           <select name="language" id="language" class="mt-2 rounded-md border-1 border-gray-300 p-2" value={getLocale()} 
@@ -92,7 +92,7 @@
               <option value={locale} selected={locale === getLocale()}>{localeToLanguage(locale)}</option>
             {/each}
           </select>
-        </div>
+        </div> -->
 
         <div>
           <h2 class="text-lg">{m['_account.timezone']()}</h2>

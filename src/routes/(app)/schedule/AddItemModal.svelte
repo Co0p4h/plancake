@@ -5,6 +5,7 @@
 	import dayjs from 'dayjs';
   import utc from 'dayjs/plugin/utc';
 	import { enhance } from '$app/forms';
+	import { X } from '@lucide/svelte';
   dayjs.extend(utc);
 
   let dialog: HTMLDialogElement | undefined = $state();
@@ -30,7 +31,7 @@
 </script>
 
 <dialog
-  class="rounded-lg mx-auto my-auto p-0 shadow-lg max-w-2xl w-full border border-gray-300 bg-white"
+  class="rounded-lg mx-auto my-auto p-0 shadow-xl max-w-2xl w-full bg-white backdrop:backdrop-blur-xs"
   bind:this={dialog}
   onclose={() => (addModal.show = false)}
   onmousedown={handleMouseDown}
@@ -38,7 +39,21 @@
   onmouseleave={() => (isMouseDownOnDialog = false)}
 >
   <form method="POST" action="?/add" class="space-y-2 p-6" use:enhance>
-    <div class=" grid gap-4">
+    <div class="grid gap-4">
+      <div class="flex justify-between">
+        <h3 class="text-lg font-semibold">
+          {m['add_item']()}
+        </h3>
+        <button
+          type="button"
+          class="cursor-pointer" 
+          onclick={() => {
+            dialog?.close();
+          }}
+        >
+          <X color={"gray"} />
+        </button>
+      </div>
       <label class="text-sm text-gray-700" for="title">
         <p class="mb-1">{m['_item_properties.title']()}</p>
         <input
@@ -99,24 +114,26 @@
           type="external_url"
         />
       </label>
+      <div class="flex justify-end gap-2">
+        <button
+          onclick={() => {
+            dialog?.close();
+          }}
+          type="button"
+          class="focus:shadow-outline rounded bg-gray-500 px-4 py-2 text-white hover:bg-gray-700 focus:outline-none cursor-pointer"
+        >
+          {m.cancel()}
+        </button>
+        <button
+          type="submit"
+          class="focus:shadow-outline rounded bg-purple-500 px-4 py-2 text-white hover:bg-purple-700 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+          disabled={isSubmitting}
+          onclick={() => dialog?.close()}
+        >
+          {isSubmitting ? m.adding_item(): m.add_item()}
+        </button>
+      </div>
     </div>
-    <button
-      type="submit"
-      class="focus:shadow-outline w-full rounded bg-purple-500 px-4 py-2 text-white hover:bg-purple-700 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
-      disabled={isSubmitting}
-      onclick={() => dialog?.close()}
-    >
-      {isSubmitting ? m.adding_item(): m.add_item()}
-    </button>
-    <button
-      onclick={() => {
-        dialog?.close();
-      }}
-      formmethod="dialog"
-      class="focus:shadow-outline w-full rounded bg-gray-500 px-4 py-2 text-white hover:bg-gray-700 focus:outline-none cursor-pointer"
-    >
-      {m.cancel()}
-    </button>
   </form>
 </dialog>
 

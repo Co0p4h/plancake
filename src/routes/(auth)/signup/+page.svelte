@@ -6,14 +6,23 @@
   import { Eye, EyeOff } from '@lucide/svelte';
 	import { m } from '$lib/paraglide/messages';
 	import toast from 'svelte-french-toast';
-	import type { PageProps } from './$types';
+	import type { PageProps, Snapshot } from './$types';
 	import dayjs from 'dayjs';
 
   let { form }: PageProps = $props();
 
   let showPassword = $state('password');
   let showPasswordText = $state(false);
-  let username = $state('');
+
+  let formData = $state({
+    username: '',
+    email: '',
+  })
+
+  export const snapshot: Snapshot = {
+		capture: () => formData,
+		restore: (value) => formData = value
+	};
 
   function toggleShowPassword(e: Event) {
     e.preventDefault();
@@ -24,7 +33,7 @@
   onMount(() => {
     const urlUsername = page.url.searchParams.get('username');
     if (urlUsername) {
-      username = urlUsername;
+      formData.username = urlUsername;
     }
   });
 
@@ -46,10 +55,11 @@
           name="email"
           type="email"
           placeholder={m['_auth.signup.email']()}
-          value={page.form?.email ?? ''}
           autocomplete="email"
           required
+          bind:value={formData.email}
         />
+          <!-- value={formData.email ?? page.form?.email ?? ''} -->
       </div>
 
       <div class="relative flex flex-col items-center justify-center">
@@ -84,9 +94,10 @@
           name="username"
           type="text"
           placeholder={m['_auth.signup.username']()}
-          value={username ?? page.form?.username ?? ''}
           required
-        />
+          bind:value={formData.username}
+          />
+          <!-- value={formData.username ?? page.form?.username ?? ''} -->
       </div>
 
       <button
@@ -112,7 +123,7 @@
   </div>
   <div class="flex flex-col items-center justify-center gap-2 text-center text-sm">
     <p class="">
-      {m['_auth.signup.agree_to_terms_of_service']({terms_of_service: m['_auth.signup.terms_of_service']()})} <a class="text-blue-500" href="terms">
+      {m['_auth.signup.agree_to_terms_of_service']({terms_of_service: m['_auth.signup.terms_of_service']()})} <a class="text-blue-500" href="terms-of-service">
         {m['_auth.signup.terms_of_service']()}
       </a>
     </p>

@@ -15,7 +15,7 @@
 		<a href="mailto:contact@coopa.me" class="text-purple-default hover:text-purple-dark">contact@coopa.me</a>
 	</p>
 
-	<h2 class="text-xl font-bold mt-8 mb-4">frequently asked questions</h2>
+	<!-- <h2 class="text-xl font-bold mt-8 mb-4">frequently asked questions</h2>
 	
 	<div class="space-y-6 mt-4">
 		<div class="rounded-md border border-purple-100 bg-purple-50/40 p-4">
@@ -58,13 +58,13 @@
 				Currently, you can share your schedule via the public URL. We're working on adding export functionality for calendar formats.
 			</p>
 		</div>
-	</div>
+	</div> -->
 
-	<p class="mt-8">
+	<!-- <p class="mt-8">
 		Still need help? Don't hesitate to 
 		<a href="mailto:contact@coopa.me" class="text-purple-default hover:text-purple-dark">reach out</a> 
 		or check out our 
 		<a href="/about" class="text-purple-default hover:text-purple-dark">about page</a> 
 		for more information.
-	</p>
+	</p> -->
 </div>

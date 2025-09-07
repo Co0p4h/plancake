@@ -113,7 +113,7 @@
         </div>
 
         <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg flex flex-col gap-7">
-          <div class="flex justify-between items-center">
+          <div class="flex justify-between items-center gap-2">
             <div>
               <h2 class="text-lg">{m['_settings.show_schedule_description']()}</h2>
               <p class="text-gray-500 text-sm">{m['_settings.show_schedule_description']()}</p>
@@ -132,7 +132,7 @@
             />
           </div>
 
-          <div class="flex justify-between items-center">
+          <div class="flex justify-between items-center gap-2">
             <div>
               <h2 class="text-lg">{m['_settings.show_empty_days']()}</h2>
               <p class="text-gray-500 text-sm">{m['_settings.show_empty_days_description']()}</p>
@@ -156,7 +156,7 @@
             </div>
           {/if}
 
-          <div class="flex justify-between items-center">
+          <div class="flex justify-between items-center gap-2">
             <div>
               <h2 class="text-lg">{m['_settings.show_schedule_image']()}</h2>
               <p class="text-gray-500 text-sm">{m['_settings.show_schedule_image_description']()}</p>
@@ -168,7 +168,7 @@
             />
           </div>
 
-          <div class="flex justify-between items-center">
+          <div class="flex justify-between items-center gap-2">
             <div>
               <h2 class="text-lg">{m['_settings.show_past_events']()}</h2>
               <p class="text-gray-500 text-sm">{m['_settings.show_past_events_description']()}</p>
@@ -180,7 +180,7 @@
             />
           </div>
 
-          <div class="flex justify-between items-center">
+          <div class="flex justify-between items-center gap-2">
             <div>
               <h2 class="text-lg">{m['_settings.use_24_hour_time']()}</h2>
               <p class="text-gray-500 text-sm">{m['_settings.use_24_hour_time_description']()}</p>
@@ -192,7 +192,7 @@
             />
           </div>
 
-          <div class="flex justify-between items-center">
+          <div class="flex justify-between items-center gap-2">
             <div>
               <div class="flex items-center gap-2">
                 <h2 class="text-lg">{m['_settings.show_social_links']()}</h2>
@@ -224,7 +224,7 @@
         </div>
         
         <div class="container flex-1 mx-auto max-w-8xl p-5  bg-white border border-gray-300 rounded-lg flex flex-col gap-7 relative ">
-          <div class="flex justify-between items-center">
+          <div class="flex justify-between items-center gap-2">
             <div>
               <h2 class="text-lg">{m['_settings.show_logo']()}</h2>
               <p class="text-gray-500 text-sm">{m['_settings.show_logo_description']()}</p>
