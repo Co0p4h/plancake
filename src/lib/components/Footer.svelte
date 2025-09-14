@@ -10,7 +10,8 @@
   </p>
 </footer> -->
 
-<footer class="bg-purple-background rounded-t-4xl shadow-sm z-10">
+<!-- <footer class="bg-purple-background rounded-t-4xl shadow-sm z-10 relative"> -->
+<footer class="bg-white shadow-sm z-10 relative">
   <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
     <div class="sm:flex sm:items-center sm:justify-between p-2">
       <a href="/" class="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
@@ -51,4 +52,3 @@
     <span class="block text-sm text-gray-500 sm:text-center ">© 2023 <a href="/" class="hover:underline">plancake™</a>. All Rights Reserved.</span>
   </div>
 </footer>
-

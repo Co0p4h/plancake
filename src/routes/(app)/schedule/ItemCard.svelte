@@ -7,7 +7,8 @@
   const bgColor = "";
 </script>
 
-<div class={`group p-[10px] relative rounded-md mb-2 ${bgColor ? `bg-${bgColor}-50 border-${bgColor}-200` : 'border border-gray-200 bg-white'}`}>
+<div class={`group p-[10px] relative rounded-md ${bgColor ? `bg-${bgColor}-50 border-${bgColor}-200` : 'border border-gray-200 bg-white'}`}>
+<!-- <div class="relative rounded-md bg-purple-background p-[10px]"> -->
   <div>
     <h3 class="font-medium text-md text-gray-800">{item.title}</h3>
     {#if item.description}
@@ -36,6 +37,8 @@
       aria-label="Edit"
       class="p-1 rounded hover:bg-gray-100 transition cursor-pointer"
       onclick={() => {
+        console.log(item);
+        
         editModal.show = true;
         editModal.item = item;
       }}
@@ -46,6 +49,9 @@
       aria-label="Delete"
       class="p-1 rounded hover:bg-red-50 transition cursor-pointer"
       onclick={() => {
+
+        console.log('test',   item);
+
         deleteModal.show = true;
         deleteModal.item = item;
       }}

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { ColourTheme } from "$lib/server/db/schema";
   import { m } from '$lib/paraglide/messages.js';
-	import ColorPicker from "./ColorPicker.svelte";
+	import ColorPicker from "./ColourPicker.svelte";
 
   let { colours = $bindable() }:{ colours: ColourTheme } = $props()
 </script>

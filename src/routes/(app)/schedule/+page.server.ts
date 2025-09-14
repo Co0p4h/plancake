@@ -5,12 +5,10 @@ import { fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { generateId } from '$lib/server/db/utils';
 import { getScheduleItemsByUserId } from '$lib/server/db/services/schedule-service';
-// import { getCurrentWeekDates } from '$lib/utils/date';
 
 export const load: PageServerLoad = (async ({ locals, url }) => {
   if (!locals.user) {
     return redirect(302, `/login?redirectTo=${url.pathname}`);
-    // return error(401, { message: 'unauthorised' });
   }
 
   const user = locals.user;
@@ -68,11 +66,17 @@ export const actions = {
         updatedAt: new Date()
       };
 
-      await db.insert(table.schedule_items).values(item);
+      await db.insert(table.schedule_items).values(item).returning();
 
+      return { 
+        success: true, 
+        message: 'item added successfully',
+      };
     } catch (error) {
       console.error('error inserting schedule item:', error);
-      return fail(500, { error: 'an error has occurred inserting schedule item' });
+      return fail(500, { 
+        error: 'an error has occurred inserting schedule item' 
+      });
     }
   },
 
@@ -136,7 +140,7 @@ export const actions = {
 
     try {
       await db.update(table.schedule_items).set({...item}).where(eq(table.schedule_items.id, itemId));
-    }  catch (error) {
+    } catch (error) {
       console.error(`schedule update failed: `, { itemId, error });
       fail (500, { error: 'an error has occurred updating schedule item' });
     }

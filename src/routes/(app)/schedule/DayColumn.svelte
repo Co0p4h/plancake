@@ -20,7 +20,7 @@
       {dayjs(day).format("ddd. D")}
     </h3>
   </div>
-  <div class={`p-2 flex-1 border-l border-r border-b rounded-b-md relative overflow-y-auto ${isToday ? 'border-black': 'border-gray-300'}`}>
+  <div class={`p-2 flex-1 border-l border-r border-b rounded-b-md relative overflow-y-auto ${isToday ? 'border-black': 'border-gray-300'} gap-2 flex flex-col`}>
     {#each items as item, i (item.id)}
       {#if item.id === "loading"}
         <div class="h-32 bg-gray-100 rounded-md animate-pulse p-3">

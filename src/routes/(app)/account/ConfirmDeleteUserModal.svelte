@@ -5,6 +5,7 @@
 	import { goto } from '$app/navigation';
 	import toast from 'svelte-french-toast';
 	import type { SubmitFunction } from '@sveltejs/kit';
+	import { X } from "@lucide/svelte";
 
   let dialog: HTMLDialogElement | undefined = $state();
   let isMouseDownOnDialog = $state(false);
@@ -33,12 +34,12 @@
       isDeleting = false;
       
       if (result.type === 'redirect') {
-        toast.success('Account deleted successfully');
+        toast.success('account deleted successfully');
         dialog?.close();
         console.log('what is this location? ', result.location);
         await goto(result.location, { invalidateAll: true });
       } else if (result.type === 'failure' && result.data) {
-        const error_message = result.data.error || 'Failed to delete account';
+        const error_message = result.data.error || 'failed to delete account';
         toast.error(error_message);
       }
     };
@@ -46,7 +47,7 @@
 </script>
 
 <dialog
-  class="rounded-lg mx-auto my-auto p-0 shadow-lg max-w-xl w-full border border-gray-300 bg-white"
+  class="rounded-lg mx-auto my-auto p-0 shadow-lg max-w-xl w-full border border-gray-300 bg-white backdrop:backdrop-blur-xs"
   bind:this={dialog}
   onclose={() => (deleteUserModal.show = false)}
   onmousedown={handleMouseDown}
@@ -54,9 +55,20 @@
   onmouseleave={() => (isMouseDownOnDialog = false)}
 >
   <form method="POST" action="?/deleteUser" class="space-y-3 p-6" use:enhance={enhanceDeleteUser}>
-    <h3 class="text-lg font-semibold text-red-600">
-      {m['_account.delete_account_modal_title']()}
-    </h3>
+    <div class="flex justify-between">
+      <h3 class="text-lg font-semibold text-red-600">
+        {m['_account.delete_account_modal_title']()}
+      </h3>
+      <button
+        type="button"
+        class="cursor-pointer" 
+        onclick={() => {
+          dialog?.close();
+        }}
+      >
+        <X color={"gray"} />
+      </button>
+    </div>
     <div class="space-y-3">
       <p class="text-gray-600">
         {m['_account.delete_account_modal_description']()}
@@ -65,12 +77,19 @@
         {m['_account.delete_account_modal_confirm']()}
       </p>
     </div>
-
-    <div class="space-y-2 pt-4">
+    <div class="flex gap-2 justify-end">
+      <button
+        type="button"
+        onclick={() => dialog?.close()}
+        disabled={isDeleting}
+        class="focus:shadow-outline rounded bg-gray-500 px-4 py-2 font-bold text-white hover:bg-gray-600 focus:outline-none cursor-pointer disabled:opacity-50"
+      >
+        {m.cancel()}
+      </button>   
       <button
         type="submit"
         disabled={isDeleting}
-        class="focus:shadow-outline w-full rounded bg-red-500 px-4 py-2 font-bold text-white hover:bg-red-600 focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+        class="focus:shadow-outline rounded bg-red-500 px-4 py-2 font-bold text-white hover:bg-red-600 focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
       >
         {#if isDeleting}
           <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -81,14 +100,6 @@
         {:else}
           {m['_account.delete_account_modal_button']()}
         {/if}
-      </button>
-      <button
-        type="button"
-        onclick={() => dialog?.close()}
-        disabled={isDeleting}
-        class="focus:shadow-outline w-full rounded bg-gray-500 px-4 py-2 font-bold text-white hover:bg-gray-600 focus:outline-none cursor-pointer disabled:opacity-50"
-      >
-        {m.cancel()}
       </button>
     </div>
   </form>

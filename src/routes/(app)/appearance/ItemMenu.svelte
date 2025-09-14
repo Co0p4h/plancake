@@ -6,7 +6,8 @@
 
 <div class="space-y-6">
   <!-- border style section -->
-  <div class="border border-gray-300 rounded-lg p-4">
+  <!-- <div class="border border-gray-300 rounded-lg p-4"> -->
+  <div>
     <h3 class="text-lg font-semibold mb-4">Border Style</h3>
     <div>
       <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -19,12 +20,14 @@
   </div>
 
   <!-- border radius section -->
-  <div class="border border-gray-300 rounded-lg p-4">
-    <h3 class="text-lg font-semibold mb-4">Border Radius</h3>
+  <!-- <div class="border border-gray-300 rounded-lg p-4"> -->
+  <div>
+    <h3 class="text-lg font-semibold">Border Radius</h3>
     <div class="space-y-4">
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">
-          Border Radius: {item_theme.border_radius}px
+        <label class="block text-sm font-medium text-gray-700">
+          <!-- Border Radius:  -->
+          {item_theme.border_radius}px
           <input 
           type="range" 
           bind:value={item_theme.border_radius} 
@@ -40,7 +43,8 @@
   </div>
 
   <!-- shadow style section -->
-  <div class="border border-gray-300 rounded-lg p-4">
+  <!-- <div class="border border-gray-300 rounded-lg p-4"> -->
+  <div>
     <h3 class="text-lg font-semibold mb-4">Shadow Style</h3>
     <div>
       <label class="block text-sm font-medium text-gray-700 mb-2">

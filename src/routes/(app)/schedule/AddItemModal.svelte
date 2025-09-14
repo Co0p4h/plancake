@@ -28,6 +28,22 @@
     }
     isMouseDownOnDialog = false;
   }
+
+  // const enhance_form: SubmitFunction = ({ formData, action }) => {
+  //   isSubmitting = true;
+  //   return async ({ result }) => {
+  //     isSubmitting = false;
+
+  //     if (result.type == "success" && result.data) {
+  //       console.log(result.data);
+
+  //       toast.success(m['_account.account']());
+  //     } else if (result.type == "failure" && result.data) { 
+  //       const error_message = result.data.error || 'an unexpected error occurred';
+  //       toast.error(error_message);
+  //     }
+  //   }
+  // } 
 </script>
 
 <dialog

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { goto } from "$app/navigation";
-	import { Link, LogOut, Settings } from "@lucide/svelte";
+  import { Link, LogOut, Settings } from "@lucide/svelte";
 	import toast from "svelte-french-toast";
   let { menuOpen = $bindable() } = $props();
 

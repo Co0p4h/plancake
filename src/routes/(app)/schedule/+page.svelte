@@ -10,6 +10,7 @@
 	import EditItemModal from "./EditItemModal.svelte";
 	import { onMount } from "svelte";
 	import type { ScheduleItem } from "$lib/server/db/schema";
+	// import CalendarSelect from "./CalendarSelect.svelte";
   
   dayjs.extend(isoWeek);
 
@@ -20,6 +21,7 @@
   let columnNum: 1 | 3 | 5 | 7 = $state(5);
   let screenWidth = $state(1024); // default width...
   let windowStart: number = $state(0);
+  let dateInputValue = $state(dayjs().format("YYYY-MM-DD"));
 
   let isInitialised = $state(false);
 
@@ -54,6 +56,15 @@
     windowStart = calculateWindowStart(referenceDate);
   })
 
+  $effect(() => {
+    dateInputValue = referenceDate.format("YYYY-MM-DD");
+  })
+
+  const onDateChange = () => {
+    referenceDate = dayjs(dateInputValue);
+    currentWeek = dayjs(dateInputValue).isoWeek();
+  }
+
   // the start 0 - 6 (monday - sunday)
   const calculateWindowStart = (day: dayjs.Dayjs) => {
     const isoDayNumber = day.isoWeekday();
@@ -72,6 +83,7 @@
 
   const getCurrentWindow = (): dayjs.Dayjs[] => {
     const window = [];
+    // TODO: if settings.first_day_of_week == 'monday' then isoweek else if settings.first_day_of_week == 'sunday' then week
     const weekStart = dayjs().isoWeek(currentWeek).startOf('isoWeek'); // monday of current week
     
     for (let i = 0; i < columnNum; i++) {
@@ -104,13 +116,6 @@
     }
   };
 
-  // const getItemsForDay = (dayIndex: dayjs.Dayjs, items: any[]) => {
-  //   return items.filter(item => {
-  //     const itemDate = dayjs(item.startTime);
-  //     return itemDate.isSame(dayIndex, 'day');
-  //   });
-  // };
-  
   let weekDisplayText = $derived(() => {
     const weekStart = dayjs().isoWeek(currentWeek).startOf('isoWeek'); 
     const weekEnd = weekStart.add(6, 'day'); 
@@ -158,6 +163,7 @@
       <button class="cursor-pointer hover:bg-gray-100 rounded-md p-1" onclick={goToNextDate}>
         <ChevronRight class="h-5 w-5" />
       </button>
+      <!-- <CalendarSelect onchange={onDateChange} bind:dateInputValue /> -->
     </div>
   </div>
       
@@ -196,3 +202,4 @@
 <AddItemModal />
 <ConfirmDeleteModal />
 <EditItemModal />
+

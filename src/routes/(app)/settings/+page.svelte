@@ -168,7 +168,7 @@
             />
           </div>
 
-          <div class="flex justify-between items-center gap-2">
+          <!-- <div class="flex justify-between items-center gap-2">
             <div>
               <h2 class="text-lg">{m['_settings.show_past_events']()}</h2>
               <p class="text-gray-500 text-sm">{m['_settings.show_past_events_description']()}</p>
@@ -178,7 +178,7 @@
               onclick={() => { settings.show_past_events = !settings.show_past_events }} 
               disabled={isSubmitting} 
             />
-          </div>
+          </div> -->
 
           <div class="flex justify-between items-center gap-2">
             <div>

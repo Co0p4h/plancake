@@ -25,9 +25,9 @@
 </script>
 
 <div class="space-y-6">
-  <div class="border border-gray-300 rounded-lg p-4">
-    <h3 class="text-lg font-semibold mb-4">Image Settings</h3>
-    
+  <!-- <div class="border border-gray-300 rounded-lg p-4"> -->
+  <div>
+    <!-- <h3 class="text-lg font-semibold mb-4">Image Settings</h3> -->
     <div class="space-y-4">
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-2" for="image_url">Image URL</label>
