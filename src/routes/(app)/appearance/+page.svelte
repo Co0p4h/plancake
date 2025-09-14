@@ -188,7 +188,7 @@
 				>
 					<div class="w-full max-w-2xl {themeStore.clientTheme.image?.url ? 'lg:max-w-none' : ''} flex-1"
 						style:order={themeStore.clientTheme.layout.image_position === 'left' ? '1' : '0'}>
-						<div class="mb-4">
+						<div class="mb-4 max-w-lg mx-auto">
 							<div class="flex flex-col sm:flex-row sm:justify-between mb-4 gap-2 sm:gap-0 sm:items-center">
 								<div class="flex-1"
 										style:text-shadow="2px 2px 0px {themeStore.clientTheme.colours.secondary}"
@@ -203,13 +203,13 @@
 										{scheduleData.schedule.title || `${scheduleData.user.displayName || scheduleData.user.username}'s schedule`}
 									</StyledText>
 								</div>
-								<div class="p-2 max-w-32 sm:max-w-32 text-center w-full sm:w-auto flex-shrink-0"
+								<div class="p-2 max-w-34 sm:max-w-34 text-center w-full sm:w-auto flex-shrink-0"
 									style:background-color={themeStore.clientTheme.colours.accent}
 									style:border-radius={`${themeStore.clientTheme.item_theme.border_radius}px`}
 								>
 									<StyledText 
 										theme={themeStore.clientTheme}
-										typography={themeStore.clientTheme.typography.body}
+										typography={themeStore.clientTheme.typography.date_range}
 										colour={themeStore.clientTheme.colours.secondary}
 										class="text-xs sm:text-sm"
 									>
@@ -260,7 +260,7 @@
 							<div class="flex flex-col items-center justify-center min-h-[400px] py-16">
 								<StyledText 
 									theme={themeStore.clientTheme}
-									typography={themeStore.clientTheme.typography.empty_day}
+									typography={themeStore.clientTheme.typography.empty_text}
 									colour={themeStore.clientTheme.colours.text}
 								>
 									{m['_schedule.no_items_scheduled']()}
@@ -280,7 +280,7 @@
 									style:background-color={themeStore.clientTheme.colours.secondary}>
 									<StyledText 
 										theme={themeStore.clientTheme}
-										typography={themeStore.clientTheme.typography.body}
+										typography={themeStore.clientTheme.typography.artist_text}
 										colour={themeStore.clientTheme.colours.text}
 									>
 										{#if themeStore.clientTheme.image?.artist_url && validateArtistUrl(themeStore.clientTheme.image.artist_url) == ""}

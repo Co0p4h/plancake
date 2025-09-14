@@ -83,26 +83,36 @@ export type ColourThemeKey = keyof ColourTheme
 export type FontSize = keyof typeof fontSizes;
 
 export type ElementTypography = {
-	font?: string;
+	font: string;
 	size: FontSize;
 	weight: "100" | "200" | "300" | "400" | "500" | "600" | "700" | "800" | "900";
-	capitalisation?: "uppercase" | "lowercase" | "none";
-	decoration?: "none" | "underline" | "line-through";
+	capitalisation: "uppercase" | "lowercase" | "none";
+	decoration: "none" | "underline" | "line-through";
 	style: "normal" | "italic";
 	letter_spacing?: string; // e.g. "0.5px" | "1px"
 	// colour?: ColourThemeKey; // e.g., "primary", "text"
 }
 
 export type TypographyTheme = {
-	base_font: string;
+	// base_font: string;
+	// item_date: ElementTypography;
+	// body: ElementTypography;
+	// empty_day: ElementTypography;
+
 	header_title: ElementTypography;
+	header_description: ElementTypography;
+
+	date_range: ElementTypography;
+
+	day_numbers: ElementTypography;
+	day_labels: ElementTypography;
+
 	item_title: ElementTypography;
 	item_description: ElementTypography;
-	header_description: ElementTypography;
-	item_date: ElementTypography;
 	item_time: ElementTypography;
-	body: ElementTypography;
-	empty_day: ElementTypography;
+
+	empty_text: ElementTypography;
+	artist_text: ElementTypography;
 }
 
 export type ItemTheme = {
@@ -250,10 +260,9 @@ export const schedule_themes = pgTable('schedule_themes', {
 		artist_url: "google.com"
 	}).notNull(),
 	typography: jsonb('typography').$type<TypographyTheme>().default({
-		base_font: 'Inter', 
 		header_title: {
-			font: 'Arial',
-			size: '2xl',
+			font: 'Inter',
+			size: '3xl',
 			weight: '700',
 			letter_spacing: '0',
 			capitalisation: 'none',
@@ -261,52 +270,25 @@ export const schedule_themes = pgTable('schedule_themes', {
 			style: 'normal',
 		},
 		header_description: {
-			font: 'Arial',
-			size: 'base',
+			font: 'Inter',
+			size: 'lg',
 			weight: '400',
-			letter_spacing: '0',
+			letter_spacing: '0.25',
 			capitalisation: 'none',
 			decoration: 'none',
 			style: 'normal',
 		},
 		item_title: {
-			font: 'Arial',
+			font: 'Inter',
 			size: 'lg',
-			weight: '700',
+			weight: '600',
 			letter_spacing: '0',
 			capitalisation: 'none',
 			decoration: 'none',
 			style: 'normal',
 		},
 		item_description: {
-			font: 'Arial',
-			size: 'base',
-			weight: '400',
-			letter_spacing: '0',
-			capitalisation: 'none',
-			decoration: 'none',
-			style: 'normal',
-		},
-		item_date: {
-			font: 'Arial',
-			size: 'base',
-			weight: '400',
-			letter_spacing: '0',
-			capitalisation: 'none',
-			decoration: 'none',
-			style: 'normal',
-		},
-		item_time: {
-			font: 'Arial',
-			size: 'base',
-			weight: '400',
-			letter_spacing: '0',
-			capitalisation: 'none',
-			decoration: 'none',
-			style: 'normal',
-		},
-		body: {
-			font: 'Arial',
+			font: 'Inter',
 			size: 'sm',
 			weight: '400',
 			letter_spacing: '0',
@@ -314,9 +296,54 @@ export const schedule_themes = pgTable('schedule_themes', {
 			decoration: 'none',
 			style: 'normal',
 		},
-		empty_day: {
-			font: 'Arial',
+		date_range: {
+			font: 'Inter',
+			size: 'sm',
+			weight: '500',
+			letter_spacing: '0.5',
+			capitalisation: 'uppercase',
+			decoration: 'none',
+			style: 'normal',
+		},
+		item_time: {
+			font: 'Inter',
+			size: 'sm',
+			weight: '500',
+			letter_spacing: '0',
+			capitalisation: 'none',
+			decoration: 'none',
+			style: 'normal',
+		},
+		day_numbers: {
+			font: 'Inter',
+			size: 'xl',
+			weight: '700',
+			letter_spacing: '0',
+			capitalisation: 'none',
+			decoration: 'none',
+			style: 'normal',
+		},
+		empty_text: {
+			font: 'Inter',
 			size: 'base',
+			weight: '400',
+			letter_spacing: '0',
+			capitalisation: 'none',
+			decoration: 'none',
+			style: 'italic',
+		},
+		day_labels: {
+			font: 'Inter',
+			size: 'xs',
+			weight: '500',
+			letter_spacing: '1',
+			capitalisation: 'uppercase',
+			decoration: 'none',
+			style: 'normal',
+		},
+		artist_text: {
+			font: 'Inter',
+			size: 'xs',
 			weight: '400',
 			letter_spacing: '0',
 			capitalisation: 'none',

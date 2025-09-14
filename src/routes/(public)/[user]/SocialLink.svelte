@@ -16,5 +16,5 @@
   >
   <!-- style:border={`1px ${schedule_data.theme.colours.text} solid`} -->
   <span class="capitalize">{platform}</span>
-  <Link class="ml-2 h-5 w-5"/>
+  <!-- <Link class="ml-2 h-5 w-5"/> -->
 </a>

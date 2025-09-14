@@ -74,7 +74,7 @@
 				{schedule_data.theme.layout.image_position === 'left' ? 'md:order-2' : 'md:order-1'}
 				{schedule_data.theme.image?.url ? 'md:max-w-none' : ''} flex-1"
 			>
-				<div class="mb-4">
+				<div class="mb-4 mx-auto max-w-lg">
 					<div class="flex flex-col sm:flex-row sm:justify-between mb-4 gap-2 sm:gap-0 sm:items-center">
 						<div class="flex-1"
 							style:text-shadow="2px 2px 0px {schedule_data.theme.colours.secondary}"
@@ -88,13 +88,13 @@
 								{schedule_data.schedule.title || `${page.params.user}'s schedule`}
 							</StyledText>
 						</div>
-						<div class="p-2 max-w-32 sm:max-w-32 text-center w-full sm:w-auto flex-shrink-0"
+						<div class="p-2 max-w-34 sm:max-w-34 text-center w-full sm:w-auto flex-shrink-0"
 							style:background-color={schedule_data.theme.colours.accent}
 							style:border-radius={`${schedule_data.theme.item_theme.border_radius}px`}
 						>
 							<StyledText 
 								theme={schedule_data.theme}
-								typography={schedule_data.theme.typography.body}
+								typography={schedule_data.theme.typography.date_range}
 								colour={schedule_data.theme.colours.secondary}
 								class="text-xs sm:text-sm"
 							>
@@ -146,7 +146,7 @@
 					<div class="flex flex-col items-center justify-center min-h-[400px] py-16">
 						<StyledText 
 							theme={schedule_data.theme}
-							typography={schedule_data.theme.typography.empty_day}
+							typography={schedule_data.theme.typography.empty_text}
 							colour={schedule_data.theme.colours.text}
 						>
 							{m['_schedule.no_items_scheduled']()}
@@ -170,7 +170,7 @@
 								style:background-color={schedule_data.theme.colours.secondary} >
 								<StyledText 
 									theme={schedule_data.theme}
-									typography={schedule_data.theme.typography.body}
+									typography={schedule_data.theme.typography.artist_text}
 								>
 									{#if schedule_data.theme.image?.artist_url && validateArtistUrl(schedule_data.theme.image.artist_url) == ""}
 										<a href={schedule_data.theme.image.artist_url} target="_blank" rel="noopener noreferrer">

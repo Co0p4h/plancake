@@ -16,7 +16,7 @@
 
 	const styles = $derived({
 		color: colour || theme.colours.text,
-		'font-family': typography.font || theme.typography.base_font,
+		'font-family': typography.font,
 		'font-size': fontSize(typography.size),
 		'font-weight': typography.weight,
 		'font-style': typography.style,

@@ -158,7 +158,12 @@
 
           <div class="flex justify-between items-center gap-2">
             <div>
-              <h2 class="text-lg">{m['_settings.show_schedule_image']()}</h2>
+              <div class="flex items-center gap-2">
+                <h2 class="text-lg">{m['_settings.show_schedule_image']()}</h2>
+                <a href="/appearance#image">
+                  <LinkIcon class="w-4 h-4 text-gray-500" />
+                </a>
+              </div> 
               <p class="text-gray-500 text-sm">{m['_settings.show_schedule_image_description']()}</p>
             </div>
             <Toggle 

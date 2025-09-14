@@ -40,14 +40,21 @@
     <div class="flex flex-col items-center">
       <StyledText 
         theme={theme}
-        typography={theme.typography.item_date}
+        typography={theme.typography.day_numbers}
         colour={theme.colours.secondary}
         tag="span"
         class="leading-none"
       >
         {dayjs(item.startTime).format("DD")}
       </StyledText>
-      <span class="text-xs uppercase leading-none mt-0.5">{dayjs(item.startTime).format("ddd.")}</span>
+      <StyledText 
+        theme={theme}
+        typography={theme.typography.day_labels}
+        colour={theme.colours.secondary}
+        tag="span"
+      >
+        {dayjs(item.startTime).format("ddd.")}
+      </StyledText>
     </div>
   </div>
   
@@ -66,38 +73,24 @@
            style:border-radius={`${theme.item_theme.border_radius}px`}>
         <StyledText 
           theme={theme}
-          typography={theme.typography.item_title}
+          typography={theme.typography.item_time}
           colour={theme.colours.secondary}
           tag="span"
         >
-          {#if settings.use_24_hour_time}
-            {dayjs(item.startTime).format('HH:mm')}
-          {:else}
-            {dayjs(item.startTime).format('hh:mmA')}
+          {dayjs(item.startTime).format(settings.use_24_hour_time ? 'HH:mm' : 'hh:mmA')}
+          {#if item.endTime}
+            <span class="time-range">
+              {dayjs(item.endTime).format(settings.use_24_hour_time ? 'HH:mm' : 'hh:mmA')}
+            </span>
           {/if}
         </StyledText>
-        {#if item.endTime}
-          <span class="font-medium">-</span>
-          <StyledText 
-            theme={theme}
-            typography={theme.typography.item_title}
-            colour={theme.colours.secondary}
-            tag="span"
-          >
-          {#if settings.use_24_hour_time}
-            {dayjs(item.endTime).format('HH:mm')}
-          {:else}
-            {dayjs(item.endTime).format('hh:mmA')}
-          {/if}
-          </StyledText>
-        {/if}
       </div>
     {/if}
     
     <!-- title -->
     <StyledText 
       theme={theme}
-      typography={item.id.startsWith('empty-') ? theme.typography.empty_day : theme.typography.item_title}
+      typography={item.id.startsWith('empty-') ? theme.typography.empty_text : theme.typography.item_title}
       colour={theme.colours.text}
       tag="span"
       class="px-2 text-center"
@@ -144,3 +137,10 @@
     </a>
   {/if}
 </div>
+
+<style>
+  .time-range::before {
+    content: ' - ';
+    white-space: pre;
+  }
+</style>

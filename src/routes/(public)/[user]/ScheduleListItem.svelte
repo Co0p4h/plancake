@@ -44,14 +44,20 @@
        style:border-bottom-left-radius={`${Math.max(0, theme.item_theme.border_radius - 1)}px`}>
     <StyledText 
       theme={theme}
-      typography={theme.typography.item_date}
+      typography={theme.typography.day_numbers}
       colour={theme.colours.secondary}
       tag="span"
-      class="text-2xl font-bold"
     >
       {dayjs(item.startTime).format("DD")}
     </StyledText>
-    <span class="text-xs uppercase">{dayjs(item.startTime).format("ddd.")}</span>
+    <StyledText 
+      theme={theme}
+      typography={theme.typography.day_labels}
+      colour={theme.colours.secondary}
+      tag="span"
+    >
+      {dayjs(item.startTime).format("ddd.")}
+    </StyledText>
   </div>
 
   <!-- content body -->
@@ -61,45 +67,32 @@
        style:border-top-right-radius={`${Math.max(0, theme.item_theme.border_radius - 1)}px`}
        style:border-bottom-right-radius={`${Math.max(0, theme.item_theme.border_radius - 1)}px`}
   >
-    <div class="flex items-center gap-1">
+    <div class="flex gap-4 items-center">
       <div class="flex gap-1">
         {#if !item.id.startsWith('empty-')}
           <StyledText 
-          theme={theme}
-          typography={theme.typography.item_title}
-          colour={theme.colours.text}
-          tag="span"
-          >
-            {#if settings.use_24_hour_time}
-              {dayjs(item.startTime).format('HH:mm')}
-            {:else}
-              {dayjs(item.startTime).format('hh:mmA')}
-            {/if}
-          </StyledText>
-          {#if item.endTime}
-            <span class="font-medium">-</span>
-            <StyledText 
             theme={theme}
-            typography={theme.typography.item_title}
+            typography={theme.typography.item_time}
             colour={theme.colours.text}
             tag="span"
-            >
-              {#if settings.use_24_hour_time}
-                {dayjs(item.endTime).format('HH:mm')}
-              {:else}
-                {dayjs(item.endTime).format('hh:mmA')}
+          >
+            <div class="flex">
+              {dayjs(item.startTime).format(settings.use_24_hour_time ? 'HH:mm' : 'hh:mmA')}
+              {#if item.endTime}
+                <span class="time-range">
+                  {dayjs(item.endTime).format(settings.use_24_hour_time ? 'HH:mm' : 'hh:mmA')}
+                </span>
               {/if}
-            </StyledText>
-          {/if}
+            </div>
+          </StyledText>
         {/if}
       </div>  
 
       <StyledText 
         theme={theme}
-        typography={item.id.startsWith('empty-') ? theme.typography.empty_day : theme.typography.item_title}
+        typography={item.id.startsWith('empty-') ? theme.typography.empty_text : theme.typography.item_title}
         colour={theme.colours.text}
         tag="span"
-        class="pl-2"
       >
         {#if item.id.startsWith('empty-')}
           {settings.empty_day_text || 'nothing scheduled'}  
@@ -135,3 +128,10 @@
     </a>
   {/if}
 </div>
+
+<style>
+  .time-range::before {
+    content: ' - ';
+    white-space: pre;
+  }
+</style>
