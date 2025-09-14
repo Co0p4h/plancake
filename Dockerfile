@@ -33,9 +33,10 @@ COPY --from=build /app/build ./build
 COPY --from=build /app/package.json ./
 
 # expose the port your app runs on
-EXPOSE 3000
+EXPOSE 8080
 
 ENV ORIGIN=http://127.0.0.1:3000
+ENV PORT=8080
 
 # start the application
 CMD ["node", "build"]
