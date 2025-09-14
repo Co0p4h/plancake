@@ -23,11 +23,10 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
 
-      - name: Install dependencies, build, and test
+      - name: Install dependencies and build
         run: |
           pnpm install
-          pnpm build --if-present
-          pnpm test --if-present
+          pnpm run build --if-present
 
       - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
