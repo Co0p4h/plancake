@@ -210,8 +210,6 @@ export async function getAllUserSettingsByUserId(userId: string) {
     .where(eq(table.users.id, userId))
     .limit(1);
 
-  console.log("getAllUserSettingsByUserId result: ", result);
-
   return result;
 }
 

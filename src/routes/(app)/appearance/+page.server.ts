@@ -33,12 +33,11 @@ export const actions = {
 
     try {
       const theme: ScheduleTheme = JSON.parse(themeJson);
-      // console.log('theme', theme);
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // simulate 50% failure rate
-      if (Math.random() < 0.5) {
+      // simulate 20% failure rate
+      if (Math.random() < 0.2) {
         throw new Error('simulated random failure');
       }
 

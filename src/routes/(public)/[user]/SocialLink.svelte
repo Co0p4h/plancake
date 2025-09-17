@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { ScheduleData } from "$lib/server/db/services/schedule-service";
-	import { Link } from "@lucide/svelte";
+	// import { Link } from "@lucide/svelte";
 
   let { url, platform, schedule_data }: {url: string, platform: string, schedule_data: ScheduleData} = $props();
 </script>

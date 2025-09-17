@@ -22,16 +22,7 @@
   </div>
   <div class={`p-2 flex-1 border-l border-r border-b rounded-b-md relative overflow-y-auto ${isToday ? 'border-black': 'border-gray-300'} gap-2 flex flex-col`}>
     {#each items as item, i (item.id)}
-      {#if item.id === "loading"}
-        <div class="h-32 bg-gray-100 rounded-md animate-pulse p-3">
-          <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-          <div class="h-3 bg-gray-200 rounded w-1/2 mb-1"></div>
-        </div>
-      {:else}
-        <!-- <div in:fade={{ delay: i * 100, duration: 300 }}> -->
-          <ItemCard {item} />
-        <!-- </div> -->
-      {/if}
+      <ItemCard {item} />
     {/each}
     <button class="absolute bottom-4 left-0 right-0 text-center text-gray-400 text-sm hover:text-gray-600 cursor-pointer"
       onclick={() => {

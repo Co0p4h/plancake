@@ -45,18 +45,16 @@ export const actions = {
     }
 
     try {
-      if (Math.random() < 0.5) {
+      if (Math.random() < 0.2) {
         throw new Error('kys');
       }
 
       const result = await updateUserSettings(locals.user.id, settings, display_name);
-      // const languageChanged = result.previousSettings?.settings?.language !== result.user_settings.user_settings?.language;
 
       return { 
         success: true, 
         message: 'user settings updated successfully',
         updated_settings: result.user_settings,
-        // languageChanged
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -72,7 +70,6 @@ export const actions = {
     }
     
     try {
-      // await new Promise(resolve => setTimeout(resolve, 3000)); 
       await deleteUser(event.locals.user.id);
       deleteSessionTokenCookie(event);
     } catch (error) {
@@ -119,7 +116,7 @@ export const actions = {
     }
 
     try {
-      if (Math.random() < 0.5) {
+      if (Math.random() < 0.2) {
         throw new Error('kys');
       }
       console.log("changeUsername action called with newUsername: ", newUsername);

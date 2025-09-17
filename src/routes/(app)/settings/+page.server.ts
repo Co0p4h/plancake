@@ -31,7 +31,7 @@ export const actions: Actions = {
     }
 
     try {
-      if (Math.random() < 0.1) {
+      if (Math.random() < 0.2) {
         throw new Error('simulated random failure');
       }
 

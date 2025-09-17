@@ -3,6 +3,7 @@
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import type { AllScheduleSettings } from '$lib/server/db/schema';
 	import Toggle from './Toggle.svelte';
+  import SettingsSkeleton from './SettingsSkeleton.svelte';
 	import toast from 'svelte-french-toast';
 	import { enhance } from '$app/forms';
 	import { fade } from 'svelte/transition';
@@ -66,11 +67,7 @@
 </script>
 
 {#await data.schedule_settings}
-  <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg min-h-screen relative">
-    <div class="flex items-center justify-center h-32">
-      <div class="text-gray-500">loading schedule settings...</div>
-    </div>
-  </div>
+ <SettingsSkeleton />
 {:then schedule_settings}
   <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg relative">
     <h1 class="mb-4 text-xl text-gray-500">{m['_settings.settings']()}</h1>

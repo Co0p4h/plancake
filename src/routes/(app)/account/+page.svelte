@@ -2,8 +2,8 @@
 	import SocialLinks from './SocialLinks.svelte';
 	import ConfirmDeleteUserModal from './ConfirmDeleteUserModal.svelte';
 	import ChangeUsernameModal from './UpdateUsernameModal.svelte';
+  import AccountSkeleton from './AccountSkeleton.svelte';
 	import { updateUsernameModal, deleteUserModal } from './accountModal.svelte';
-	import { getLocale, locales, setLocale } from '$lib/paraglide/runtime';
 	import { m } from '$lib/paraglide/messages.js';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import toast from 'svelte-french-toast';
@@ -62,11 +62,7 @@
 </script>
 
 {#await data.streamed.user_settings}
-  <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg relative min-h-screen">
-    <div class="flex items-center justify-center h-32">
-      <div class="text-gray-500">Loading user settings...</div>
-    </div>
-  </div>
+  <AccountSkeleton />
 {:then user_settings}
   <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg relative">
     <h1 class="mb-4 text-xl text-gray-500">{m['_account.account']()}</h1>
@@ -79,20 +75,6 @@
           <h2 class="text-lg">{m['_account.display_name']()}</h2>
           <input placeholder={m['_account.display_name_placeholder']()} name="display_name" id="display_name" class="mt-2 rounded-md border-1 border-gray-300 p-2" bind:value={settings.display_name} disabled={isSubmitting} required />
         </div>
-
-        <!-- <div>
-          <h2 class="text-lg">{m['_account.language']()}</h2>
-          <p class="text-gray-500 text-sm">Current: {getLocale()}</p>
-          <select name="language" id="language" class="mt-2 rounded-md border-1 border-gray-300 p-2" value={getLocale()} 
-            onchange={(e: Event) => {
-              setLocale((e.target as HTMLSelectElement).value as "en" | "ja")
-            }}
-          >
-            {#each locales as locale}
-              <option value={locale} selected={locale === getLocale()}>{localeToLanguage(locale)}</option>
-            {/each}
-          </select>
-        </div> -->
 
         <div>
           <h2 class="text-lg">{m['_account.timezone']()}</h2>
