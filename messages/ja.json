@@ -19,7 +19,8 @@
 			"button": "ログイン",
 			"dont_have_account": "アカウントをお持ちでないですか？",
 			"signup": "アカウントを作成",
-			"google_button": "Googleでログイン"
+			"google_button": "Googleでログイン",
+			"twitch_button": "Twitchでログイン"
 		}
 	},
 	"_settings": {

@@ -216,7 +216,7 @@
     {/await}
   {:else}
     <div class="flex gap-4 flex-1">
-      <div class="text-gray-500">initializing...</div>
+      <div class="text-gray-500">initialising...</div>
     </div>
   {/if}
 </div>
