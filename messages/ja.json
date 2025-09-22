@@ -91,10 +91,47 @@
 		"colour": "色",
 		"_typography": {
 			"font": "フォント",
-			"text_size": ""
+			"text_size": "",
+			"size": "テキストサイズ",
+			"weight": "テキストの太さ",
+			"style": "テキストスタイル",
+			"captalization": "テキストの大文字化",
+			"decoration": "テキストの装飾",
+			"null": "選択してください",
+			"letter_spacing": "文字間隔",
+			"captalisation": "テキストの大文字化",
+			"capitalisation": "テキストの大文字化"
 		},
 		"null": "選択してください",
-		"color-mappings": "カラーマッピング"
+		"color-mappings": "カラーマッピング",
+		"colours": "色",
+		"_layout": {
+			"item_gap": "アイテム間隔",
+			"item_padding": "アイテムパディング",
+			"border_radius": "ボーダー半径",
+			"max_width": "最大幅",
+			"shadow": "シャドウ",
+			"null": "選択してください",
+			"schedule_laytout": "スケジュールレイアウト",
+			"schedule_layout": "スケジュールレイアウト"
+		},
+		"_item": {
+			"border_style": "ボーダースタイル",
+			"border_radius": "ボーダー半径",
+			"shadow_style": "シャドウスタイル"
+		},
+		"_background": {
+			"background_type": "背景タイプ",
+			"solid": "単色",
+			"gradient": "グラデーション"
+		},
+		"_image": {
+			"image_url": "画像URL",
+			"artist": "アーティスト",
+			"artist_url": "アーティストURL",
+			"artist_attribution": "アーティスト"
+		},
+		"publish_changes": "変更を公開"
 	},
 	"login": "ログイン",
 	"logout": "ログアウト",

@@ -2,6 +2,7 @@
 	import type { ScheduleImage } from "$lib/server/db/schema";
 	import { validateImageUrl, validateArtistUrl } from "$lib/utils/cs-validate";
   import { onDestroy } from "svelte";
+  import { m } from '$lib/paraglide/messages.js';
 
   let { image = $bindable() }: { image: ScheduleImage } = $props();
 
@@ -30,7 +31,7 @@
     <!-- <h3 class="text-lg font-semibold mb-4">Image Settings</h3> -->
     <div class="space-y-4">
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2" for="image_url">Image URL</label>
+        <label class="block text-sm font-medium text-gray-700 mb-2" for="image_url">{m["_appearance._image.image_url"]()}</label>
         <textarea
           name="image_url"
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 min-h-32 resize-none"
@@ -40,7 +41,7 @@
       </div>
       
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2" for="artist_name">Artist Attribution</label>
+        <label class="block text-sm font-medium text-gray-700 mb-2" for="artist_name">{m["_appearance._image.artist_attribution"]()}</label>
         <input 
           type="text" 
           name="artist_name" 
@@ -50,7 +51,7 @@
       </div>
       
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2" for="artist_url">Artist URL</label>
+        <label class="block text-sm font-medium text-gray-700 mb-2" for="artist_url">{m["_appearance._image.artist_url"]()}</label>
         <input 
           type="text" 
           name="artist_url" 

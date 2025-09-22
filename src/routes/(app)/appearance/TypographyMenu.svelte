@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { TypographyTheme } from "$lib/server/db/schema";
+  import { m } from '$lib/paraglide/messages.js';
 
   let { typography = $bindable() }: {typography: TypographyTheme} = $props();
 
@@ -53,7 +54,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- font -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Font
+          <label class="block text-sm font-medium text-gray-700 mb-2">{m["_appearance._typography.font"]()}
             <select bind:value={value.font} class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer">
               <option value="Inter">Inter</option>
               <option value="Arial">Arial</option>
@@ -65,7 +66,7 @@
         
         <!-- size -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Size
+          <label class="block text-sm font-medium text-gray-700 mb-2">{m["_appearance._typography.size"]()}
             <select bind:value={value.size} class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer">
               <option value="xs">Extra Small (12px)</option>
               <option value="sm">Small (14px)</option>
@@ -82,7 +83,7 @@
         
         <!-- weight -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Weight
+          <label class="block text-sm font-medium text-gray-700 mb-2">{m["_appearance._typography.weight"]()}
             <select bind:value={value.weight} class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer">
               <option value="100">Thin (100)</option>
               <option value="200">Extra Light (200)</option>
@@ -99,7 +100,7 @@
         
         <!-- style -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Style
+          <label class="block text-sm font-medium text-gray-700 mb-2">{m["_appearance._typography.style"]()}
             <select bind:value={value.style} class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer">
               <option value="normal">Normal</option>
               <option value="italic">Italic</option>
@@ -109,7 +110,7 @@
         
         <!-- capitalisation -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Capitalisation
+          <label class="block text-sm font-medium text-gray-700 mb-2">{m["_appearance._typography.capitalisation"]()}
             <select bind:value={value.capitalisation} class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer">
               <option value="none">None</option>
               <option value="uppercase">Uppercase</option>
@@ -120,7 +121,7 @@
         
         <!-- decoration -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Decoration
+          <label class="block text-sm font-medium text-gray-700 mb-2">{m["_appearance._typography.decoration"]()}
             <select bind:value={value.decoration} class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer">
               <option value="none">None</option>
               <option value="underline">Underline</option>
@@ -131,7 +132,7 @@
         
         <!-- letter spacing -->
         <div class="md:col-span-2">
-          <label class="block text-sm font-medium text-gray-700 mb-2">Letter Spacing: {value.letter_spacing}px
+          <label class="block text-sm font-medium text-gray-700 mb-2">{m["_appearance._typography.letter_spacing"]()}: {value.letter_spacing}px
             <input 
               type="range" 
               min="0"

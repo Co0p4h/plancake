@@ -93,7 +93,7 @@
           </svg>
           publishing...
         {:else}
-          publish changes
+          {m['_appearance.publish_changes']()}
         {/if}
       </button>
     </div>

@@ -8,7 +8,7 @@
 <!-- <div class="border border-gray-300 rounded-lg p-4 mb-6"> -->
 <div class="flex flex-col gap-2">
   <div>
-    <h3 class="text-lg font-semibold">Item Gap</h3>
+    <h3 class="text-lg font-semibold">{m["_appearance._layout.item_gap"]()}</h3>
     <div class="space-y-4">
       <label class="block text-sm font-medium text-gray-700 mb-2">
         <!-- Item Gap:  -->
@@ -25,7 +25,7 @@
     </div>
   </div>
   
-  <h3 class="text-lg font-semibold mb-4">Schedule Layout</h3>
+  <h3 class="text-lg font-semibold mb-4">{m["_appearance._layout.schedule_layout"]()}</h3>
   <button class="flex mx-auto w-max gap-x-2 px-10 py-5 bg-gray-300 border-3 cursor-pointer" 
           style:border-color={layout.image_position == 'right' && layout.items == 'list' ? '#8c00ff' : ''}
           type="button"

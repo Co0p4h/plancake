@@ -89,9 +89,46 @@
 		"image": "image",
 		"item": "item",
 		"colour": "colour",
-		"colours": "colour",
+		"colours": "colours",
 		"null": "please select option",
-		"color-mappings": "color mappings"
+		"color-mappings": "color mappings",
+		"_layout": {
+			"layout": "layout",
+			"item_gap": "item gap",
+			"item_gap_description": "the spacing between each event item",
+			"text_size": "text size",
+			"text_size_description": "the size of the text on event items",
+			"null": "please select option",
+			"schedule_layout": "Schedule Layout"
+		},
+		"_typography": {
+			"font": "font",
+			"text_size": "text size",
+			"size": "size",
+			"weight": "weight",
+			"style": "style",
+			"captalization": "captalization",
+			"decoration": "decoration",
+			"letter_spacing": "letter spacing",
+			"captalisation": "captalisation",
+			"capitalisation": "captalisation"
+		},
+		"_item": {
+			"border_style": "border style",
+			"border_radius": "border radius",
+			"shadow_style": "shadow style"
+		},
+		"_background": {
+			"background_type": "background type",
+			"solid": "solid",
+			"gradient": "gradient"
+		},
+		"_image": {
+			"image_url": "image url",
+			"artist_url": "artist url",
+			"artist_attribution": "artist attribution"
+		},
+		"publish_changes": "publish changes"
 	},
 	"login": "log in",
 	"logout": "logout",
