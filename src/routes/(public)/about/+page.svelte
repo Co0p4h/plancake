@@ -4,13 +4,8 @@
 </svelte:head>
 
 <div class="text-column">
-	<h1 class="text-2xl font-bold">about this app</h1>
+	<h1 class="text-2xl font-bold">about us</h1>
 
 	<p>
-		Schedule is a simple, lightweight, and free schedule builder.
-	</p>
-
-	<p>
-		Schedule is built with SvelteKit, TailwindCSS, and 
-	</p>
+		plancake is a simple, lightweight, and free schedule builder! ♡</p>
 </div>
