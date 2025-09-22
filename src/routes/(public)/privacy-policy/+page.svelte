@@ -115,7 +115,10 @@
       </p>
     </section>
 
-    <footer class="text-sm text-gray-600 mt-12">
+  <footer class="mt-12 text-sm text-gray-600">
+      <p>
+        By using Plancake, you acknowledge that you have read and understood this privacy policy and agree to the collection and use of information in accordance with this policy.
+      </p>
     </footer>
   </div>
 </div>
