@@ -7,8 +7,8 @@
 	import toast from 'svelte-french-toast';
 	import { enhance } from '$app/forms';
 	import { fade } from 'svelte/transition';
-	import { LinkIcon, LockIcon } from '@lucide/svelte';
-	import { initSettingsStore, settingsStore as settings } from '$lib/state/settings.svelte';
+	import { LinkIcon, LockIcon, RotateCcw } from '@lucide/svelte';
+	import { initSettingsStore, settingsStore as settings } from './scheduleSettings.svelte';
 	import { beforeNavigate } from '$app/navigation';
 
   let { data } = $props();
@@ -53,7 +53,7 @@
   beforeNavigate(({ cancel }) => {
 		if (
 			settings.isModified() &&
-			!confirm('are you sure you want to leave? unsaved appearance changes will be lost.')
+			!confirm('are you sure you want to leave? unsaved setting changes will be lost.')
 		) {
 			cancel();
 		}
@@ -237,9 +237,12 @@
         </div>
 
         <div class="flex items-center justify-end pt-5 sticky bottom-0 pb-5 bg-white">
+          <button type="button" disabled={!settings.isModified() || isSubmitting} class="mr-3 px-3 py-2 rounded-md border border-gray-300 text-gray-800 bg-white cursor-pointer hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center">
+            <RotateCcw size="20" onclick={() => settings.resetSettings()} />
+          </button>
           <button
             type="submit"
-            class="focus:shadow-outline rounded bg-purple-400 px-4 py-2 font-bold text-white hover:bg-purple-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-in-out cursor-pointer flex items-cente"
+            class="focus:shadow-outline rounded bg-purple-400 px-4 py-2 font-bold text-white not-disabled:hover:bg-purple-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-in-out cursor-pointer flex items-cente"
             disabled={isSubmitting || !settings.isModified()} 
           >
             {#if isSubmitting}

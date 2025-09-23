@@ -3,6 +3,7 @@ import type { PageServerLoad } from './$types';
 import { deleteUser, getAllUserSettingsByUserId, isUsernameAvailable, updateUsername, updateUserSettings } from '$lib/server/db/services/user-service';
 import { deleteSessionTokenCookie } from '$lib/server/session';
 import { validateUsername } from '$lib/utils/ss-validate';
+import type { AllUserSettings } from '$lib/server/db/schema';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
   if (!locals.user) {
@@ -54,7 +55,7 @@ export const actions = {
       return { 
         success: true, 
         message: 'user settings updated successfully',
-        updated_settings: result.user_settings,
+        updated_settings: { display_name: result.user_settings.user.displayName, ...result.user_settings.user_settings } as AllUserSettings
       };
     } catch (error) {
       if (error instanceof Error) {

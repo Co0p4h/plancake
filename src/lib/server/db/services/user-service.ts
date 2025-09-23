@@ -221,11 +221,6 @@ export async function updateUserSettings(userId: string, settings: typeof table.
   }
 
   const result = await db.transaction(async (tx) => {
-    const [currentSettings] = await tx
-      .select({ settings: table.user_settings.settings })
-      .from(table.user_settings)
-      .where(eq(table.user_settings.userId, userId));
-
     await tx.update(table.user_settings)
       .set({ settings: settings })
       .where(eq(table.user_settings.userId, userId));
@@ -242,7 +237,7 @@ export async function updateUserSettings(userId: string, settings: typeof table.
       .leftJoin(table.user_settings, eq(table.users.id, table.user_settings.userId))
       .where(eq(table.users.id, userId))
 
-    return { user_settings, previousSettings: currentSettings };
+    return { user_settings };
   });
 
   return result;

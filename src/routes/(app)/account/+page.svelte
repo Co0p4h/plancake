@@ -10,34 +10,25 @@
 	import { enhance } from '$app/forms';
 	import type { AllUserSettings } from '$lib/server/db/schema';
 	import { page } from '$app/state';
-	import { localeToLanguage } from '$lib/utils/format';
+	import { initAccountStore, accountStore as settings } from './accountsettings.svelte';
+	import { beforeNavigate } from '$app/navigation';
+	import { RotateCcw } from '@lucide/svelte';
 
   let { data } = $props();
+
+  $effect.pre(() => {
+    data.streamed.user_settings?.then((result) => {
+      if (result.settings && result.user.display_name) {
+        const settings_data =  { ...result.settings, display_name: result.user.display_name };
+        initAccountStore(settings_data);
+        console.log("settings? ", settings_data);
+      }
+    });
+  });
 
   let isSubmitting = $state(false);
 
   let username = $derived(data.user.username);
-
-  let settings: AllUserSettings = $state({
-    display_name: '',
-    language: 'en', // not using this for now, using paraglide runtime instead...
-    timezone: '',
-    social_links: [{platform: '', url: ''}],
-    discord_webhook: '',
-  });
-
-  $effect(() => {
-    if (data.streamed.user_settings) {
-      data.streamed.user_settings.then((result) => {
-        console.log('loaded user settings:', result);
-        
-        if (result.settings && result.user.display_name) {
-          settings =  { ...result.settings, display_name: result.user.display_name };
-          console.log('settings loaded:', settings);
-        }
-      });
-    }
-  });
 
   const enhance_form: SubmitFunction = ({ formData, action }) => {
     isSubmitting = true;
@@ -45,12 +36,11 @@
       isSubmitting = false;
 
       if (result.type == "success" && result.data) {
-        // const { updated_settings, languageChanged } = result.data;
         const { updated_settings } = result.data;
         if (updated_settings) {
-          // if (languageChanged) {
-          //   setLocale(updated_settings.user_settings.language);
-          // }
+          console.log("updated settings!", updated_settings);
+          
+          settings.commitChanges(updated_settings);
           toast.success('user settings updated successfully!');
         }
       } else if (result.type == "failure" && result.data) { 
@@ -59,6 +49,15 @@
       }
     }
   }
+
+  beforeNavigate(({ cancel }) => {
+		if (
+			settings.isModified() &&
+			!confirm('are you sure you want to leave? unsaved setting changes will be lost.')
+		) {
+			cancel();
+		}
+	});
 </script>
 
 {#await data.streamed.user_settings}
@@ -68,19 +67,19 @@
     <h1 class="mb-4 text-xl text-gray-500">{m['_account.account']()}</h1>
     
     <form method="POST" action="?/updateUserSettings" use:enhance={enhance_form} class="space-y-7">
-      <input type="hidden" name="user_settings" value={JSON.stringify(settings)} />
+      <input type="hidden" name="user_settings" value={JSON.stringify(settings.clientSettings)} />
 
       <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg flex flex-col gap-7 mb-6">
         <div>
           <h2 class="text-lg">{m['_account.display_name']()}</h2>
-          <input placeholder={m['_account.display_name_placeholder']()} name="display_name" id="display_name" class="mt-2 rounded-md border-1 border-gray-300 p-2" bind:value={settings.display_name} disabled={isSubmitting} required />
+          <input placeholder={m['_account.display_name_placeholder']()} name="display_name" id="display_name" class="mt-2 rounded-md border-1 border-gray-300 p-2" bind:value={settings.clientSettings.display_name} disabled={isSubmitting} required />
         </div>
 
         <div>
           <h2 class="text-lg">{m['_account.timezone']()}</h2>
-          <p class="text-gray-500 text-sm">Current: {settings.timezone}</p>
-          <select name="timezone" id="timezone" class="mt-2 rounded-md border-1 border-gray-300 p-2" bind:value={settings.timezone}>
-            {#each Intl.supportedValuesOf('timeZone') as tz}
+          <!-- <p class="text-gray-500 text-sm">Current: {settings.clientSettings.timezone}</p> -->
+          <select name="timezone" id="timezone" class="mt-2 rounded-md border-1 border-gray-300 p-2" bind:value={settings.clientSettings.timezone}>
+            {#each Intl.supportedValuesOf('timeZone') as tz (tz)}
               <option value={tz}>{tz}</option>
             {/each}
           </select>
@@ -103,14 +102,14 @@
               updateUsernameModal.username = username;
             }}
           >
-            {"change"}
+            change
           </button>
         </div>
 
         <!-- <div>
           <h2 class="text-lg">{m['_account.discord_webhook']()}</h2>
           <p class="text-gray-500 text-sm">Configure Discord webhook for notifications</p>
-          <textarea name="discord_webhook" id="discord_webhook" class="mt-2 rounded-md border-1 border-gray-300 p-2 w-full h-24 resize-none" bind:value={settings.discord_webhook}></textarea>
+          <textarea name="discord_webhook" id="discord_webhook" class="mt-2 rounded-md border-1 border-gray-300 p-2 w-full h-24 resize-none" bind:value={settings.clientSettings.discord_webhook}></textarea>
         </div> -->
       </div>
 
@@ -119,7 +118,7 @@
           <h2 class="text-lg">{m['_account.social_links']()}</h2>
           <p class="text-gray-500 text-sm">{m['_account.manage_your_social_links']()}</p>
           <div class="mt-2">
-            <SocialLinks bind:socialLinks={settings.social_links} />
+            <SocialLinks bind:socialLinks={settings.clientSettings.social_links} />
           </div>
         </div>
       </div>
@@ -139,10 +138,13 @@
       </div>
 
       <div class="flex items-center justify-end pt-5 sticky bottom-0 pb-5 bg-white">
+        <button type="button" disabled={!settings.isModified() || isSubmitting} class="mr-3 px-3 py-2 rounded-md border border-gray-300 text-gray-800 bg-white cursor-pointer hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center">
+          <RotateCcw size="20" onclick={() => settings.resetSettings()} />
+        </button>
         <button
           type="submit"
-          class="focus:shadow-outline rounded bg-purple-400 px-4 py-2 font-bold text-white hover:bg-purple-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-in-out cursor-pointer flex items-center"
-          disabled={isSubmitting} 
+          class="focus:shadow-outline rounded bg-purple-400 px-4 py-2 font-bold text-white not-disabled:hover:bg-purple-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-in-out cursor-pointer flex items-center"
+          disabled={isSubmitting || !settings.isModified()} 
         >
           {#if isSubmitting}
             <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
