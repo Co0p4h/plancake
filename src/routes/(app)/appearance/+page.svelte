@@ -34,6 +34,8 @@
 	// 	initialiseTheme();
 	// });
 
+	let activeAppearance: ThemeCategories = $state('colours');
+
 	beforeNavigate(({ cancel }) => {
 		if (
 			themeStore.isModified() &&
@@ -42,9 +44,6 @@
 			cancel();
 		}
 	});
-
-	let activeAppearance: ThemeCategories = $state('colours');
-
 </script>
 
 <svelte:body onkeydown={(e) => {

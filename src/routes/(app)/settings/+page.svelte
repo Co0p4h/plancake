@@ -8,33 +8,26 @@
 	import { enhance } from '$app/forms';
 	import { fade } from 'svelte/transition';
 	import { LinkIcon, LockIcon } from '@lucide/svelte';
+	import { initSettingsStore, settingsStore as settings } from '$lib/state/settings.svelte';
+	import { beforeNavigate } from '$app/navigation';
 
   let { data } = $props();
 
-  console.log('data: ', data);
+  $effect.pre(() => {
+    data.schedule_settings?.then((result) => {
+      if (result.schedule && result.schedule_settings) {
+        const settings_data = { ...result.schedule_settings, title: result.schedule.title, description: result.schedule.description } as AllScheduleSettings;
+        initSettingsStore(settings_data);
+      }
+    });
+  });
 
   let descriptionElement: HTMLTextAreaElement | undefined = $state();
 
   let isSubmitting = $state(false);
   let isSubmittingSchedule = $state(false);
 
-  let settings: AllScheduleSettings = $state({
-    title: '',
-    description: '',
-    show_empty_days: true,
-    empty_day_text: "",
-    show_past_events: false,
-    use_24_hour_time: false,
-    show_social_links: false,
-    first_day_of_week: "monday",
-    show_logo: true,
-    show_schedule_description: false,
-    show_schedule_image: false
-  });
-
-  const enhance_form: SubmitFunction = ({ formData, action }) => {
-
-    console.log('Form submitting with settings:', settings);
+  const enhance_form: SubmitFunction = () => {
 
     isSubmitting = true;
     return async ({ result }) => {
@@ -47,6 +40,7 @@
         console.log("updated_settings", updated_schedule);
         
         if (updated_schedule) {
+          settings.commitChanges(updated_schedule);
           toast.success('settings updated successfully!');
         }
       } else if (result.type == "failure" && result.data) { 
@@ -54,26 +48,26 @@
         toast.error(error_message);
       }
     }
-  }
+  }  
 
-  $effect(() => {
-    data.schedule_settings?.then((result) => {
-      if (result.schedule && result.schedule_settings) {
-        settings = { ...result.schedule_settings, title: result.schedule.title, description: result.schedule.description };
-        console.log('settings loaded:', settings);
-      }
-    });
-  });
+  beforeNavigate(({ cancel }) => {
+		if (
+			settings.isModified() &&
+			!confirm('are you sure you want to leave? unsaved appearance changes will be lost.')
+		) {
+			cancel();
+		}
+	});
 </script>
 
 {#await data.schedule_settings}
- <SettingsSkeleton />
+  <SettingsSkeleton />
 {:then schedule_settings}
   <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg relative">
     <h1 class="mb-4 text-xl text-gray-500">{m['_settings.settings']()}</h1>
     {#if schedule_settings}
       <form method="POST" action="?/updateScheduleSettings" use:enhance={enhance_form} class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg flex flex-col gap-7 mb-6">
-        <input type="hidden" name="schedule_settings" value={JSON.stringify(settings)} />
+        <input type="hidden" name="schedule_settings" value={JSON.stringify(settings.clientSettings)} />
 
         <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg flex flex-col gap-7">
           <div class="flex flex-col gap-1">
@@ -81,7 +75,7 @@
             <p class="text-sm text-gray-500">{m['_settings.schedule_title_description']()}</p>
             <input 
               name="title"
-              bind:value={settings.title}
+              bind:value={settings.clientSettings.title}
               class="border w-full border-gray-300 rounded-sm px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500" 
               placeholder={m['_settings.schedule_title_placeholder']({ name: data.user.username })} 
               disabled={isSubmittingSchedule}
@@ -94,11 +88,11 @@
               <p class="text-sm text-gray-500">{m['_settings.show_schedule_text_description']()}</p>
               <textarea 
                 name="description"
-                bind:value={settings.description}
+                bind:value={settings.clientSettings.description}
                 bind:this={descriptionElement}
-                class={`border w-full border-gray-300 rounded-sm px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500 min-h-[80px] resize-y whitespace-pre-wrap ${!settings.show_schedule_description ? 'opacity-50 cursor-not-allowed' : ''}`}
+                class={`border w-full border-gray-300 rounded-sm px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500 min-h-[80px] resize-y whitespace-pre-wrap ${!settings.clientSettings.show_schedule_description ? 'opacity-50 cursor-not-allowed' : ''}`}
                 placeholder={m['_settings.schedule_description_placeholder']()} 
-                disabled={isSubmittingSchedule || !settings.show_schedule_description}
+                disabled={isSubmittingSchedule || !settings.clientSettings.show_schedule_description}
                 onclick={() => {
                   // if (!settings.show_schedule_description) {
                   //   toast('please enable "Show Schedule Text" to edit the description.', { icon: 'ℹ️' });
@@ -116,10 +110,10 @@
               <p class="text-gray-500 text-sm">{m['_settings.show_schedule_description']()}</p>
             </div>
             <Toggle 
-              toggled={settings.show_schedule_description} 
+              toggled={settings.clientSettings.show_schedule_description} 
               onclick={() => { 
-                settings.show_schedule_description = !settings.show_schedule_description;
-                if (settings.show_schedule_description) {
+                settings.clientSettings.show_schedule_description = !settings.clientSettings.show_schedule_description;
+                if (settings.clientSettings.show_schedule_description) {
                   requestAnimationFrame(() => {
                     descriptionElement?.focus();
                   });
@@ -135,19 +129,19 @@
               <p class="text-gray-500 text-sm">{m['_settings.show_empty_days_description']()}</p>
             </div>
             <Toggle 
-              toggled={settings.show_empty_days} 
-              onclick={() => { settings.show_empty_days = !settings.show_empty_days }} 
+              toggled={settings.clientSettings.show_empty_days} 
+              onclick={() => { settings.clientSettings.show_empty_days = !settings.clientSettings.show_empty_days }} 
               disabled={isSubmitting} 
             />
           </div>
 
-          {#if settings.show_empty_days}
+          {#if settings.clientSettings.show_empty_days}
             <div in:fade={{ duration: 100 }} class="pl-4 border-l-2 border-gray-300 flex flex-col gap-1">
               <div class="text-lg">{m['_settings.empty_day_text']()}</div>
               <p class="text-sm text-gray-500">{m['_settings.empty_day_text_description']()}</p>
               <input 
                 class="border w-1/2 border-gray-300 rounded-sm px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500" 
-                bind:value={settings.empty_day_text} 
+                bind:value={settings.clientSettings.empty_day_text} 
                 placeholder={m['_settings.empty_day_text_placeholder']()} 
               />
             </div>
@@ -164,8 +158,8 @@
               <p class="text-gray-500 text-sm">{m['_settings.show_schedule_image_description']()}</p>
             </div>
             <Toggle 
-              toggled={settings.show_schedule_image} 
-              onclick={() => { settings.show_schedule_image = !settings.show_schedule_image }} 
+              toggled={settings.clientSettings.show_schedule_image} 
+              onclick={() => { settings.clientSettings.show_schedule_image = !settings.clientSettings.show_schedule_image }} 
               disabled={isSubmitting} 
             />
           </div>
@@ -188,8 +182,8 @@
               <p class="text-gray-500 text-sm">{m['_settings.use_24_hour_time_description']()}</p>
             </div>
             <Toggle 
-              toggled={settings.use_24_hour_time} 
-              onclick={() => { settings.use_24_hour_time = !settings.use_24_hour_time }} 
+              toggled={settings.clientSettings.use_24_hour_time} 
+              onclick={() => { settings.clientSettings.use_24_hour_time = !settings.clientSettings.use_24_hour_time }} 
               disabled={isSubmitting} 
             />
           </div>
@@ -205,8 +199,8 @@
               <p class="text-gray-500 text-sm">{m['_settings.show_social_links_description']()}</p>
             </div>
             <Toggle 
-              toggled={settings.show_social_links} 
-              onclick={() => { settings.show_social_links = !settings.show_social_links }} 
+              toggled={settings.clientSettings.show_social_links} 
+              onclick={() => { settings.clientSettings.show_social_links = !settings.clientSettings.show_social_links }} 
               disabled={isSubmitting} 
             />
           </div>
@@ -216,7 +210,7 @@
             <p class="text-gray-500 text-sm">{m['_settings.first_day_of_week_description']()}</p>
             <select 
               class="mt-2 border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500 cursor-pointer"
-              bind:value={settings.first_day_of_week}
+              bind:value={settings.clientSettings.first_day_of_week}
               disabled={isSubmitting}
             >
               <option value="monday">Monday</option>
@@ -234,8 +228,8 @@
             <div class="flex items-center gap-4">
               <LockIcon class="w-4 h-4 text-gray-500" />
               <Toggle 
-                toggled={settings.show_logo} 
-                onclick={() => { settings.show_logo = !settings.show_logo }} 
+                toggled={settings.clientSettings.show_logo} 
+                onclick={() => { settings.clientSettings.show_logo = !settings.clientSettings.show_logo }} 
                 disabled={true} 
               />
             </div>
@@ -246,7 +240,7 @@
           <button
             type="submit"
             class="focus:shadow-outline rounded bg-purple-400 px-4 py-2 font-bold text-white hover:bg-purple-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-in-out cursor-pointer flex items-cente"
-            disabled={isSubmitting} 
+            disabled={isSubmitting || !settings.isModified()} 
           >
             {#if isSubmitting}
               <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

@@ -4,6 +4,7 @@ import { eq } from 'drizzle-orm';
 import { fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 import { getScheduleSettingsByUserId, updateScheduleSettings } from '$lib/server/db/services/schedule-service';
+import type { AllScheduleSettings } from '$lib/server/db/schema';
 
 export const load: PageServerLoad = (async ({ locals, url }) => {
   if (!locals.user) {
@@ -54,7 +55,7 @@ export const actions: Actions = {
 
       return { 
         success: true, 
-        updated_schedule
+        updated_schedule: { title: updated_schedule.schedule.title, description: updated_schedule.schedule.description, ...updated_schedule.schedule_settings } as AllScheduleSettings
       };
     } catch (error) {
       console.error('error updating schedule and settings: ', error);
