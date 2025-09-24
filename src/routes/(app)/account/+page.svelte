@@ -4,13 +4,12 @@
 	import ChangeUsernameModal from './UpdateUsernameModal.svelte';
   import AccountSkeleton from './AccountSkeleton.svelte';
 	import { updateUsernameModal, deleteUserModal } from './accountModal.svelte';
+	import { initAccountStore, accountStore as accountSettings } from './accountSettings.svelte';
 	import { m } from '$lib/paraglide/messages.js';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import toast from 'svelte-french-toast';
 	import { enhance } from '$app/forms';
-	import type { AllUserSettings } from '$lib/server/db/schema';
 	import { page } from '$app/state';
-	import { initAccountStore, accountStore as settings } from './accountsettings.svelte';
 	import { beforeNavigate } from '$app/navigation';
 	import { RotateCcw } from '@lucide/svelte';
 
@@ -40,7 +39,7 @@
         if (updated_settings) {
           console.log("updated settings!", updated_settings);
           
-          settings.commitChanges(updated_settings);
+          accountSettings.commitChanges(updated_settings);
           toast.success('user settings updated successfully!');
         }
       } else if (result.type == "failure" && result.data) { 
@@ -52,7 +51,7 @@
 
   beforeNavigate(({ cancel }) => {
 		if (
-			settings.isModified() &&
+			accountSettings.isModified() &&
 			!confirm('are you sure you want to leave? unsaved setting changes will be lost.')
 		) {
 			cancel();
@@ -67,18 +66,18 @@
     <h1 class="mb-4 text-xl text-gray-500">{m['_account.account']()}</h1>
     
     <form method="POST" action="?/updateUserSettings" use:enhance={enhance_form} class="space-y-7">
-      <input type="hidden" name="user_settings" value={JSON.stringify(settings.clientSettings)} />
+      <input type="hidden" name="user_settings" value={JSON.stringify(accountSettings.clientSettings)} />
 
       <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg flex flex-col gap-7 mb-6">
         <div>
           <h2 class="text-lg">{m['_account.display_name']()}</h2>
-          <input placeholder={m['_account.display_name_placeholder']()} name="display_name" id="display_name" class="mt-2 rounded-md border-1 border-gray-300 p-2" bind:value={settings.clientSettings.display_name} disabled={isSubmitting} required />
+          <input placeholder={m['_account.display_name_placeholder']()} name="display_name" id="display_name" class="mt-2 rounded-md border-1 border-gray-300 p-2" bind:value={accountSettings.clientSettings.display_name} disabled={isSubmitting} required />
         </div>
 
         <div>
           <h2 class="text-lg">{m['_account.timezone']()}</h2>
           <!-- <p class="text-gray-500 text-sm">Current: {settings.clientSettings.timezone}</p> -->
-          <select name="timezone" id="timezone" class="mt-2 rounded-md border-1 border-gray-300 p-2" bind:value={settings.clientSettings.timezone}>
+          <select name="timezone" id="timezone" class="mt-2 rounded-md border-1 border-gray-300 p-2" bind:value={accountSettings.clientSettings.timezone}>
             {#each Intl.supportedValuesOf('timeZone') as tz (tz)}
               <option value={tz}>{tz}</option>
             {/each}
@@ -118,7 +117,7 @@
           <h2 class="text-lg">{m['_account.social_links']()}</h2>
           <p class="text-gray-500 text-sm">{m['_account.manage_your_social_links']()}</p>
           <div class="mt-2">
-            <SocialLinks bind:socialLinks={settings.clientSettings.social_links} />
+            <SocialLinks bind:socialLinks={accountSettings.clientSettings.social_links} />
           </div>
         </div>
       </div>
@@ -138,13 +137,17 @@
       </div>
 
       <div class="flex items-center justify-end pt-5 sticky bottom-0 pb-5 bg-white">
-        <button type="button" disabled={!settings.isModified() || isSubmitting} class="mr-3 px-3 py-2 rounded-md border border-gray-300 text-gray-800 bg-white cursor-pointer hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center">
-          <RotateCcw size="20" onclick={() => settings.resetSettings()} />
+        <button class="mr-3 px-3 py-2 rounded-md border border-gray-300 text-gray-800 bg-white cursor-pointer hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center"
+          type="button" 
+          disabled={!accountSettings.isModified() || isSubmitting} 
+          onclick={() => accountSettings.resetSettings()} 
+        >
+          <RotateCcw size="20" />
         </button>
         <button
           type="submit"
           class="focus:shadow-outline rounded bg-purple-400 px-4 py-2 font-bold text-white not-disabled:hover:bg-purple-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-in-out cursor-pointer flex items-center"
-          disabled={isSubmitting || !settings.isModified()} 
+          disabled={isSubmitting || !accountSettings.isModified()} 
         >
           {#if isSubmitting}
             <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

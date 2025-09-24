@@ -4,7 +4,6 @@ import type { AllUserSettings } from "$lib/server/db/schema";
 type accountStore = ReturnType<typeof createAccountStore>;
 export let accountStore: accountStore;
 
-// what is this...
 function deepUpdateSettings<AllScheduleSettings extends Record<string, unknown>>(
   target: AllScheduleSettings, 
   source: Partial<AllScheduleSettings>
@@ -22,13 +21,11 @@ function deepUpdateSettings<AllScheduleSettings extends Record<string, unknown>>
 }
 
 function createAccountStore(initialSettings: AllUserSettings) {
-  console.log("wah..", initialSettings, typeof initialSettings);
   const snapshot = JSON.parse(JSON.stringify(initialSettings)) as AllUserSettings;
 
   const store = $state({
     originalSettings: structuredClone(snapshot),
     clientSettings: structuredClone(snapshot),
-    isLoading: false,
 
     /**
      * a computed property that returns true if the user has made changes.
@@ -41,6 +38,11 @@ function createAccountStore(initialSettings: AllUserSettings) {
      * resets any user modifications back to the original saved state.
      */
     resetSettings() {
+      console.log('resetting settings...');
+      console.log('client settings: ', this.clientSettings);
+      console.log('original settings', this.originalSettings);
+      console.log('-----------');
+      
       deepUpdateSettings(this.clientSettings, this.originalSettings);
     },
 
@@ -54,8 +56,6 @@ function createAccountStore(initialSettings: AllUserSettings) {
 
   });
 
-  console.log("store: ", store);
-
   return store;
 }
 
@@ -64,8 +64,6 @@ export function initAccountStore(initialSettings: AllUserSettings) {
   if (browser && accountStore) {
     return;
   }
-
-  console.log("initialSettings: ", initialSettings)
 
   accountStore = createAccountStore(initialSettings);
 }

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { TypographyTheme } from "$lib/server/db/schema";
   import { m } from '$lib/paraglide/messages.js';
+	import { elementFontSizeOptions, fontSizes } from "$lib/utils/font";
 
   let { typography = $bindable() }: {typography: TypographyTheme} = $props();
 
@@ -68,15 +69,10 @@
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">{m["_appearance._typography.size"]()}
             <select bind:value={value.size} class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer">
-              <option value="xs">Extra Small (12px)</option>
-              <option value="sm">Small (14px)</option>
-              <option value="base">Base (16px)</option>
-              <option value="lg">Large (18px)</option>
-              <option value="xl">Extra Large (20px)</option>
-              <option value="2xl">2X Large (24px)</option>
-              <option value="3xl">3X Large (30px)</option>
-              <option value="4xl">4X Large (36px)</option>
-              <option value="5xl">5X Large (48px)</option>
+              {#each elementFontSizeOptions[selectedElement] as value}
+              <!-- TODO: make better lables for value -->
+              <option {value}>{value} ({fontSizes[value]})</option> 
+              {/each}
             </select>
           </label>
         </div>
