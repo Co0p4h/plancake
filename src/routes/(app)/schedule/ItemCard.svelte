@@ -12,7 +12,7 @@
   <div>
     <h3 class="font-medium text-md text-gray-800 wrap-break-word">{item.title}</h3>
     {#if item.description}
-      <p class="text-sm text-gray-500 mt-1 wrap-break-word">{item.description}</p>
+      <p class="text-sm text-gray-500 mt-1 wrap-break-word whitespace-pre-wrap">{item.description}</p>
     {/if}
   </div>
 

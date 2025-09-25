@@ -108,7 +108,7 @@
         typography={theme.typography.item_description}
         colour={theme.colours.accent}
         tag="p"
-        class="wrap-break-word"
+        class="wrap-break-word whitespace-pre-wrap"
       >
         {#if !item.id.startsWith('empty-')}
           {item.description}
