@@ -141,6 +141,7 @@
               <p class="text-sm text-gray-500">{m['_settings.empty_day_text_description']()}</p>
               <input 
                 class="border w-1/2 border-gray-300 rounded-sm px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500" 
+                maxlength="50"
                 bind:value={settings.clientSettings.empty_day_text} 
                 placeholder={m['_settings.empty_day_text_placeholder']()} 
               />

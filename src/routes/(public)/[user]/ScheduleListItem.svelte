@@ -37,7 +37,7 @@
   {/if}
 
   <!-- date header -->
-  <div class='flex flex-col items-center justify-center min-w-16 min-h-16 text-white'
+  <div class='flex flex-col items-center justify-center min-w-16 min-h-16 text-white py-1'
        style:background-color={theme.colours.primary}
        style:color={theme.colours.secondary}
        style:border-top-left-radius={`${Math.max(0, theme.item_theme.border_radius - 1)}px`}
@@ -76,7 +76,7 @@
             colour={theme.colours.text}
             tag="span"
           >
-            <div class="flex">
+            <div class="flex whitespace-nowrap">
               {dayjs(item.startTime).format(settings.use_24_hour_time ? 'HH:mm' : 'hh:mmA')}
               {#if item.endTime}
                 <span class="time-range">
@@ -93,6 +93,7 @@
         typography={item.id.startsWith('empty-') ? theme.typography.empty_text : theme.typography.item_title}
         colour={theme.colours.text}
         tag="span"
+        class="wrap-break-word overflow-auto"
       >
         {#if item.id.startsWith('empty-')}
           {settings.empty_day_text || 'nothing scheduled'}  
@@ -107,7 +108,7 @@
         typography={theme.typography.item_description}
         colour={theme.colours.accent}
         tag="p"
-        class="whitespace-pre-wrap"
+        class="wrap-break-word"
       >
         {#if !item.id.startsWith('empty-')}
           {item.description}

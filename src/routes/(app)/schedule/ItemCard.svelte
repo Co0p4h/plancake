@@ -10,9 +10,9 @@
 <div class={`group p-[10px] relative rounded-md ${bgColor ? `bg-${bgColor}-50 border-${bgColor}-200` : 'border border-gray-200 bg-white'}`}>
 <!-- <div class="relative rounded-md bg-purple-background p-[10px]"> -->
   <div>
-    <h3 class="font-medium text-md text-gray-800">{item.title}</h3>
+    <h3 class="font-medium text-md text-gray-800 wrap-break-word">{item.title}</h3>
     {#if item.description}
-      <p class="text-sm text-gray-500 mt-1 whitespace-pre-wrap">{item.description}</p>
+      <p class="text-sm text-gray-500 mt-1 wrap-break-word">{item.description}</p>
     {/if}
   </div>
 
@@ -26,7 +26,7 @@
   </div>
 
   {#if item.externalUrl}
-    <a href={item.externalUrl} class="text-xs text-gray-500 flex mt-1">
+    <a href={item.externalUrl} class="flex items-center text-xs text-gray-500 mt-1">
       <Link class="h-3 w-3 mr-1"/>
       <p>external link</p>
     </a>

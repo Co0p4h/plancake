@@ -59,7 +59,7 @@
   </div>
   
   <!-- content body -->
-  <div class="flex flex-col gap-y-2 p-3 flex-1 text-center py-2"
+  <div class="flex flex-col gap-y-2 px-2 pb-4 flex-1 text-center py-2"
        class:justify-center={item.id.startsWith('empty-')}
        style:background-color={theme.colours.secondary}
        style:color={theme.colours.text}
@@ -68,20 +68,27 @@
   >
     {#if !item.id.startsWith('empty-')}
       <div class="flex justify-center gap-1 px-2 py-1 whitespace-nowrap"
-           style:color={theme.colours.secondary}
-           style:background-color={theme.colours.accent}
-           style:border-radius={`${theme.item_theme.border_radius}px`}>
+        style:color={theme.colours.secondary}
+        style:background-color={theme.colours.accent}
+        style:border-radius={`${theme.item_theme.border_radius}px`}
+      >
         <StyledText 
           theme={theme}
           typography={theme.typography.item_time}
           colour={theme.colours.secondary}
           tag="span"
         >
-          {dayjs(item.startTime).format(settings.use_24_hour_time ? 'HH:mm' : 'hh:mmA')}
           {#if item.endTime}
-            <span class="time-range">
-              {dayjs(item.endTime).format(settings.use_24_hour_time ? 'HH:mm' : 'hh:mmA')}
-            </span>
+            <div class="flex flex-col items-center">
+              <span>{dayjs(item.startTime).format(settings.use_24_hour_time ? 'HH:mm' : 'hh:mmA')}</span>
+              <!-- <span>↓</span>  -->
+              <!-- add leading-4 -->
+              <!-- <span>to</span>  -->
+              <!-- <ArrowDown class="h-3" /> -->
+              <span>{dayjs(item.endTime).format(settings.use_24_hour_time ? 'HH:mm' : 'hh:mmA')}</span>
+            </div>
+          {:else}
+            <span>{dayjs(item.startTime).format(settings.use_24_hour_time ? 'HH:mm' : 'hh:mmA')}</span>
           {/if}
         </StyledText>
       </div>
@@ -93,7 +100,7 @@
       typography={item.id.startsWith('empty-') ? theme.typography.empty_text : theme.typography.item_title}
       colour={theme.colours.text}
       tag="span"
-      class="px-2 text-center"
+      class="px-2 text-center wrap-break-word"
     >
       {#if item.id.startsWith('empty-')}
         {settings.empty_day_text || 'nothing scheduled'}  
@@ -109,7 +116,7 @@
         typography={theme.typography.item_description}
         colour={theme.colours.accent}
         tag="p"
-        class="leading-tight whitespace-pre-wrap"
+        class="leading-tight wrap-break-word"
       >
         {item.description}
       </StyledText>
@@ -138,9 +145,9 @@
   {/if}
 </div>
 
-<style>
+<!-- <style>
   .time-range::before {
     content: ' - ';
     white-space: pre;
   }
-</style>
+</style> -->

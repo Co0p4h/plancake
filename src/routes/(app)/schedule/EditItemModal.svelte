@@ -59,6 +59,7 @@
           name="title"
           id="title"
           type="text"
+          maxlength="50"
           required
           value={editModal.item?.title ?? ''}
         />
