@@ -116,7 +116,7 @@
         typography={theme.typography.item_description}
         colour={theme.colours.accent}
         tag="p"
-        class="leading-tight wrap-break-word"
+        class="leading-tight wrap-break-word whitespace-pre-wrap"
       >
         {item.description}
       </StyledText>
