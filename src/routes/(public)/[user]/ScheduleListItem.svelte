@@ -93,7 +93,7 @@
         typography={item.id.startsWith('empty-') ? theme.typography.empty_text : theme.typography.item_title}
         colour={theme.colours.text}
         tag="span"
-        class="wrap-break-word overflow-auto"
+        class="wrap-anywhere"
       >
         {#if item.id.startsWith('empty-')}
           {settings.empty_day_text || 'nothing scheduled'}  
