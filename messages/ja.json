@@ -57,7 +57,10 @@
 		"home": "ホーム",
 		"settings": "設定",
 		"schedule": "スケジュール",
-		"appearance": "カスタマイズ"
+		"appearance": "カスタマイズ",
+		"contact": "お問い合わせ",
+		"privacy_policy": "プライバシーポリシー",
+		"terms_of_service": "利用規約"
 	},
 	"_schedule": {
 		"today": "今日",
@@ -131,7 +134,15 @@
 			"artist_url": "アーティストURL",
 			"artist_attribution": "アーティスト"
 		},
-		"publish_changes": "変更を公開"
+		"publish_changes": "変更を公開",
+		"_tooltips": {
+			"layout_settings": "レイアウト設定",
+			"typography_settings": "タイポグラフィ設定",
+			"item_settings": "アイテム設定",
+			"background_settings": "背景設定",
+			"image_settings": "画像設定",
+			"colour_settings": "色設定"
+		}
 	},
 	"login": "ログイン",
 	"logout": "ログアウト",

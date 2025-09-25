@@ -57,7 +57,10 @@
 		"home": "home",
 		"settings": "settings",
 		"schedule": "schedule",
-		"appearance": "appearance"
+		"appearance": "appearance",
+		"contact": "Contact",
+		"privacy_policy": "Privacy Policy",
+		"terms_of_service": "Terms"
 	},
 	"_schedule": {
 		"today": "today",
@@ -128,7 +131,15 @@
 			"artist_url": "artist url",
 			"artist_attribution": "artist attribution"
 		},
-		"publish_changes": "publish changes"
+		"publish_changes": "publish changes",
+		"_tooltips": {
+			"layout_settings": "Layout Settings",
+			"typography_settings": "Typography Settings",
+			"item_settings": "Item Settings",
+			"background_settings": "Background Settings",
+			"image_settings": "Image Settings",
+			"colour_settings": "Color Settings"
+		}
 	},
 	"login": "log in",
 	"logout": "logout",

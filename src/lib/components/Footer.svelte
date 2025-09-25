@@ -25,13 +25,13 @@
           <a href="/about" class="hover:underline me-4 md:me-6">{m['_navigation.about']()}</a>
         </li>
         <li>
-          <a href="/privacy-policy" class="hover:underline me-4 md:me-6">Privacy Policy</a>
+          <a href="/privacy-policy" class="hover:underline me-4 md:me-6">{m['_navigation.privacy_policy']()}</a>
         </li>
         <li>
-          <a href="/terms-of-service" class="hover:underline me-4 md:me-6">Terms</a>
+          <a href="/terms-of-service" class="hover:underline me-4 md:me-6">{m['_navigation.terms_of_service']()}</a>
         </li>
         <li>
-          <a href="mailto:contact@coopa.me" class="hover:underline">Contact</a>
+          <a href="mailto:contact@coopa.me" class="hover:underline">{m['_navigation.contact']()}</a>
         </li>
       </ul>
       <select 
@@ -49,6 +49,6 @@
       </select>
     </div>
     <hr class="my-4 border-gray-200 sm:mx-auto" />
-    <span class="block text-sm text-gray-500 sm:text-center ">© 2023 <a href="/" class="hover:underline">plancake™</a>. All Rights Reserved.</span>
+    <span class="block text-sm text-gray-500 sm:text-center ">© 2025 <a href="/" class="hover:underline">plancake™</a>. All Rights Reserved.</span>
   </div>
 </footer>
