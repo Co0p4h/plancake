@@ -72,7 +72,8 @@
 		"last_month": "last month",
 		"add_event": "Add Event",
 		"weekly_schedule": "Weekly Schedule",
-		"no_items_scheduled": "no items scheduled"
+		"no_items_scheduled": "no items scheduled",
+		"no_items_scheduled_with_name": "{name} has no items scheduled"
 	},
 	"_appearance": {
 		"appearance": "appearance",
@@ -134,6 +135,7 @@
 		"publish_changes": "publish changes",
 		"_tooltips": {
 			"layout_settings": "Layout Settings",
+			"color_settings": "Color Settings",
 			"typography_settings": "Typography Settings",
 			"item_settings": "Item Settings",
 			"background_settings": "Background Settings",

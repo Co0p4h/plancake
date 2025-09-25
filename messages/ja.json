@@ -72,7 +72,8 @@
 		"last_month": "先月",
 		"add_event": "イベントを追加",
 		"weekly_schedule": "週間スケジュール",
-		"no_items_scheduled": "予定がありません"
+		"no_items_scheduled": "予定がありません",
+		"no_items_scheduled_with_name": "{name} の予定はありません"
 	},
 	"_appearance": {
 		"appearance": "カスタマイズ",
@@ -137,6 +138,7 @@
 		"publish_changes": "変更を公開",
 		"_tooltips": {
 			"layout_settings": "レイアウト設定",
+			"color_settings": "色設定",
 			"typography_settings": "タイポグラフィ設定",
 			"item_settings": "アイテム設定",
 			"background_settings": "背景設定",

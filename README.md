@@ -7,7 +7,7 @@ plancake is a simple, lightweight, and free schedule builder designed for conten
 ### key features
 
 - **public schedule sharing** - get a unique URL like `yoursite.com/yourname`
-- **extensive customisation** - colors, fonts, layouts, images, and more
+- **extensive customisation** - colours, fonts, layouts, images, and more
 - **timezone handling** - automatic timezone conversion for global audiences
 - **clean interface** - no clutter, just what you need
 

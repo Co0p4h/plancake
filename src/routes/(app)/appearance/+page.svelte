@@ -56,7 +56,7 @@
 	{#await data.schedule_data}
 		<AppearanceSkeleton />
 	{:then scheduleData}
-		{@const items = scheduleData.items}
+		{@const items = scheduleData.items ?? []}
 		{@const items_with_empty_days = (() => {
 			const { start: startDate, end: endDate } = getCurrentWeekDates(scheduleData.schedule_settings.settings.first_day_of_week);
 
@@ -149,7 +149,7 @@
 							{/if}
 						</div>
 
-						{#if items.length > 0 || items_with_empty_days.length > 0} <!-- TODO: this does not work -->
+					{#if scheduleData.schedule_settings.settings.show_empty_days ? items_with_empty_days.length > 0 : items.length > 0}
 							{#if themeStore.clientTheme.layout.items === 'list'}
 								<div class="flex flex-col"
 										style:gap={`${2 * themeStore.clientTheme.layout.gap}px`}
@@ -176,7 +176,12 @@
 									typography={themeStore.clientTheme.typography.empty_text}
 									colour={themeStore.clientTheme.colours.text}
 								>
-									{m['_schedule.no_items_scheduled']()}
+								{(() => {
+									const name = (scheduleData.user?.displayName ?? scheduleData.user?.username ?? '')
+									return name
+										? m['_schedule.no_items_scheduled_with_name']({ name })
+										: m['_schedule.no_items_scheduled']();
+								})()}
 								</StyledText>
 							</div>
 						{/if}
