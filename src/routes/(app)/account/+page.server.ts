@@ -13,7 +13,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const user = locals.user;
 
   const user_settings = async () => { 
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // await new Promise(resolve => setTimeout(resolve, 1000));
     return getAllUserSettingsByUserId(user.id);
   }
 

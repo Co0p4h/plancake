@@ -14,7 +14,7 @@ export const load: PageServerLoad = (async ({ locals, url }) => {
   const user = locals.user;
 
   const items = async () => { 
-    await new Promise(resolve => setTimeout(resolve, 500));
+    // await new Promise(resolve => setTimeout(resolve, 500));
     return getScheduleItemsByUserId(user.id);
   }
 

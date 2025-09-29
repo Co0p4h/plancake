@@ -49,7 +49,7 @@
         <h1 class="text-xl text-gray-500">{m[`_appearance.${activeAppearance}`]()}</h1>
 
         <!-- for larger screens -->
-        <button class="md:block hidden px-1 py-1 rounded-lg border border-gray-300 text-gray-800 bg-white cursor-pointer hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
+        <button class="md:block hidden px-2 py-1 rounded-lg border border-gray-300 text-gray-800 bg-white cursor-pointer hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
           type="button"
           disabled={!theme.isModified() || isSubmitting}
           onclick={() => {theme.resetTheme()}}
@@ -102,7 +102,7 @@
       </div>
       {/if}
     </div>
-    <div class="flex text-center">
+    <div class="flex text-center w-full">
       <button
         type="submit"
         class="cursor-pointer rounded-md bg-purple-400 p-2 text-white focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-in-out not-disabled:hover:bg-purple-500 w-full items-center justify-center hidden md:flex"

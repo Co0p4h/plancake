@@ -130,7 +130,7 @@ export async function getScheduleSettingsByUserId(userId: string) {
     .innerJoin(table.schedule_settings, eq(table.schedules.id, table.schedule_settings.scheduleId))
     .where(eq(table.schedules.userId, userId))
     .limit(1);
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // await new Promise(resolve => setTimeout(resolve, 1000));
 
   return result;
 }
