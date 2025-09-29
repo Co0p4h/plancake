@@ -52,7 +52,7 @@
 	}
 }} />
 
-<div class="mx-auto flex flex-1 items-start gap-4">
+<div class="mx-auto flex flex-1 items-start xs:gap-4"> 
 	{#await data.schedule_data}
 		<AppearanceSkeleton />
 	{:then scheduleData}
@@ -88,8 +88,8 @@
 			return items_with_empty_days;
 		})()}
 
-		<div class="max-w-8xl flex-grow self-stretch rounded-lg border border-gray-300 bg-white p-5 flex flex-col min-h-0">
-			<h1 class="mb-4 text-xl text-gray-500">{m['_appearance.appearance']()}</h1>
+		<div class="max-w-8xl flex-grow self-stretch rounded-lg flex flex-col min-h-0 xs:border xs:border-gray-300 xs:bg-white xs:p-5">
+			<h1 class="hidden xs:block mb-4 text-xl text-gray-500">{m['_appearance.appearance']()}</h1>
 			<div
 				class="flex h-full min-h-0 flex-col items-center rounded-lg border border-gray-300 p-4 sm:p-6 lg:p-8 lg:min-w-2xl"
 				style:background-color={themeStore.clientTheme.background === 'solid' ? themeStore.clientTheme.colours.background : undefined}
@@ -216,13 +216,15 @@
 				</div>
 			</div>
 		</div>
-		<div class="relative mx-auto flex flex-1 items-start gap-4">
-			<div class="absolute right-18 xl:flex xl:relative xl:right-0">
+		<div class="mx-auto flex flex-1 items-start gap-4 relative z-50">
+			<div class="fixed px-2 bottom-16 mx-auto left-0 right-0 md:bottom-0 md:p-0 md:relative md:flex ">
 				{#if activeAppearance}
 					<AppearanceBar bind:activeAppearance />
 				{/if}
 			</div>
-			<AppearanceNav bind:activeAppearance />
+			<div class="fixed p-2 left-0 right-0 mx-auto bottom-0 md:p-0 md:block md:relative max-w-sm">
+				<AppearanceNav bind:activeAppearance />
+			</div>
 		</div>
 		
 	{:catch error}

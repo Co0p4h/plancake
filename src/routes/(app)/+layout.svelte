@@ -22,7 +22,7 @@
 <div class="min-h-screen flex flex-col bg-purple-background">
 	<Header />
 	
-	<div class="flex flex-1 flex-col p-4">
+	<div class="flex flex-1 flex-col p-2 pb-4">
 		{@render children()}
 	</div>
 </div>

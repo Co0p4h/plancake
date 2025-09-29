@@ -13,6 +13,7 @@
 	import toast from 'svelte-french-toast';
   
   import { themeStore as theme } from './appearance.svelte';
+	import { RotateCcw, Save } from '@lucide/svelte';
 
   let { activeAppearance = $bindable() }: { activeAppearance: ThemeCategories } = $props();
   
@@ -39,20 +40,41 @@
 </script>
 
 {#if theme}
-  <form method="POST" action="?/updateTheme" use:enhance={enhance_form} class="space-y-2">
+  <form method="POST" action="?/updateTheme" use:enhance={enhance_form} class="space-y-2 justify-center items-center flex flex-col">
 
     <input type="hidden" name="theme" value={JSON.stringify(theme.clientTheme)} />
 
-    <div class="bg-white border border-gray-300 rounded-lg p-4 w-80 flex-col">
+    <div class="bg-white border border-gray-300 rounded-lg p-4 min-w-80 max-w-sm flex-col">
       <div class="flex justify-between items-center mb-4">
         <h1 class="text-xl text-gray-500">{m[`_appearance.${activeAppearance}`]()}</h1>
-        <button class="px-2 py-1 rounded-lg border border-gray-300 text-gray-800 bg-white cursor-pointer hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
+
+        <!-- for larger screens -->
+        <button class="md:block hidden px-1 py-1 rounded-lg border border-gray-300 text-gray-800 bg-white cursor-pointer hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
           type="button"
           disabled={!theme.isModified() || isSubmitting}
           onclick={() => {theme.resetTheme()}}
         >
           {m.reset()}
         </button>
+
+        <!-- for smaller screens -->
+        <div class="gap-2 md:hidden flex">
+          <button class="px-1 py-1 rounded-lg border border-gray-300 text-gray-800 bg-white cursor-pointer not-disabled:hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
+            type="button"
+            disabled={!theme.isModified() || isSubmitting}
+            onclick={() => {theme.resetTheme()}}
+          >
+            <RotateCcw size="20" />
+          </button>
+          <button class="px-1 py-1 rounded-lg text-white bg-purple-400 cursor-pointer not-disabled:hover:bg-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition"
+            type="button"
+            disabled={!theme.isModified() || isSubmitting}
+            onclick={() => {theme.resetTheme()}}
+          >
+            <Save size="20" />
+          </button>
+
+        </div>
       </div>
       {#if activeAppearance === "colours"}
       <div transition:slide>
@@ -83,7 +105,7 @@
     <div class="flex text-center">
       <button
         type="submit"
-        class="cursor-pointer rounded-md bg-purple-400 p-2 text-white focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-in-out not-disabled:hover:bg-purple-500 w-full flex items-center justify-center"
+        class="cursor-pointer rounded-md bg-purple-400 p-2 text-white focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-in-out not-disabled:hover:bg-purple-500 w-full items-center justify-center hidden md:flex"
         disabled={!theme.isModified() || isSubmitting}
       >
         {#if isSubmitting}

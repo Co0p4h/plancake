@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {LayoutDashboard, Palette, CaseSensitive, Image, LayoutList, StretchHorizontal, Paintbrush} from "@lucide/svelte";
+  import {LayoutDashboard, Palette, CaseSensitive, Image, LayoutList, StretchHorizontal, Paintbrush, X} from "@lucide/svelte";
   import NavIcon from "./NavIcon.svelte";
   import { m } from '$lib/paraglide/messages.js';
 
@@ -31,7 +31,8 @@
 </script>
 
 <div class="p-2.5 bg-white border border-gray-300 rounded-lg">
-  <div class="gap-4 flex flex-col items-start">
+  <!-- <div class="gap-4 flex flex-col items-start"> -->
+  <div class="gap-3 md:gap-4 flex items-center md:items-start flex-row md:flex-col justify-center">
     <button onclick={() => handleNavClick("layout")} class="cursor-pointer" title={m["_appearance._tooltips.layout_settings"]()}>
       <NavIcon active={activeAppearance === "layout"}>
         <LayoutDashboard />
@@ -61,6 +62,11 @@
     <button onclick={() => handleNavClick("image")} class="cursor-pointer" title={m["_appearance._tooltips.image_settings"]()}>
       <NavIcon active={activeAppearance === "image"}>
         <Image />
+      </NavIcon>
+    </button>
+    <button onclick={() => activeAppearance = null} class="cursor-pointer block md:hidden" title={m["cancel"]()}>
+      <NavIcon active={false}>
+        <X />
       </NavIcon>
     </button>
   </div>

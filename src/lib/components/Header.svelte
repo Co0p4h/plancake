@@ -43,7 +43,7 @@
 </script>
 
 <header>
-	<div class="flex justify-between mt-4 mx-8 items-center">
+	<div class="flex justify-between my-4 mx-8 items-center">
 		<div class="flex items-center">
 			<h1 class="text-2xl font-black">
 				<a href="/">P.</a>

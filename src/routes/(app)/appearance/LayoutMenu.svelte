@@ -5,8 +5,7 @@
   let { layout = $bindable() }:{ layout: LayoutTheme } = $props()
 </script>
 
-<!-- <div class="border border-gray-300 rounded-lg p-4 mb-6"> -->
-<div class="flex flex-col gap-2">
+<div class="flex flex-col gap-2 overflow-y-auto max-h-[calc(100vh-200px)] md:max-h-none md:overflow-visible">
   <div>
     <h3 class="text-lg font-semibold">{m["_appearance._layout.item_gap"]()}</h3>
     <div class="space-y-4">

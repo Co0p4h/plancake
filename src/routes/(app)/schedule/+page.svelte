@@ -152,7 +152,7 @@
 <div class="container flex-1 mx-auto max-w-8xl p-5 bg-white border border-gray-300 rounded-lg flex flex-col min-h-[70vh]">
   <div class="flex justify-between items-center mb-4">
     <h2 class="text-lg font-medium">{weekDisplayText()}</h2>
-    <h2 class="text-lg font-medium">{m["_schedule.weekly_schedule"]()}</h2>
+    <h2 class="text-lg font-medium hidden xs:block">{m["_schedule.weekly_schedule"]()}</h2>
     <div class="flex  items-center">
       <button class="cursor-pointer hover:bg-gray-100 rounded-md p-1" onclick={goToPreviousDate}>
         <ChevronLeft class="h-5 w-5" />

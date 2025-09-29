@@ -19,7 +19,7 @@
   // $inspect(typography);
 </script>
 
-<div class="space-y-6">
+<div class="flex flex-col overflow-y-auto max-h-[calc(100vh-200px)] md:max-h-none md:overflow-visible">
   <!-- base font section -->
   <!-- <div class="border border-gray-300 rounded-lg p-4">
     <h3 class="text-lg font-semibold mb-4">Base Font</h3>
