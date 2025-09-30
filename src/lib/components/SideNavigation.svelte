@@ -18,7 +18,7 @@
 	}
 </script>
 
-<nav class="md:hidden">
+<nav class="md:hidden z-100">
 	{#if isOpen}
 		<div 
 			class="fixed inset-0 bg-black opacity-50 z-40 transition-opacity"

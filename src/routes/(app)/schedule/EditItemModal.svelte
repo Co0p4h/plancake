@@ -28,7 +28,7 @@
 </script>
 
 <dialog
-  class="rounded-lg mx-auto my-auto p-0 shadow-lg max-w-2xl w-full border border-gray-300 bg-white backdrop:backdrop-blur-xs"
+  class="rounded-lg mx-auto my-auto p-0 shadow-lg max-w-2xl w-full border border-gray-300 bg-white"
   bind:this={dialog}
   onclose={() => (editModal.show = false)}
   onmousedown={handleMouseDown}

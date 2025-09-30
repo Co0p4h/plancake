@@ -169,7 +169,7 @@
 						style:border-radius={`${schedule_data.theme.item_theme.border_radius}px`}
 						>
 						<!-- transition:blur={{ duration: 500 }} -->
-						<img src={schedule_data.theme.image.url} alt={schedule_data.theme.image.alt} class="w-full h-auto object-cover block" loading="lazy" />
+						<img src={schedule_data.theme.image.url} alt={schedule_data.theme.image.alt} class="w-full h-auto object-cover block" loading="lazy" fetchpriority="high" />
 						{#if schedule_data.theme.image?.artist_name}
 							<span class="absolute bottom-2 right-2 p-1 rounded"
 								style:background-color={schedule_data.theme.colours.secondary} >

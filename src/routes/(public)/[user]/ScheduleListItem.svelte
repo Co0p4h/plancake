@@ -7,11 +7,11 @@
 
   let { item, theme, settings }:{ item: ScheduleItem, theme: ScheduleTheme, settings: ScheduleSettings} = $props();
 
-  if (item.id.startsWith('empty-')) {
-    $effect(() => {
-      console.log(item);
-    });
-  }
+  // if (item.id.startsWith('empty-')) {
+  //   $effect(() => {
+  //     console.log(item);
+  //   });
+  // }
 </script>
 
 <div class="flex w-full h-full relative z-0 group max-w-lg"

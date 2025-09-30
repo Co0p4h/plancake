@@ -6,12 +6,13 @@
 	import { m } from '$lib/paraglide/messages.js';
 	import type { ThemeCategories } from '$lib/server/db/schema';
 	import { beforeNavigate } from '$app/navigation';
-	import ScheduleListItem from '../../(public)/[user]/ScheduleListItem.svelte';
-	import StyledText from '$lib/components/StyledText.svelte';
 	import { initThemeStore, themeStore } from './appearance.svelte';
-	import ScheduleGridItem from '../../(public)/[user]/ScheduleGridItem.svelte';
 	import { getCurrentWeekDates } from '$lib/utils/date';
 	import { validateImageUrl, validateArtistUrl } from '$lib/utils/cs-validate';
+	import { browser } from '$app/environment';
+	import StyledText from '$lib/components/StyledText.svelte';
+	import ScheduleListItem from '../../(public)/[user]/ScheduleListItem.svelte';
+	import ScheduleGridItem from '../../(public)/[user]/ScheduleGridItem.svelte';
 	import AppearanceSkeleton from './AppearanceSkeleton.svelte';
 
 	let { data } = $props();
@@ -45,12 +46,6 @@
 		}
 	});
 </script>
-
-<svelte:body onkeydown={(e) => {
-	if (e.key == "Escape" ) {
-		activeAppearance = null;
-	}
-}} />
 
 <div class="mx-auto flex flex-1 items-start xs:gap-4"> 
 	{#await data.schedule_data}

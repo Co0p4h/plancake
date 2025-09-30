@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ScheduleTheme, ThemeCategories } from '$lib/server/db/schema';
+  import type { ThemeCategories } from '$lib/server/db/schema';
   import { m } from '$lib/paraglide/messages.js';
 	import ColourMenu from './ColourMenu.svelte';
 	import LayoutMenu from './LayoutMenu.svelte';
@@ -9,6 +9,7 @@
 	import ImageMenu from './ImageMenu.svelte';
   import { slide } from 'svelte/transition';
 	import { enhance } from '$app/forms';
+  import { browser } from '$app/environment';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import toast from 'svelte-french-toast';
   
@@ -39,12 +40,32 @@
   }
 </script>
 
+<svelte:body 
+	onkeydown={(e) => {
+		if (e.key == "Escape" ) {
+      console.log("closing appearance menu");
+			activeAppearance = null;
+		}
+	}} 
+/> 
+
 {#if theme}
   <form method="POST" action="?/updateTheme" use:enhance={enhance_form} class="space-y-2 justify-center items-center flex flex-col">
 
     <input type="hidden" name="theme" value={JSON.stringify(theme.clientTheme)} />
 
-    <div class="bg-white border border-gray-300 rounded-lg p-4 min-w-80 max-w-sm flex-col">
+    {#if activeAppearance && browser && window.innerWidth < 768}
+      <div class="fixed flex justify-center items-center w-full h-full top-0 left-0 z-100"
+        role="presentation"
+        onclick={(e) => {
+          if (e.target === e.currentTarget) {
+            activeAppearance = null;
+          }
+        }}
+      ></div>
+    {/if}
+
+    <div class="bg-white border border-gray-300 rounded-lg p-4 min-w-80 max-w-sm flex-col z-100" >
       <div class="flex justify-between items-center mb-4">
         <h1 class="text-xl text-gray-500">{m[`_appearance.${activeAppearance}`]()}</h1>
 

@@ -7,8 +7,6 @@
 
   const textElements = Object.keys(typography).filter(key => key !== "base_font") as Array<keyof Omit<TypographyTheme, 'base_font'>>;
   const textElements2 = Object.keys(typography) as Array<string>;
-  console.log("textElements: ", textElements);
-  console.log("textElements2: ", textElements2);
   
   let selectedElement: keyof Omit<TypographyTheme, 'base_font'> = $state(textElements[0] || "header_title");
   
@@ -19,7 +17,7 @@
   // $inspect(typography);
 </script>
 
-<div class="flex flex-col overflow-y-auto max-h-[calc(100vh-200px)] md:max-h-none md:overflow-visible">
+<div class="flex flex-col overflow-y-auto max-h-[calc(100vh-250px)] md:max-h-none md:overflow-visible">
   <!-- base font section -->
   <!-- <div class="border border-gray-300 rounded-lg p-4">
     <h3 class="text-lg font-semibold mb-4">Base Font</h3>
