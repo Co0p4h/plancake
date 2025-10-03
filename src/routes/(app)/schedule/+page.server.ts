@@ -5,6 +5,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { generateId } from '$lib/server/db/utils';
 import { getScheduleItemsByUserId } from '$lib/server/db/services/schedule-service';
+import dayjs from 'dayjs';
 
 export const load: PageServerLoad = (async ({ locals, url }) => {
   if (!locals.user) {
@@ -50,6 +51,9 @@ export const actions = {
       // });
     }
 
+    console.log(new Date(start).toISOString())
+    console.log(dayjs(start).utc().toDate());
+
     try {
       // should i just be saving the schedule_id in the user object?
       const [schedule] = (await db.select({ schedule_id: table.schedules.id }).from(table.schedules).where(eq(table.schedules.userId, locals.user.id)).limit(1));
@@ -59,8 +63,8 @@ export const actions = {
         scheduleId: schedule.schedule_id,
         title,
         description: description || null,
-        startTime: new Date(start),
-        endTime: end ? new Date(end) : null,
+        startTime: dayjs(start).utc().toDate(),
+        endTime: end ? dayjs(end).utc().toDate() : null,
         externalUrl: externalUrl || null,
         createdAt: new Date(),
         updatedAt: new Date()
