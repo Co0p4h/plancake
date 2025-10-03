@@ -6,6 +6,11 @@ import type { PageServerLoad } from './$types';
 import { generateId } from '$lib/server/db/utils';
 import { getScheduleItemsByUserId } from '$lib/server/db/services/schedule-service';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export const load: PageServerLoad = (async ({ locals, url }) => {
   if (!locals.user) {
