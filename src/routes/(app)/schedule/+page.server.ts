@@ -37,6 +37,8 @@ export const actions = {
     const end = formData.get('end_time') as string;
     const externalUrl = formData.get('external_url') as string;
 
+    console.log("start: ", start);
+
     if (!title || !start) {
       return { success: false };
       // return fail(400, {
