@@ -221,7 +221,7 @@
   {/if}
 </div>
 
-<AddItemModal />
+<AddItemModal timezone={data.timezone} />
 <ConfirmDeleteModal />
-<EditItemModal />
+<EditItemModal timezone={data.timezone} />
 

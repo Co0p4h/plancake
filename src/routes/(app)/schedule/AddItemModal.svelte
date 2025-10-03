@@ -8,6 +8,8 @@
 	import { X } from '@lucide/svelte';
   dayjs.extend(utc);
 
+  let { timezone } = $props();
+
   let dialog: HTMLDialogElement | undefined = $state();
   let isSubmitting = $state(false);
   let isMouseDownOnDialog = $state(false);
@@ -55,6 +57,13 @@
   onmouseleave={() => (isMouseDownOnDialog = false)}
 >
   <form method="POST" action="?/add" class="space-y-2 p-6" use:enhance>
+    <!-- timezone (we are just automatically detecting it for now, not using the user setting, it can easily be changed by add timezone ?? though.) -->
+    <input
+      type="hidden"
+      name="timezone"
+      value={Intl.DateTimeFormat().resolvedOptions().timeZone}
+    />
+
     <div class="grid gap-4">
       <div class="flex justify-between">
         <h3 class="text-lg font-semibold">

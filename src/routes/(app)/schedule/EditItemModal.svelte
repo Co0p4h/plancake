@@ -9,6 +9,8 @@
   let isMouseDownOnDialog = $state(false);
   let isSubmitting = $state(false);
 
+  let { timezone } = $props();
+
   $effect(() => {
     if (editModal.show && dialog) dialog.showModal();
   });
@@ -37,6 +39,13 @@
 >
   <form method="POST" action="?/update" class="space-y-4 p-6" use:enhance>
     <input type="hidden" name="id" value={editModal.item?.id ?? ''} />
+    <!-- timezone (we are just automatically detecting it for now, not using the user setting, it can easily be changed by add timezone ?? though.) -->
+    <input
+      type="hidden"
+      name="timezone"
+      value={Intl.DateTimeFormat().resolvedOptions().timeZone} 
+    />
+
     <div class="grid gap-4">
       <div class="flex justify-between">
         <h3 class="text-lg font-semibold">

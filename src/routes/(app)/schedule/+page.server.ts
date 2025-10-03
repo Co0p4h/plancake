@@ -8,6 +8,7 @@ import { getScheduleItemsByUserId } from '$lib/server/db/services/schedule-servi
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import { getUserSettingsByUserId } from '$lib/server/db/services/user-service';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -18,13 +19,14 @@ export const load: PageServerLoad = (async ({ locals, url }) => {
   }
 
   const user = locals.user;
+  const timezone = await getUserSettingsByUserId(user.id).then(settings => settings?.timezone || 'UTC');
 
   const items = async () => { 
     // await new Promise(resolve => setTimeout(resolve, 500));
     return getScheduleItemsByUserId(user.id);
   }
 
-  return { user, streamed: { items: items() }};
+  return { user, timezone, streamed: { items: items() }};
 });
 
 export const actions = {
@@ -42,8 +44,7 @@ export const actions = {
     const start = formData.get('start_time')?.toString();
     const end = formData.get('end_time') as string;
     const externalUrl = formData.get('external_url') as string;
-
-    console.log("start: ", start);
+    const userTimezone = formData.get('timezone')?.toString() || 'UTC'; // fallback to UTC
 
     if (!title || !start) {
       return { success: false };
@@ -56,9 +57,6 @@ export const actions = {
       // });
     }
 
-    console.log(new Date(start).toISOString())
-    console.log(dayjs(start).utc().toDate());
-
     try {
       // should i just be saving the schedule_id in the user object?
       const [schedule] = (await db.select({ schedule_id: table.schedules.id }).from(table.schedules).where(eq(table.schedules.userId, locals.user.id)).limit(1));
@@ -68,8 +66,8 @@ export const actions = {
         scheduleId: schedule.schedule_id,
         title,
         description: description || null,
-        startTime: dayjs(start).utc().toDate(),
-        endTime: end ? dayjs(end).utc().toDate() : null,
+        startTime: dayjs.tz(start, userTimezone).utc().toDate(),
+        endTime: end ? dayjs.tz(end, userTimezone).utc().toDate() : null,
         externalUrl: externalUrl || null,
         createdAt: new Date(),
         updatedAt: new Date()
@@ -123,6 +121,7 @@ export const actions = {
     const start = formData.get('start_time')?.toString();
     const end = formData.get('end_time') as string;
     const externalUrl = formData.get('external_url') as string;
+    const userTimezone = formData.get('timezone')?.toString() || 'UTC'; 
 
     if (!itemId) {
       return fail(400, { error: 'item ID is required' });
@@ -141,8 +140,8 @@ export const actions = {
     const item = {
       title,
       description: description || null,
-      startTime: new Date(start),
-      endTime: end ? new Date(end) : null,
+      startTime: dayjs.tz(start, userTimezone).utc().toDate(),
+      endTime: end ? dayjs.tz(end, userTimezone).utc().toDate() : null, 
       externalUrl: externalUrl || null,
       // updatedAt: new Date()
     };
