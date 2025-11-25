@@ -29,7 +29,9 @@
     <h1 class="mb-8 mt-4 text-center text-2xl font-semibold sm:mt-0">{m['_auth.login.title']()}</h1>
     <form method="POST" class="space-y-4" use:enhance>
       <div class="">
+        <label for="username-input" class="sr-only">{m['_auth.signup.username']()}</label>
         <input
+          id="username-input"
           class="w-full rounded border px-3 py-2 focus:border-purple-500 focus:outline-none"
           name="username"
           type="text"
@@ -40,7 +42,9 @@
       </div>
 
       <div class="relative flex flex-col items-center justify-center">
+        <label for="password-input" class="sr-only">{m['_auth.signup.password']()}</label>
         <input
+          id="password-input"
           class="w-full rounded border px-3 py-2 focus:border-purple-500 focus:outline-none"
           name="password"
           placeholder={m['_auth.signup.password']()}
@@ -50,10 +54,11 @@
           required
         />
         <button
-          aria-label="show_password_button"
-          class="absolute right-3 text-sm cursor-pointer"
-          onclick={toggleShowPassword}
           type="button"
+          onclick={toggleShowPassword}
+          class="absolute right-3 text-sm cursor-pointer"
+          aria-label={showPasswordText ? "hide password" : "show password"}
+          aria-controls="password"
         >
           {#if showPasswordText}
             <EyeOff size={20} />

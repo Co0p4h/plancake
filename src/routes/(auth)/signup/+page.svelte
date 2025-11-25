@@ -47,10 +47,14 @@
 <div class="flex min-h-[calc(100vh-24rem)] flex-col items-center justify-center gap-y-4 px-4 py-8 sm:py-12">
   <div class="w-full max-w-md">
     <h1 class="mb-8 mt-4 text-center text-2xl font-semibold sm:mt-0">{m['_auth.signup.title']()}</h1>
+
     <form method="POST" class="space-y-4" use:enhance>
       <input type="hidden" name="timezone" value={dayjs.tz.guess()} />
+
       <div class="">
+        <label for="email" class="sr-only">{m['_auth.signup.email']()}</label>
         <input
+          id="email-input"
           class="w-full rounded border px-3 py-2 focus:border-purple-500 focus:outline-none"
           name="email"
           type="email"
@@ -59,11 +63,13 @@
           required
           bind:value={formData.email}
         />
-          <!-- value={formData.email ?? page.form?.email ?? ''} -->
+        <!-- value={formData.email ?? page.form?.email ?? ''} -->
       </div>
 
       <div class="relative flex flex-col items-center justify-center">
+        <label for="password-input" class="sr-only">{m['_auth.signup.password']()}</label>
         <input
+          id="password-input"
           class="w-full rounded border px-3 py-2 focus:border-purple-500 focus:outline-none"
           name="password"
           placeholder={m['_auth.signup.password']()}
@@ -73,12 +79,12 @@
           value
           required
           />
-          <!-- minlength="8" -->
         <button
-          aria-label="show_password_button"
-          class="absolute right-3 text-sm cursor-pointer"
-          onclick={toggleShowPassword}
           type="button"
+          onclick={toggleShowPassword}
+          class="absolute right-3 text-sm cursor-pointer"
+          aria-label={showPasswordText ? "hide password" : "show password"}
+          aria-controls="password"
         >
           {#if showPasswordText}
             <EyeOff size={20} />
@@ -89,7 +95,9 @@
       </div>
 
       <div class="">
+        <label for="username-input" class="sr-only">{m['_auth.signup.username']()}</label>
         <input
+          id="username-input"
           class="w-full rounded border px-3 py-2 focus:border-purple-500 focus:outline-none"
           name="username"
           type="text"

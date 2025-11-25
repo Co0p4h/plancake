@@ -13,7 +13,10 @@
 		<p class="font-light text-left w-full">share your schedule with your audience worldwide—no more timezone confusion, no more missed connections</p>
 	</div>
 	<form method="get" action={`/signup?username=${username}`} class="flex flex-col gap-3 w-full max-w-2xl px-4 sm:flex-row" >
+		<label for="username-input" class="sr-only">Username</label>
+
 		<input 
+			id="username-input"
 			name="username"
 			bind:value={username} 
 			type="text" 
