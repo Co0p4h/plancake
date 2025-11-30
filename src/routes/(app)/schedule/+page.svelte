@@ -153,14 +153,24 @@
   <div class="flex justify-between items-center mb-4">
     <h2 class="text-lg font-medium">{weekDisplayText()}</h2>
     <h2 class="text-lg font-medium hidden xs:block">{m["_schedule.weekly_schedule"]()}</h2>
-    <div class="flex  items-center">
-      <button class="cursor-pointer hover:bg-gray-100 rounded-md p-1" onclick={goToPreviousDate}>
+    <div class="flex items-center">
+      <button 
+        class="cursor-pointer hover:bg-gray-100 rounded-md p-1" 
+        onclick={goToPreviousDate}
+        aria-label="previous date"
+        aria-controls="schedule-navigation"
+      >
         <ChevronLeft class="h-5 w-5" />
       </button>
       <button onclick={goToToday} class="hover:bg-gray-100 rounded-md px-1 py-1 cursor-pointer">
         <span class="px-2">{m["_schedule.today"]()}</span>
       </button>
-      <button class="cursor-pointer hover:bg-gray-100 rounded-md p-1" onclick={goToNextDate}>
+      <button 
+        class="cursor-pointer hover:bg-gray-100 rounded-md p-1" 
+        onclick={goToNextDate}
+        aria-label="next date"
+        aria-controls="schedule-navigation"
+      >
         <ChevronRight class="h-5 w-5" />
       </button>
       <!-- <CalendarSelect onchange={onDateChange} bind:dateInputValue /> -->

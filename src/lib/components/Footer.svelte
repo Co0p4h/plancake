@@ -38,6 +38,7 @@
         class="pr-14 rounded-md border-1 border-gray-300 p-2 text-sm focus:outline-none focus:ring-1 focus:ring-purple-default focus:border-purple-default cursor-pointer" 
         name="language" 
         id="language" 
+        aria-label="select language"
         value={getLocale()} 
         onchange={(e: Event) => {
           setLocale((e.target as HTMLSelectElement).value as "en" | "ja")
