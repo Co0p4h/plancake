@@ -52,7 +52,7 @@
       <input type="hidden" name="timezone" value={dayjs.tz.guess()} />
 
       <div class="">
-        <label for="email" class="sr-only">{m['_auth.signup.email']()}</label>
+        <label for="email-input" class="sr-only">{m['_auth.signup.email']()}</label>
         <input
           id="email-input"
           class="w-full rounded border px-3 py-2 focus:border-purple-500 focus:outline-none"
